@@ -4,6 +4,9 @@
 * Available at http://www.apache.org/licenses/LICENSE-2.0.html                 *
 \******************************************************************************/
 
+using System.Linq;
+using System;
+
 using UnityEngine;
 using System.Collections;
 using Leap;
@@ -32,11 +35,14 @@ public class MagneticPinch : MonoBehaviour {
 
   /** Finds an object to grab and grabs it. */
   void OnPinch(Vector3 pinch_position) {
+    Debug.Log("Pinched!");
     pinching_ = true;
 
     // Check if we pinched a movable object and grab the closest one that's not part of the hand.
     Collider[] close_things = Physics.OverlapSphere(pinch_position, magnetDistance);
     Vector3 distance = new Vector3(magnetDistance, 0.0f, 0.0f);
+
+    Debug.Log("Grabbed things: " + String.Join(", ", close_things.ToList().Select(t => t.gameObject.name).ToArray()));
 
     for (int j = 0; j < close_things.Length; ++j) {
       Vector3 new_distance = pinch_position - close_things[j].transform.position;
@@ -50,6 +56,7 @@ public class MagneticPinch : MonoBehaviour {
 
   /** Clears the pinch state. */
   void OnRelease() {
+    Debug.Log("Released!");
     grabbed_ = null;
     pinching_ = false;
   }
@@ -63,7 +70,10 @@ public class MagneticPinch : MonoBehaviour {
     Hand leap_hand = hand_model.GetLeapHand();
 
     if (leap_hand == null)
+    {
+      Debug.Log("No hand!");
       return;
+    }
 
     // Scale trigger distance by thumb proximal bone length.
     Vector leap_thumb_tip = leap_hand.Fingers[0].TipPosition;
