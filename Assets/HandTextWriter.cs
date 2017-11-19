@@ -17,13 +17,12 @@ public class HandTextWriter : MonoBehaviour {
 
 	void Start () {
 		controller = GetComponent<HandController>();
+
+		PlaceLetters();
 	}
 	
 	void Update () {
 		ResetDisplay();
-
-		// PlaceLetters();
-
 
 		var frame = controller.GetFrame();
 		var points = frame.Pointables;
@@ -80,14 +79,17 @@ public class HandTextWriter : MonoBehaviour {
 	{
 		var letters = GameObject.Find("letters");
 		var interactables = GameObject.Find("interactables");
-		var z = 0f;
+		var x = -1f;
+		string placement = "placed: ";
 		foreach (Transform letterTransform in letters.transform)
 		{
 				var letter = letterTransform.gameObject;
 				var interactable = Instantiate(letter, interactables.transform);
-				interactable.transform.localPosition = new Vector3(0, 0, z);
-				z += 0.1f;
+				interactable.transform.localPosition = new Vector3(x, 0.2f, 0f);
+				x += 0.1f;
+				placement += interactable.name + ", ";
 		}
+		Debug(placement);
 	}
 
   private string HandsInfo(HandList hands)
