@@ -18,7 +18,7 @@ public class HandTextWriter : MonoBehaviour {
 	void Start () {
 		controller = GetComponent<HandController>();
 
-		PlaceLetters();
+		PlaceLetters(GameObject.Find("letters"), GameObject.Find("interactables"));
 	}
 	
 	void Update () {
@@ -40,7 +40,7 @@ public class HandTextWriter : MonoBehaviour {
 			return;
 		}
 
-		Vector3 localGrabPosition = hand.SphereCenter.ToUnityScaled();
+		Vector3 localGrabPosition = hand.PalmPosition.ToUnityScaled();
 		Vector3 grabPosition = controller.transform.TransformPoint(localGrabPosition);
 
 		Debug("grab pos (rel to hand controller): " + localGrabPosition);
@@ -75,18 +75,34 @@ public class HandTextWriter : MonoBehaviour {
 		}
 	}
 
-	private void PlaceLetters()
+	private void PlaceLetters(GameObject letters, GameObject interactables)
 	{
-		var letters = GameObject.Find("letters");
-		var interactables = GameObject.Find("interactables");
-		var x = -1f;
+		var spacing = 0.12f;
+		var slots = 5;
+		var index = 0;
+		var start = -(spacing * slots) / 2;
+		var x = start;
+		var y = start + spacing;
+		var xIndex = 0;
+		var z = 0f;
+
 		string placement = "placed: ";
 		foreach (Transform letterTransform in letters.transform)
 		{
 				var letter = letterTransform.gameObject;
 				var interactable = Instantiate(letter, interactables.transform);
-				interactable.transform.localPosition = new Vector3(x, 0.2f, 0f);
-				x += 0.1f;
+				xIndex = index % slots; 
+				if (xIndex == 0)
+				{ 
+					y += spacing;
+					x = start;
+				}
+				else
+				{
+					x += spacing;
+				}
+				index += 1;
+				interactable.transform.localPosition = new Vector3(x, y, z);
 				placement += interactable.name + ", ";
 		}
 		Debug(placement);
