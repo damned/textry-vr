@@ -26,8 +26,7 @@ public class HandTextWriter : MonoBehaviour {
 		ResetDisplay();
 
 		var frame = controller.GetFrame();
-		var points = frame.Pointables;
-		Debug("points count: " + points.Count);
+		Debug("r confidence: " + frame.Hands.Rightmost.Confidence);
 		Debug("hands presence: " + HandsPresence(frame.Hands));
 		Debug("hands info: " + HandsInfo(frame.Hands));
 
@@ -38,6 +37,7 @@ public class HandTextWriter : MonoBehaviour {
 	{
 		if (!hand.IsValid)
 		{
+			ClearLastGrabbed(null);
 			return;
 		}
 
@@ -61,11 +61,7 @@ public class HandTextWriter : MonoBehaviour {
       }
     }
     Debug("Grabbed: " + grabbed);
-		if (lastGrabbed != null && lastGrabbed != grabbed)
-		{
-			ChangeColour(lastGrabbed, Color.white);	
-			lastGrabbed = null;
-		} 
+		ClearLastGrabbed(grabbed);
 		if (grabbed == null)
 		{
 	    Debug("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.gameObject.name).ToArray()));
@@ -73,25 +69,32 @@ public class HandTextWriter : MonoBehaviour {
 		}
 		lastGrabbed = grabbed;
     Debug("Grabbed: " + grabbed.gameObject.name);
-		Material material = grabbed.gameObject.GetComponent<Renderer>().material;
 		if (hand.GrabStrength > 0.7) {
-			ChangeColour(grabbed, Color.red);
+			LetterOf(grabbed).Grab();
 		}
-		else if (hand.GrabStrength < 0.2) {
-			ChangeColour(grabbed, Color.black);
+		else if (hand.GrabStrength < 0.4) {
+			LetterOf(grabbed).Approach();
 		}
 	}
 
-	private void ChangeColour(Collider collider, Color color)
+  private void ClearLastGrabbed(Collider grabbed)
 	{
-		Material material = collider.gameObject.GetComponent<Renderer>().material;
-		material.color = color;
+		if (lastGrabbed != null && lastGrabbed != grabbed)
+		{
+			LetterOf(lastGrabbed).Leave();
+			lastGrabbed = null;
+		} 
+	}
+
+	private Letter LetterOf(Collider collider)
+	{
+		return collider.gameObject.GetComponent<Letter>();
 	}
 
 	private void PlaceLetters(GameObject letters, GameObject interactables)
 	{
-		var spacing = 0.1f;
-		var yOffset = 1f;
+		var spacing = 0.08f;
+		var yOffset = 0.7f;
 		var slots = 6;
 		var index = 0;
 		var start = -(spacing * slots) / 2;
