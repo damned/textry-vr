@@ -18,11 +18,14 @@ public class HandTextWriter : MonoBehaviour {
 	private Collider lastGrabbed = null;
 	private GameObject interactables;
 
+	private int layer = 0;
+	private string text = "";
+
 	void Start () {
 		controller = GetComponent<HandController>();
 		interactables = GameObject.Find("interactables");
 
-		PlaceLetters(GameObject.Find("letters"), interactables);
+		PlaceLetters(GameObject.Find("letters"), interactables, 0f);
 	}
 	
 	void Update () {
@@ -49,6 +52,7 @@ public class HandTextWriter : MonoBehaviour {
 
 		// DebugLog("grab pos (rel to hand controller): " + localGrabPosition);
 		DebugLog("grab pos (world space): " + grabPosition);
+		DebugLog("text: " + text);
 
 		Collider[] close_things = Physics.OverlapSphere(grabPosition, range);
     Vector3 distance = new Vector3(1, 0.0f, 0.0f);
@@ -71,11 +75,16 @@ public class HandTextWriter : MonoBehaviour {
 			return;
 		}
 
-		lastGrabbed = grabbed;
     // DebugLog("Grabbed: " + grabbed.gameObject.name);
 		if (hand.GrabStrength > 0.7) {
-			LetterOf(grabbed).Grab(controller, hand);
-			FadeOtherLetters(grabbed.gameObject);
+			if (grabbed != lastGrabbed) {
+				LetterOf(grabbed).Grab(controller, hand);
+				FadeOtherLetters(grabbed.gameObject);
+				layer += 1;
+				text += LetterOf(grabbed).letter;
+				PlaceLetters(GameObject.Find("letters"), interactables, layer * 0.2f);
+				lastGrabbed = grabbed;
+			}
 		}
 		else if (hand.GrabStrength < 0.4) {
 			LetterOf(grabbed).Approach();
@@ -108,7 +117,7 @@ public class HandTextWriter : MonoBehaviour {
 		return collider.gameObject.GetComponent<Letter>();
 	}
 
-	private void PlaceLetters(GameObject letters, GameObject interactables)
+	private void PlaceLetters(GameObject letters, GameObject interactables, float zOffset)
 	{
 		var ySpacing = 0.06f;
 		var xSpacing = 0.1f;
@@ -121,7 +130,7 @@ public class HandTextWriter : MonoBehaviour {
 		var x = xStart + xOffset;
 		var y = yStart + yOffset;
 		var xIndex = 0;
-		var z = -1f;
+		var z = -1f + zOffset;
 
 		string placement = "placed: ";
 		foreach (Transform letterTransform in letters.transform)
