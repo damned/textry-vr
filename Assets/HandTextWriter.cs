@@ -110,14 +110,16 @@ public class HandTextWriter : MonoBehaviour {
 
 	private void PlaceLetters(GameObject letters, GameObject interactables)
 	{
-		var spacing = 0.06f;
-		var yOffset = -1.3f;
+		var ySpacing = 0.06f;
+		var xSpacing = 0.1f;
+		var yOffset = -1.45f;
 		var xOffset = 0f;
 		var slots = 6;
 		var index = 0;
-		var start = -(spacing * slots) / 2;
-		var x = start + xOffset;
-		var y = start + yOffset;
+		var xStart = -(xSpacing * slots) / 2;
+		var yStart = -(ySpacing * slots) / 2;
+		var x = xStart + xOffset;
+		var y = yStart + yOffset;
 		var xIndex = 0;
 		var z = -1f;
 
@@ -129,12 +131,12 @@ public class HandTextWriter : MonoBehaviour {
 				xIndex = index % slots; 
 				if (xIndex == 0)
 				{ 
-					y -= spacing;
-					x = start + xOffset;
+					y -= ySpacing;
+					x = xStart + xOffset;
 				}
 				else
 				{
-					x += spacing;
+					x += xSpacing;
 				}
 				index += 1;
 				interactable.transform.localPosition = new Vector3(x, y, z);

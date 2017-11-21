@@ -30,17 +30,18 @@ public class Letter : MonoBehaviour {
 		if (grabbed)
 		{
 			grabbedHand = controller.GetFrame().Hands.Rightmost;
+			float tolerance = 0.01f;
 			Vector3 localGrabPosition = grabbedHand.PalmPosition.ToUnityScaled();
 			Vector3 grabPosition = controller.transform.TransformPoint(localGrabPosition);
 
 			Debug.Log("hand z: " + grabPosition.z);
 			Debug.Log("letter z: " + transform.position.z);
-			if (grabPosition.z < (transform.position.z - 0.05f))
+			if (grabPosition.z < (transform.position.z - tolerance))
 			{
 				Debug.Log("happening!");
 				parent.transform.Translate(new Vector3(0f, 0f, -0.01f));
 			}
-			else if (grabPosition.z > (transform.position.z + 0.05f))
+			else if (grabPosition.z > (transform.position.z + tolerance))
 			{
 				Debug.Log("happening!!");
 				parent.transform.Translate(new Vector3(0f, 0f, 0.01f));
