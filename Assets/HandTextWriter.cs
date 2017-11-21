@@ -15,15 +15,22 @@ public class HandTextWriter : MonoBehaviour {
 
 	private HandController controller;
 	private Collider lastGrabbed = null;
+	private GameObject interactables;
 
 	void Start () {
 		controller = GetComponent<HandController>();
+		interactables = GameObject.Find("interactables");
 
-		PlaceLetters(GameObject.Find("letters"), GameObject.Find("interactables"));
+		PlaceLetters(GameObject.Find("letters"), interactables);
 	}
 	
 	void Update () {
 		ResetDisplay();
+
+		var interactablesRigidbody = interactables.GetComponent<Rigidbody>();
+		Debug("interactables rigidbody, sleeping? " + interactablesRigidbody.IsSleeping());
+		interactablesRigidbody.WakeUp();
+		Debug("interactables rigidbody, now sleeping? " + interactablesRigidbody.IsSleeping());
 
 		var frame = controller.GetFrame();
 		Debug("r confidence: " + frame.Hands.Rightmost.Confidence);
@@ -54,8 +61,8 @@ public class HandTextWriter : MonoBehaviour {
 
     for (int j = 0; j < close_things.Length; ++j) {
       Vector3 new_distance = grabPosition - close_things[j].transform.position;
-      if (close_things[j].GetComponent<Rigidbody>() != null && new_distance.magnitude < distance.magnitude &&
-          !close_things[j].transform.IsChildOf(transform)) {
+      if (new_distance.magnitude < distance.magnitude &&
+          !close_things[j].transform.IsChildOf(controller.transform)) {
         grabbed = close_things[j];
         distance = new_distance;
       }
@@ -70,7 +77,7 @@ public class HandTextWriter : MonoBehaviour {
 		lastGrabbed = grabbed;
     Debug("Grabbed: " + grabbed.gameObject.name);
 		if (hand.GrabStrength > 0.7) {
-			LetterOf(grabbed).Grab();
+			LetterOf(grabbed).Grab(controller.rightPhysicsModel.palm.gameObject);
 		}
 		else if (hand.GrabStrength < 0.4) {
 			LetterOf(grabbed).Approach();
@@ -95,10 +102,11 @@ public class HandTextWriter : MonoBehaviour {
 	{
 		var spacing = 0.08f;
 		var yOffset = 0.7f;
+		var xOffset = 2f;
 		var slots = 6;
 		var index = 0;
 		var start = -(spacing * slots) / 2;
-		var x = start;
+		var x = start + xOffset;
 		var y = start + yOffset;
 		var xIndex = 0;
 		var z = 0f;
@@ -112,7 +120,7 @@ public class HandTextWriter : MonoBehaviour {
 				if (xIndex == 0)
 				{ 
 					y -= spacing;
-					x = start;
+					x = start + xOffset;
 				}
 				else
 				{
