@@ -3,40 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
-using UnityEngine.UI;
 
 using Leap;
 
 public class HandTextWriter : MonoBehaviour {
-	
-	public Text displayText;
-	public GameObject target;
+
 	public float range = 2f;
 	public float fadeLevel = 0.4f;
 
-	private HandController controller;
 	private Collider lastGrabbed = null;
 	private GameObject interactables;
+  private LiveDebug debug;
+  private LeapHands hands;
 
 	private int layer = 0;
 	private string text = "";
 
 	void Start () {
-		controller = GetComponent<HandController>();
+		hands = GetComponent<LeapHands>();
 		interactables = GameObject.Find("interactables");
+		debug = GetComponent<LiveDebug>();
 
 		PlaceLetters(GameObject.Find("letters"), interactables, 0f);
 	}
 	
 	void Update () {
-		ResetDisplay();
+		debug.Clear();
 
-		var frame = controller.GetFrame();
-		DebugLog("r confidence: " + frame.Hands.Rightmost.Confidence);
-		// DebugLog("hands presence: " + HandsPresence(frame.Hands));
-		// DebugLog("hands info: " + HandsInfo(frame.Hands));
+		// debug.Log("hands presence: " + HandsPresence(frame.Hands));
+		// debug.Log("hands info: " + HandsInfo(frame.Hands));
 
-		DetectClosestGrabbed(frame.Hands.Rightmost);
+		DetectClosestGrabbed(hands.Frame().Hands.Rightmost);
 	}
 
   private void DetectClosestGrabbed(Hand hand)
@@ -48,11 +45,11 @@ public class HandTextWriter : MonoBehaviour {
 		}
 
 		Vector3 localGrabPosition = hand.StabilizedPalmPosition.ToUnityScaled();
-		Vector3 grabPosition = controller.transform.TransformPoint(localGrabPosition);
+		Vector3 grabPosition = hands.controller.transform.TransformPoint(localGrabPosition);
 
-		// DebugLog("grab pos (rel to hand controller): " + localGrabPosition);
-		DebugLog("grab pos (world space): " + grabPosition);
-		DebugLog("text: " + text);
+		// debug.Log("grab pos (rel to hand controller): " + localGrabPosition);
+		debug.Log("grab pos (world space): " + grabPosition);
+		debug.Log("text: " + text);
 
 		Collider[] close_things = Physics.OverlapSphere(grabPosition, range);
     Vector3 distance = new Vector3(1, 0.0f, 0.0f);
@@ -62,23 +59,23 @@ public class HandTextWriter : MonoBehaviour {
     for (int j = 0; j < close_things.Length; ++j) {
       Vector3 new_distance = grabPosition - close_things[j].transform.position;
       if (new_distance.magnitude < distance.magnitude &&
-          !close_things[j].transform.IsChildOf(controller.transform)) {
+          !close_things[j].transform.IsChildOf(hands.controller.transform)) {
         grabbed = close_things[j];
         distance = new_distance;
       }
     }
-    // DebugLog("Grabbed: " + grabbed);
+    // debug.Log("Grabbed: " + grabbed);
 		ClearLastGrabbed(grabbed);
 		if (grabbed == null)
 		{
-	    // DebugLog("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.gameObject.name).ToArray()));
+	    // debug.Log("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.gameObject.name).ToArray()));
 			return;
 		}
 
-    // DebugLog("Grabbed: " + grabbed.gameObject.name);
+    // debug.Log("Grabbed: " + grabbed.gameObject.name);
 		if (hand.GrabStrength > 0.7) {
 			if (grabbed != lastGrabbed) {
-				LetterOf(grabbed).Grab(controller, hand);
+				LetterOf(grabbed).Grab(hands.controller, hand);
 				FadeOtherLetters(grabbed.gameObject);
 				layer += 1;
 				text += LetterOf(grabbed).letter;
@@ -151,7 +148,7 @@ public class HandTextWriter : MonoBehaviour {
 				interactable.transform.localPosition = new Vector3(x, y, z);
 				placement += interactable.name + ", ";
 		}
-		DebugLog(placement);
+		debug.Log(placement);
 	}
 
   private string HandsInfo(HandList hands)
@@ -167,16 +164,5 @@ public class HandTextWriter : MonoBehaviour {
   private string HandInfo(Hand hand)
 	{
 		return string.Format("grab: {0:F1}, pinch: {0:F1}", hand.GrabStrength, hand.PinchStrength);
-	}
-
-	private void DebugLog(string message)
-	{
-		displayText.text += message + "\n";
-		// Debug.Log(message);
-	}
-
-	private void ResetDisplay()
-	{
-		displayText.text = "";
 	}
 }

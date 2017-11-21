@@ -188,9 +188,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab7bedc468d824f9897ed94ae81decd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayText: {fileID: 586990878}
-  target: {fileID: 0}
   range: 2
+  fadeLevel: 0.4
+--- !u!114 &2098913 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11400000, guid: c9f2277f2b4414ff9abf05e783890171,
+    type: 2}
+  m_PrefabInternal: {fileID: 2098910}
+  m_Script: {fileID: 11500000, guid: 2c4e0350c46ae405b8db39262c18b8f5, type: 3}
+--- !u!114 &2098914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2098911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 845c7b939a3754794a54ce684b208cbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 2098913}
+--- !u!114 &2098915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2098911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fa2680abc0a6470db9b379a2837510f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayText: {fileID: 586990878}
+  copyToConsole: 0
 --- !u!1001 &62602459
 Prefab:
   m_ObjectHideFlags: 0
