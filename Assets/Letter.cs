@@ -1,21 +1,54 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Leap;
 
 public class Letter : MonoBehaviour {
 
 	public string letter;
 
 	private bool approached;
+	private bool grabbed;
+	private Hand grabbedHand;
+	private HandController controller;
+
+	private GameObject parent;
+	private Rigidbody parentRigidbody;
 
 	// Use this for initialization
 	void Start () {
-		
+		parent = transform.parent.gameObject;
+		parentRigidbody = parent.GetComponent<Rigidbody>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+  void FixedUpdate()
+	{
+		if (grabbed)
+		{
+			grabbedHand = controller.GetFrame().Hands.Rightmost;
+			Vector3 localGrabPosition = grabbedHand.PalmPosition.ToUnityScaled();
+			Vector3 grabPosition = controller.transform.TransformPoint(localGrabPosition);
+
+			Debug.Log("hand z: " + grabPosition.z);
+			Debug.Log("letter z: " + transform.position.z);
+			// if (grabbedHand.confidence > 0.5f) {
+				if (grabPosition.z < (transform.position.z - 0.05f)
+				{
+					Debug.Log("happening!");
+					parent.transform.Translate(new Vector3(0f, 0f, -0.01f));
+				}
+				else if (grabPosition.z > (transform.position.z + 0.05f)
+				{
+					Debug.Log("happening!!");
+					parent.transform.Translate(new Vector3(0f, 0f, 0.01f));
+				}
+			// }
+		}
 	}
 
 	public void Approach()
@@ -24,9 +57,10 @@ public class Letter : MonoBehaviour {
 		ChangeColour(Color.black);
 	}
 
-	public void Grab(GameObject hand)
+	public void Grab(HandController controller, Hand hand)
 	{
-		if (approached)
+		this.controller = controller;
+		if (approached && !grabbed)
 		{
 			Grabbed(hand);
 		}
@@ -37,15 +71,14 @@ public class Letter : MonoBehaviour {
 	{
 		ChangeColour(Color.white);
 		approached = false;
+		grabbed = false;
+		grabbedHand = null;
 	}
 
-	private void Grabbed(GameObject hand)
+	private void Grabbed(Hand hand)
 	{
+		grabbedHand = hand;
 		ChangeColour(Color.red);
-		var parent = transform.parent.gameObject;
-		var parentRigidbody = parent.GetComponent<Rigidbody>();
-		Debug.Log("letters parent rigidbody, sleeping? " + parentRigidbody.IsSleeping());
-		var handRigidbody = hand.GetComponent<Rigidbody>();
 		
 		// parent.GetComponent<SpringJoint>().connectedBody = hand.GetComponent<Rigidbody>();
 		// gameObject.GetComponent<SpringJoint>().connectedBody = handRigidbody;
@@ -55,11 +88,34 @@ public class Letter : MonoBehaviour {
 
 		// ...but suddenly by deleting all Rigidbody components in all parent's children, then things start moving...
 		// ...but quite unstable
-		parent.GetComponent<SpringJoint>().connectedBody = handRigidbody;
+		// parent.GetComponent<SpringJoint>().connectedBody = handRigidbody;
 
-		// the colliders cannot be set to Triggers (i think this is Physics.OverlapSphere not picking them up)
+		// instability - maybe interactables-follower causing lag?
+		// not enough spring force?
+		// looks like fairly consistent which objects grabbed....
+		// i'm thinking palm position not v stable - why else have stabilizedPalmPosition()?
+		// so maybe need to calc forces of off the stable value
 
-		//parentRigidbody.AddForce(new Vector3(0f, 0f, 0.1f));
+		// now i think stability down to hand bashing around interactables rigidbody on collision with letter colliders
+		// turn off colliders i get nothing
+		// still means that interactables parent object not responding to physical impetus directly
+		// yes, proved this by setting colliders to non-trigger and turning off all forces
+
+		// parent.GetComponent<FixedJoint>().connectedBody = hand.GetComponent<Rigidbody>();
+
+		// yeah so basically, could NOT get joint connection to interactables to work,
+		// what did work was setting interactables rigidbody to kinematic and moving it
+		// with translate...
+
+		// ..but one last try - what if the lack of collider on interactables is causing issue?
+		// no, adding that did not make joints work...
+		// nor did applying force, just not moving...
+		// didn't help trying to move the object away from floor... but maybe it is because it is somehow overlapping
+		// and therefore locked to another object??
+
+		// ah well, in the end just gonna have to go kinematic...
+
+		grabbed = true;
 	}
 
 	private void ChangeColour(Color color)
