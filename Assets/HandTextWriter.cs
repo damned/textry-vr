@@ -12,6 +12,7 @@ public class HandTextWriter : MonoBehaviour {
 	public Text displayText;
 	public GameObject target;
 	public float range = 2f;
+	public float fadeLevel = 0.4f;
 
 	private HandController controller;
 	private Collider lastGrabbed = null;
@@ -26,11 +27,6 @@ public class HandTextWriter : MonoBehaviour {
 	
 	void Update () {
 		ResetDisplay();
-
-		var interactablesRigidbody = interactables.GetComponent<Rigidbody>();
-		// DebugLog("interactables rigidbody, sleeping? " + interactablesRigidbody.IsSleeping());
-		// // interactablesRigidbody.WakeUp();
-		// DebugLog("interactables rigidbody, now sleeping? " + interactablesRigidbody.IsSleeping());
 
 		var frame = controller.GetFrame();
 		DebugLog("r confidence: " + frame.Hands.Rightmost.Confidence);
@@ -79,9 +75,22 @@ public class HandTextWriter : MonoBehaviour {
     // DebugLog("Grabbed: " + grabbed.gameObject.name);
 		if (hand.GrabStrength > 0.7) {
 			LetterOf(grabbed).Grab(controller, hand);
+			FadeOtherLetters(grabbed.gameObject);
 		}
 		else if (hand.GrabStrength < 0.4) {
 			LetterOf(grabbed).Approach();
+		}
+	}
+
+	private void FadeOtherLetters(GameObject referenceLetter)
+	{
+		foreach (Transform letterTransform in interactables.transform)
+		{
+			GameObject letter = letterTransform.gameObject;
+			if (letter != referenceLetter)
+			{
+				letter.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, fadeLevel);
+			}
 		}
 	}
 
@@ -101,7 +110,7 @@ public class HandTextWriter : MonoBehaviour {
 
 	private void PlaceLetters(GameObject letters, GameObject interactables)
 	{
-		var spacing = 0.08f;
+		var spacing = 0.06f;
 		var yOffset = -1.3f;
 		var xOffset = 0f;
 		var slots = 6;

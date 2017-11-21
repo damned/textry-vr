@@ -18,7 +18,6 @@ public class Letter : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		parent = transform.parent.gameObject;
-		parentRigidbody = parent.GetComponent<Rigidbody>();
 	}
 	
 	// Update is called once per frame
@@ -36,18 +35,16 @@ public class Letter : MonoBehaviour {
 
 			Debug.Log("hand z: " + grabPosition.z);
 			Debug.Log("letter z: " + transform.position.z);
-			// if (grabbedHand.confidence > 0.5f) {
-				if (grabPosition.z < (transform.position.z - 0.05f)
-				{
-					Debug.Log("happening!");
-					parent.transform.Translate(new Vector3(0f, 0f, -0.01f));
-				}
-				else if (grabPosition.z > (transform.position.z + 0.05f)
-				{
-					Debug.Log("happening!!");
-					parent.transform.Translate(new Vector3(0f, 0f, 0.01f));
-				}
-			// }
+			if (grabPosition.z < (transform.position.z - 0.05f))
+			{
+				Debug.Log("happening!");
+				parent.transform.Translate(new Vector3(0f, 0f, -0.01f));
+			}
+			else if (grabPosition.z > (transform.position.z + 0.05f))
+			{
+				Debug.Log("happening!!");
+				parent.transform.Translate(new Vector3(0f, 0f, 0.01f));
+			}
 		}
 	}
 
