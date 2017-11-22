@@ -31,9 +31,6 @@ public class HandTextWriter : MonoBehaviour
   {
     debug.Clear();
 
-    // debug.Log("hands presence: " + HandsPresence(frame.Hands));
-    // debug.Log("hands info: " + HandsInfo(frame.Hands));
-
     DetectClosestGrabbed();
   }
 
@@ -46,19 +43,17 @@ public class HandTextWriter : MonoBehaviour
     }
 
     debug.Log("text: " + text);
+    LeapHand hand = hands.Hand();
 
-    var grabPosition = hands.Hand().Centre();
-
-    Collider[] close_things = Physics.OverlapSphere(grabPosition, range);
+    Collider[] close_things = Physics.OverlapSphere(hand.Centre(), range);
     Vector3 distance = new Vector3(1, 0.0f, 0.0f);
 
     Collider grabbed = null;
 
     for (int j = 0; j < close_things.Length; ++j)
     {
-      Vector3 new_distance = grabPosition - close_things[j].transform.position;
-      if (new_distance.magnitude < distance.magnitude &&
-          !close_things[j].transform.IsChildOf(hands.controller.transform))
+      Vector3 new_distance = hand.Centre() - close_things[j].transform.position;
+      if (new_distance.magnitude < distance.magnitude && !hands.IsHandPart(close_things[j]))
       {
         grabbed = close_things[j];
         distance = new_distance;
@@ -73,11 +68,11 @@ public class HandTextWriter : MonoBehaviour
     }
 
     // debug.Log("Grabbed: " + grabbed.gameObject.name);
-    if (hands.GrabStrength() > 0.7)
+    if (hand.GrabStrength() > 0.7)
     {
       if (grabbed != lastGrabbed)
       {
-        LetterOf(grabbed).Grab(hands.Hand());
+        LetterOf(grabbed).Grab(hand);
         FadeOtherLetters(grabbed.gameObject);
         layer += 1;
         text += LetterOf(grabbed).letter;
@@ -85,7 +80,7 @@ public class HandTextWriter : MonoBehaviour
         lastGrabbed = grabbed;
       }
     }
-    else if (hands.GrabStrength() < 0.4)
+    else if (hand.GrabStrength() < 0.4)
     {
       LetterOf(grabbed).Approach();
     }

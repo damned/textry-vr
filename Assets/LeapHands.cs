@@ -27,6 +27,16 @@ public class LeapHands : MonoBehaviour
     debug.Log("r confidence: " + Frame().Hands.Rightmost.Confidence);
   }
 
+  public bool IsHandPart(GameObject go)
+  {
+    return go.transform.IsChildOf(controller.transform);
+  }
+
+  public bool IsHandPart(Collider collider)
+  {
+    return IsHandPart(collider.gameObject);
+  }
+
   public Vector3 ToUnityWorldSpace(Vector leapSpacePosition)
   {
     Vector3 unityLocalPosition = leapSpacePosition.ToUnityScaled();
@@ -46,11 +56,6 @@ public class LeapHands : MonoBehaviour
   internal bool HandIsPresent()
   {
     return GetHand().IsValid;
-  }
-
-  internal double GrabStrength()
-  {
-    return GetHand().GrabStrength;
   }
 
   internal Hand GetHand()

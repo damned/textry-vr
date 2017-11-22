@@ -15,9 +15,8 @@ public class LeapHand
 
   public Vector3 Centre()
   {
-    var hand = hands.GetHand();
 
-    Vector stabilizedPalmPosition = hand.StabilizedPalmPosition;
+    Vector stabilizedPalmPosition = GetHand().StabilizedPalmPosition;
     Vector3 grabPosition = hands.ToUnityWorldSpace(stabilizedPalmPosition);
 
     // debug.Log("grab pos (rel to hand controller): " + localGrabPosition);
@@ -25,4 +24,13 @@ public class LeapHand
     return grabPosition;
   }
 
+  public double GrabStrength()
+  {
+    return GetHand().GrabStrength;
+  }
+
+  private Hand GetHand()
+  {
+    return hands.GetHand();
+  }
 }
