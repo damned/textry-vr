@@ -4,8 +4,6 @@ using System.Linq;
 
 using UnityEngine;
 
-using Leap;
-
 public class HandTextWriter : MonoBehaviour {
 
 	public float range = 2f;
@@ -33,23 +31,20 @@ public class HandTextWriter : MonoBehaviour {
 		// debug.Log("hands presence: " + HandsPresence(frame.Hands));
 		// debug.Log("hands info: " + HandsInfo(frame.Hands));
 
-		DetectClosestGrabbed(hands.Frame().Hands.Rightmost);
+		DetectClosestGrabbed();
 	}
 
-  private void DetectClosestGrabbed(Hand hand)
+  private void DetectClosestGrabbed()
 	{
-		if (!hand.IsValid)
+		if (!hands.HandIsPresent())
 		{
 			ClearLastGrabbed(null);
 			return;
 		}
 
-		Vector3 localGrabPosition = hand.StabilizedPalmPosition.ToUnityScaled();
-		Vector3 grabPosition = hands.controller.transform.TransformPoint(localGrabPosition);
-
-		// debug.Log("grab pos (rel to hand controller): " + localGrabPosition);
-		debug.Log("grab pos (world space): " + grabPosition);
 		debug.Log("text: " + text);
+
+		var grabPosition = hands.HandCentre();
 
 		Collider[] close_things = Physics.OverlapSphere(grabPosition, range);
     Vector3 distance = new Vector3(1, 0.0f, 0.0f);
@@ -73,9 +68,9 @@ public class HandTextWriter : MonoBehaviour {
 		}
 
     // debug.Log("Grabbed: " + grabbed.gameObject.name);
-		if (hand.GrabStrength > 0.7) {
+		if (hands.GrabStrength() > 0.7) {
 			if (grabbed != lastGrabbed) {
-				LetterOf(grabbed).Grab(hands.controller, hand);
+				LetterOf(grabbed).Grab(hands.controller, hands.GetHand());
 				FadeOtherLetters(grabbed.gameObject);
 				layer += 1;
 				text += LetterOf(grabbed).letter;
@@ -83,7 +78,7 @@ public class HandTextWriter : MonoBehaviour {
 				lastGrabbed = grabbed;
 			}
 		}
-		else if (hand.GrabStrength < 0.4) {
+		else if (hands.GrabStrength() < 0.4) {
 			LetterOf(grabbed).Approach();
 		}
 	}
@@ -149,20 +144,5 @@ public class HandTextWriter : MonoBehaviour {
 				placement += interactable.name + ", ";
 		}
 		debug.Log(placement);
-	}
-
-  private string HandsInfo(HandList hands)
-	{
-		return "l: " + HandInfo(hands.Leftmost) + "; r: " + HandInfo(hands.Rightmost);
-	}
-
-  private string HandsPresence(HandList hands)
-	{
-		return "l: " + hands.Leftmost.IsValid + "; r: " + hands.Rightmost.IsValid;
-	}
-
-  private string HandInfo(Hand hand)
-	{
-		return string.Format("grab: {0:F1}, pinch: {0:F1}", hand.GrabStrength, hand.PinchStrength);
 	}
 }
