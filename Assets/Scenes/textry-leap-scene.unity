@@ -2184,6 +2184,7 @@ GameObject:
   - component: {fileID: 1144012281}
   - component: {fileID: 1144012280}
   - component: {fileID: 1144012279}
+  - component: {fileID: 1144012283}
   m_Layer: 0
   m_Name: letters
   m_TagString: Untagged
@@ -2285,6 +2286,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 90, y: 180, z: 0}
+--- !u!114 &1144012283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1144012278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5210a95d9a244bc4866652120a65412, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1188609570
 Prefab:
   m_ObjectHideFlags: 0
@@ -2673,6 +2685,7 @@ GameObject:
   - component: {fileID: 1361594722}
   - component: {fileID: 1361594723}
   - component: {fileID: 1361594726}
+  - component: {fileID: 1361594724}
   m_Layer: 0
   m_Name: interactables
   m_TagString: Untagged
@@ -2708,6 +2721,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &1361594724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1361594721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0de5e2eb7d774403f8d040a88d2d2cd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!135 &1361594726
 SphereCollider:
   m_ObjectHideFlags: 0

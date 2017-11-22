@@ -10,9 +10,11 @@ public class HandTextWriter : MonoBehaviour
   public float fadeLevel = 0.4f;
 
   private Collider lastGrabbed = null;
-  private GameObject interactables;
   private LiveDebug debug;
+  private Knobs knobs;
+  private Letters letters;
   private LeapHands hands;
+  private KnobArranger knobArranger;
 
   private int layer = 0;
   private string text = "";
@@ -20,10 +22,15 @@ public class HandTextWriter : MonoBehaviour
   void Start()
   {
     hands = GetComponent<LeapHands>();
-    interactables = GameObject.Find("interactables");
     debug = GetComponent<LiveDebug>();
 
-    PlaceLetters(GameObject.Find("letters"), interactables, 0f);
+    knobs = GameObject.Find("interactables").GetComponent<Knobs>();
+    letters = GameObject.Find("letters").GetComponent<Letters>();
+
+    debug.Log("knobs and letters: " + knobs + ", " + letters);
+
+    knobArranger = new KnobArranger(letters, knobs);
+    knobArranger.Arrange(0f);
 
     hands.OnHandUpdate += DetectClosestGrabbed;
   }
@@ -71,10 +78,10 @@ public class HandTextWriter : MonoBehaviour
       if (grabbed != lastGrabbed)
       {
         LetterOf(grabbed).Grab(hand);
-        FadeOtherLetters(grabbed.gameObject);
+        knobs.FadeOtherKnobs(grabbed.gameObject, fadeLevel);
         layer += 1;
         text += LetterOf(grabbed).letter;
-        PlaceLetters(GameObject.Find("letters"), interactables, layer * 0.2f);
+        debug.Log(knobArranger.Arrange(layer * 0.2f));
         lastGrabbed = grabbed;
       }
     }
@@ -84,17 +91,6 @@ public class HandTextWriter : MonoBehaviour
     }
   }
 
-  private void FadeOtherLetters(GameObject referenceLetter)
-  {
-    foreach (Transform letterTransform in interactables.transform)
-    {
-      GameObject letter = letterTransform.gameObject;
-      if (letter != referenceLetter)
-      {
-        letter.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, fadeLevel);
-      }
-    }
-  }
 
   private void ClearLastGrabbed(Collider grabbed)
   {
@@ -108,42 +104,5 @@ public class HandTextWriter : MonoBehaviour
   private Letter LetterOf(Collider collider)
   {
     return collider.gameObject.GetComponent<Letter>();
-  }
-
-  private void PlaceLetters(GameObject letters, GameObject interactables, float zOffset)
-  {
-    var ySpacing = 0.06f;
-    var xSpacing = 0.1f;
-    var yOffset = -1.45f;
-    var xOffset = 0f;
-    var slots = 6;
-    var index = 0;
-    var xStart = -(xSpacing * slots) / 2;
-    var yStart = -(ySpacing * slots) / 2;
-    var x = xStart + xOffset;
-    var y = yStart + yOffset;
-    var xIndex = 0;
-    var z = -1f + zOffset;
-
-    string placement = "placed: ";
-    foreach (Transform letterTransform in letters.transform)
-    {
-      var letter = letterTransform.gameObject;
-      var interactable = Instantiate(letter, interactables.transform);
-      xIndex = index % slots;
-      if (xIndex == 0)
-      {
-        y -= ySpacing;
-        x = xStart + xOffset;
-      }
-      else
-      {
-        x += xSpacing;
-      }
-      index += 1;
-      interactable.transform.localPosition = new Vector3(x, y, z);
-      placement += interactable.name + ", ";
-    }
-    debug.Log(placement);
   }
 }
