@@ -24,6 +24,11 @@ public class LeapHand
     return grabPosition;
   }
 
+  public bool IsPresent()
+  {
+    return GetHand().IsValid;
+  }
+
   public double GrabStrength()
   {
     return GetHand().GrabStrength;

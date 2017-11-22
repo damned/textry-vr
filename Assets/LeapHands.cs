@@ -15,6 +15,9 @@ public class LeapHands : MonoBehaviour
   private LiveDebug debug;
   private LeapHand hand;
 
+  public delegate void HandHandler(LeapHand hand);
+  public event HandHandler OnHandUpdate;
+
   void Start()
   {
     controller = GetComponent<HandController>();
@@ -25,6 +28,7 @@ public class LeapHands : MonoBehaviour
   void Update()
   {
     debug.Log("r confidence: " + Frame().Hands.Rightmost.Confidence);
+    OnHandUpdate(hand);
   }
 
   public bool IsHandPart(GameObject go)
@@ -46,16 +50,6 @@ public class LeapHands : MonoBehaviour
   private Vector3 ToWorldSpace(Vector3 localUnityScaledPosition)
   {
     return controller.transform.TransformPoint(localUnityScaledPosition);
-  }
-
-  internal LeapHand Hand()
-  {
-    return hand;
-  }
-
-  internal bool HandIsPresent()
-  {
-    return GetHand().IsValid;
   }
 
   internal Hand GetHand()

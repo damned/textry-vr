@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class HandTextWriter : MonoBehaviour
 {
-
   public float range = 2f;
   public float fadeLevel = 0.4f;
 
@@ -25,26 +24,24 @@ public class HandTextWriter : MonoBehaviour
     debug = GetComponent<LiveDebug>();
 
     PlaceLetters(GameObject.Find("letters"), interactables, 0f);
+
+    hands.OnHandUpdate += DetectClosestGrabbed;
   }
 
   void Update()
   {
     debug.Clear();
-
-    DetectClosestGrabbed();
   }
 
-  private void DetectClosestGrabbed()
+  private void DetectClosestGrabbed(LeapHand hand)
   {
-    if (!hands.HandIsPresent())
+    if (!hand.IsPresent())
     {
       ClearLastGrabbed(null);
       return;
     }
 
     debug.Log("text: " + text);
-    LeapHand hand = hands.Hand();
-
     Collider[] close_things = Physics.OverlapSphere(hand.Centre(), range);
     Vector3 distance = new Vector3(1, 0.0f, 0.0f);
 
@@ -59,6 +56,7 @@ public class HandTextWriter : MonoBehaviour
         distance = new_distance;
       }
     }
+
     // debug.Log("Grabbed: " + grabbed);
     ClearLastGrabbed(grabbed);
     if (grabbed == null)
