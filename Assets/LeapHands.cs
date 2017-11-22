@@ -13,11 +13,13 @@ public class LeapHands : MonoBehaviour
   public HandController controller;
 
   private LiveDebug debug;
+  private LeapHand hand;
 
   void Start()
   {
     controller = GetComponent<HandController>();
     debug = GetComponent<LiveDebug>();
+    hand = new LeapHand(this, debug);
   }
 
   void Update()
@@ -25,21 +27,20 @@ public class LeapHands : MonoBehaviour
     debug.Log("r confidence: " + Frame().Hands.Rightmost.Confidence);
   }
 
-  internal Frame Frame()
+  public Vector3 ToUnityWorldSpace(Vector leapSpacePosition)
   {
-    return controller.GetFrame();
+    Vector3 unityLocalPosition = leapSpacePosition.ToUnityScaled();
+    return ToWorldSpace(unityLocalPosition);
   }
 
-  internal Vector3 HandCentre()
+  private Vector3 ToWorldSpace(Vector3 localUnityScaledPosition)
   {
-    var hand = GetHand();
+    return controller.transform.TransformPoint(localUnityScaledPosition);
+  }
 
-    Vector3 localGrabPosition = hand.StabilizedPalmPosition.ToUnityScaled();
-    Vector3 grabPosition = controller.transform.TransformPoint(localGrabPosition);
-
-    // debug.Log("grab pos (rel to hand controller): " + localGrabPosition);
-    debug.Log("grab pos (world space): " + grabPosition);
-    return grabPosition;
+  internal LeapHand Hand()
+  {
+    return hand;
   }
 
   internal bool HandIsPresent()
@@ -57,19 +58,24 @@ public class LeapHands : MonoBehaviour
     return Frame().Hands.Rightmost;
   }
 
+  private Frame Frame()
+  {
+    return controller.GetFrame();
+  }
+
   private string HandsInfo(HandList hands)
-	{
-		return "l: " + HandInfo(hands.Leftmost) + "; r: " + HandInfo(hands.Rightmost);
-	}
+  {
+    return "l: " + HandInfo(hands.Leftmost) + "; r: " + HandInfo(hands.Rightmost);
+  }
 
   private string HandsPresence(HandList hands)
-	{
-		return "l: " + hands.Leftmost.IsValid + "; r: " + hands.Rightmost.IsValid;
-	}
+  {
+    return "l: " + hands.Leftmost.IsValid + "; r: " + hands.Rightmost.IsValid;
+  }
 
   private string HandInfo(Hand hand)
-	{
-		return string.Format("grab: {0:F1}, pinch: {0:F1}", hand.GrabStrength, hand.PinchStrength);
-	}
+  {
+    return string.Format("grab: {0:F1}, pinch: {0:F1}", hand.GrabStrength, hand.PinchStrength);
+  }
 
 }
