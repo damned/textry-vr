@@ -31,16 +31,6 @@ public class LeapHands : MonoBehaviour
     OnHandUpdate(hand);
   }
 
-  public bool IsHandPart(GameObject go)
-  {
-    return go.transform.IsChildOf(controller.transform);
-  }
-
-  public bool IsHandPart(Collider collider)
-  {
-    return IsHandPart(collider.gameObject);
-  }
-
   public Vector3 ToUnityWorldSpace(Vector leapSpacePosition)
   {
     Vector3 unityLocalPosition = leapSpacePosition.ToUnityScaled();

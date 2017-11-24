@@ -142,26 +142,21 @@ public class HandTextWriter : MonoBehaviour
     letter.grabbingHand = null;
   }
 
-
-
   private Letter FindClosestTo(LeapHand hand)
   {
-    Collider[] close_things = Physics.OverlapSphere(hand.Centre(), range);
     Vector3 distance = new Vector3(1, 0.0f, 0.0f);
 
-    Collider closest = null;
+    Letter closest = null;
 
-    for (int j = 0; j < close_things.Length; ++j)
-    {
-      Vector3 new_distance = hand.Centre() - close_things[j].transform.position;
-      if (new_distance.magnitude < distance.magnitude && !hands.IsHandPart(close_things[j]))
+    knobs.ForEach(letter => {
+      Vector3 new_distance = hand.Centre() - letter.Position();
+      if (new_distance.magnitude < distance.magnitude)
       {
-        closest = close_things[j];
+        closest = letter;
         distance = new_distance;
       }
-    }
-
-    return LetterOf(closest.gameObject);
+    });
+    return closest;
   }
 
   private Letter LetterOf(GameObject go)

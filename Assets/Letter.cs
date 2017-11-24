@@ -23,6 +23,11 @@ public class Letter : MonoBehaviour
     return transform.position.z;
   }
 
+  public Vector3 Position()
+  {
+    return transform.position;
+  }
+
   public void MoveAway()
   {
     Debug.Log("happening!!");
