@@ -32,7 +32,7 @@ public class HandTextWriter : MonoBehaviour
     knobArranger = new KnobArranger(letters, knobs);
     knobArranger.Arrange(0f);
 
-    hands.OnHandUpdate += DetectClosestGrabbed;
+    hands.OnHandUpdate += CheckForGrab;
   }
 
   void Update()
@@ -40,7 +40,7 @@ public class HandTextWriter : MonoBehaviour
     debug.Clear();
   }
 
-  private void DetectClosestGrabbed(LeapHand hand)
+  private void CheckForGrab(LeapHand hand)
   {
     if (!hand.IsPresent())
     {

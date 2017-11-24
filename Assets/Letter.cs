@@ -14,19 +14,12 @@ public class Letter : MonoBehaviour
   private GameObject parent;
   private Rigidbody parentRigidbody;
 
-  // Use this for initialization
   void Start()
   {
     parent = transform.parent.gameObject;
   }
 
-  // Update is called once per frame
   void Update()
-  {
-
-  }
-
-  void FixedUpdate()
   {
     if (grabbed)
     {
