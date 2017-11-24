@@ -9,7 +9,7 @@ public class HandTextWriter : MonoBehaviour
   public float range = 2f;
   public float fadeLevel = 0.4f;
 
-  private Collider lastGrabbed = null;
+  private Letter lastClosest = null;
   private LiveDebug debug;
   private Knobs knobs;
   private Letters letters;
@@ -44,65 +44,72 @@ public class HandTextWriter : MonoBehaviour
   {
     if (!hand.IsPresent())
     {
-      ClearLastGrabbed(null);
+      ClearLastClosest((Letter)null);
       return;
     }
 
     debug.Log("text: " + text);
+    var closest = FindClosestTo(hand);
+
+    // debug.Log("Closest: " + closest);
+    ClearLastClosest(closest);
+    if (closest == null)
+    {
+      // debug.Log("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.name).ToArray()));
+      return;
+    }
+
+    // debug.Log("Closest: " + closest.name);
+    if (hand.GrabStrength() > 0.7)
+    {
+      if (closest != lastClosest)
+      {
+        closest.Grab(hand);
+        knobs.FadeOtherKnobs(closest.gameObject, fadeLevel);
+        layer += 1;
+        text += closest.letter;
+        string arrangement = knobArranger.Arrange(layer * 0.2f);
+        debug.Log(arrangement);
+        lastClosest = closest;
+      }
+    }
+    else if (hand.GrabStrength() < 0.4)
+    {
+      closest.Approach();
+    }
+  }
+
+  private void ClearLastClosest(Letter closest)
+  {
+    if (lastClosest != null && lastClosest != closest)
+    {
+      lastClosest.Leave();
+      lastClosest = null;
+    }
+  }
+
+  private Letter FindClosestTo(LeapHand hand)
+  {
     Collider[] close_things = Physics.OverlapSphere(hand.Centre(), range);
     Vector3 distance = new Vector3(1, 0.0f, 0.0f);
 
-    Collider grabbed = null;
+    Collider closest = null;
 
     for (int j = 0; j < close_things.Length; ++j)
     {
       Vector3 new_distance = hand.Centre() - close_things[j].transform.position;
       if (new_distance.magnitude < distance.magnitude && !hands.IsHandPart(close_things[j]))
       {
-        grabbed = close_things[j];
+        closest = close_things[j];
         distance = new_distance;
       }
     }
 
-    // debug.Log("Grabbed: " + grabbed);
-    ClearLastGrabbed(grabbed);
-    if (grabbed == null)
-    {
-      // debug.Log("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.gameObject.name).ToArray()));
-      return;
-    }
-
-    // debug.Log("Grabbed: " + grabbed.gameObject.name);
-    if (hand.GrabStrength() > 0.7)
-    {
-      if (grabbed != lastGrabbed)
-      {
-        LetterOf(grabbed).Grab(hand);
-        knobs.FadeOtherKnobs(grabbed.gameObject, fadeLevel);
-        layer += 1;
-        text += LetterOf(grabbed).letter;
-        debug.Log(knobArranger.Arrange(layer * 0.2f));
-        lastGrabbed = grabbed;
-      }
-    }
-    else if (hand.GrabStrength() < 0.4)
-    {
-      LetterOf(grabbed).Approach();
-    }
+    return LetterOf(closest.gameObject);
   }
 
-
-  private void ClearLastGrabbed(Collider grabbed)
+  private Letter LetterOf(GameObject go)
   {
-    if (lastGrabbed != null && lastGrabbed != grabbed)
-    {
-      LetterOf(lastGrabbed).Leave();
-      lastGrabbed = null;
-    }
-  }
-
-  private Letter LetterOf(Collider collider)
-  {
-    return collider.gameObject.GetComponent<Letter>();
+    return go.GetComponent<Letter>();
   }
 }
