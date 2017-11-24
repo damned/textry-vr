@@ -7,8 +7,8 @@ using UnityEngine;
 public class HandTextWriter : MonoBehaviour
 {
   public float range = 2f;
-  public float fadeLevel = 0.4f;
 
+  // actually this should probably be a Knob not a Letter, cos that's what we're dealing with
   private Letter lastClosest = null;
   private LiveDebug debug;
   private Knobs knobs;
@@ -64,8 +64,8 @@ public class HandTextWriter : MonoBehaviour
     {
       if (closest != lastClosest)
       {
-        closest.Grab(hand);
-        knobs.FadeOtherKnobs(closest.gameObject, fadeLevel);
+        Grab(closest, hand);
+        knobs.FadeOtherKnobs(closest.gameObject);
         layer += 1;
         text += closest.letter;
         string arrangement = knobArranger.Arrange(layer * 0.2f);
@@ -75,18 +75,51 @@ public class HandTextWriter : MonoBehaviour
     }
     else if (hand.GrabStrength() < 0.4)
     {
-      closest.Approach();
+      Approach(closest);
     }
+  }
+
+  public void Grab(Letter letter, LeapHand hand)
+  {
+    if (letter.approached && !letter.grabbed)
+    {
+      Grabbed(letter, hand);
+    }
+    letter.approached = false;
+  }
+
+  private void Grabbed(Letter letter, LeapHand hand)
+  {
+    letter.grabbingHand = hand;
+    letter.ChangeColour(Color.red);
+
+    letter.grabbed = true;
+  }
+
+  private void Approach(Letter letter)
+  {
+    letter.approached = true;
+    letter.ChangeColour(Color.black);
   }
 
   private void ClearLastClosest(Letter closest)
   {
     if (lastClosest != null && lastClosest != closest)
     {
-      lastClosest.Leave();
+      Leave(lastClosest);
       lastClosest = null;
     }
   }
+
+  private void Leave(Letter letter)
+  {
+    letter.ChangeColour(Color.white);
+    letter.approached = false;
+    letter.grabbed = false;
+    letter.grabbingHand = null;
+  }
+
+
 
   private Letter FindClosestTo(LeapHand hand)
   {

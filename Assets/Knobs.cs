@@ -3,12 +3,14 @@ using UnityEngine;
 
 public class Knobs : MonoBehaviour
 {
+  public float fadeLevel = 0.4f;
+
   public Knob Create(Letter letter, float x, float y, float z)
   {
     return new Knob(Instantiate(letter.gameObject, transform), new Vector3(x, y, z));
   }
 
-  public void FadeOtherKnobs(GameObject referenceLetter, float fadeLevel)
+  public void FadeOtherKnobs(GameObject referenceLetter)
   {
     foreach (Transform letterTransform in transform)
     {

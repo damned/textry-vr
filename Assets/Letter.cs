@@ -7,10 +7,9 @@ public class Letter : MonoBehaviour
 
   public string letter;
 
-  private bool approached;
-  private bool grabbed;
-  private LeapHand grabbingHand;
-  private HandController controller;
+  public bool approached;
+  public bool grabbed;
+  public LeapHand grabbingHand;
 
   private GameObject parent;
   private Rigidbody parentRigidbody;
@@ -50,41 +49,8 @@ public class Letter : MonoBehaviour
     }
   }
 
-  public void Approach()
-  {
-    approached = true;
-    ChangeColour(Color.black);
-  }
-
-  public void Grab(LeapHand hand)
-  {
-    this.controller = controller;
-    if (approached && !grabbed)
-    {
-      Grabbed(hand);
-    }
-    approached = false;
-  }
-
   // move state manage back up
   // expose change colour & pos info
-
-  private void Grabbed(LeapHand hand)
-  {
-    grabbingHand = hand;
-    ChangeColour(Color.red);
-
-    grabbed = true;
-  }
-
-  public void Leave()
-  {
-    ChangeColour(Color.white);
-    approached = false;
-    grabbed = false;
-    grabbingHand = null;
-  }
-
 
   public void ChangeColour(Color color)
   {
