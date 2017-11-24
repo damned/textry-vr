@@ -16,8 +16,8 @@ public class LeapHand
   public Vector3 Centre()
   {
 
-    Vector stabilizedPalmPosition = GetHand().StabilizedPalmPosition;
-    Vector3 grabPosition = hands.ToUnityWorldSpace(stabilizedPalmPosition);
+    Vector palmPosition = GetHand().PalmPosition;
+    Vector3 grabPosition = hands.ToUnityWorldSpace(palmPosition);
 
     // debug.Log("grab pos (rel to hand controller): " + localGrabPosition);
     debug.Log("grab pos (world space): " + grabPosition);
