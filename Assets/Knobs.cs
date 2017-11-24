@@ -1,13 +1,20 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Knobs : MonoBehaviour
 {
+  public delegate void KnobHandler(Knob knob);
+
   public float fadeLevel = 0.4f;
+
+  private List<Knob> knobs = new List<Knob>();
 
   public Knob Create(Letter letter, float x, float y, float z)
   {
-    return new Knob(Instantiate(letter.gameObject, transform), new Vector3(x, y, z));
+    Knob knob = new Knob(Instantiate(letter.gameObject, transform), new Vector3(x, y, z));
+    knobs.Add(knob);
+    return knob;
   }
 
   public void MoveAway()
@@ -22,26 +29,22 @@ public class Knobs : MonoBehaviour
     transform.Translate(new Vector3(0f, 0f, -0.01f));
   }
 
-  public void FadeOtherKnobs(GameObject referenceLetter)
+  public void FadeOtherKnobs(Knob referenceKnob)
   {
-    foreach (Transform letterTransform in transform)
+    foreach (var knob in knobs)
     {
-      GameObject letter = letterTransform.gameObject;
-      if (letter != referenceLetter)
+      if (knob != referenceKnob)
       {
-        letter.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, fadeLevel);
+        knob.Fade(fadeLevel);
       }
     }
   }
 
-  // move to Knob instances
-  public void ForEach(Letters.LetterHandler handler)
+  public void ForEach(KnobHandler handler)
   {
-    foreach (Transform letterTransform in transform)
+    foreach (var knob in knobs)
     {
-      handler(letterTransform.gameObject.GetComponent<Letter>());
+      handler(knob);
     }
   }
-
-
 }

@@ -8,8 +8,7 @@ public class HandTextWriter : MonoBehaviour
 {
   public float range = 2f;
 
-  // actually this should probably be a Knob not a Letter, cos that's what we're dealing with
-  private Letter lastClosest = null;
+  private Knob lastClosest = null;
   private LiveDebug debug;
   private Knobs knobs;
   private Letters letters;
@@ -44,7 +43,7 @@ public class HandTextWriter : MonoBehaviour
   {
     if (!hand.IsPresent())
     {
-      ClearLastClosest((Letter)null);
+      ClearLastClosest(null);
       return;
     }
 
@@ -65,9 +64,9 @@ public class HandTextWriter : MonoBehaviour
       if (closest != lastClosest)
       {
         Grab(closest, hand);
-        knobs.FadeOtherKnobs(closest.gameObject);
+        knobs.FadeOtherKnobs(closest);
         layer += 1;
-        text += closest.letter;
+        text += closest.Text();
         string arrangement = knobArranger.Arrange(layer * 0.2f);
         debug.Log(arrangement);
         lastClosest = closest;
@@ -80,52 +79,52 @@ public class HandTextWriter : MonoBehaviour
     knobs.ForEach(MoveGrabbed);
   }
 
-  void MoveGrabbed(Letter letter)
+  void MoveGrabbed(Knob knob)
   {
-    if (letter.grabbed)
+    if (knob.grabbed)
     {
       float tolerance = 0.01f;
 
-      Vector3 grabPosition = letter.grabbingHand.Centre();
+      Vector3 grabPosition = knob.grabbingHand.Centre();
 
       Debug.Log("hand z: " + grabPosition.z);
-      Debug.Log("letter z: " + letter.Z());
+      Debug.Log("knob z: " + knob.Z());
 
-      if (grabPosition.z < (letter.Z() - tolerance))
+      if (grabPosition.z < (knob.Z() - tolerance))
       {
         knobs.MoveCloser();
       }
-      else if (grabPosition.z > (letter.Z() + tolerance))
+      else if (grabPosition.z > (knob.Z() + tolerance))
       {
         knobs.MoveAway();
       }
     }
   }
 
-  public void Grab(Letter letter, LeapHand hand)
+  public void Grab(Knob knob, LeapHand hand)
   {
-    if (letter.approached && !letter.grabbed)
+    if (knob.approached && !knob.grabbed)
     {
-      Grabbed(letter, hand);
+      Grabbed(knob, hand);
     }
-    letter.approached = false;
+    knob.approached = false;
   }
 
-  private void Grabbed(Letter letter, LeapHand hand)
+  private void Grabbed(Knob knob, LeapHand hand)
   {
-    letter.grabbingHand = hand;
-    letter.ChangeColour(Color.red);
+    knob.grabbingHand = hand;
+    knob.ChangeColour(Color.red);
 
-    letter.grabbed = true;
+    knob.grabbed = true;
   }
 
-  private void Approach(Letter letter)
+  private void Approach(Knob knob)
   {
-    letter.approached = true;
-    letter.ChangeColour(Color.black);
+    knob.approached = true;
+    knob.ChangeColour(Color.black);
   }
 
-  private void ClearLastClosest(Letter closest)
+  private void ClearLastClosest(Knob closest)
   {
     if (lastClosest != null && lastClosest != closest)
     {
@@ -134,33 +133,28 @@ public class HandTextWriter : MonoBehaviour
     }
   }
 
-  private void Leave(Letter letter)
+  private void Leave(Knob knob)
   {
-    letter.ChangeColour(Color.white);
-    letter.approached = false;
-    letter.grabbed = false;
-    letter.grabbingHand = null;
+    knob.ChangeColour(Color.white);
+    knob.approached = false;
+    knob.grabbed = false;
+    knob.grabbingHand = null;
   }
 
-  private Letter FindClosestTo(LeapHand hand)
+  private Knob FindClosestTo(LeapHand hand)
   {
     Vector3 distance = new Vector3(1, 0.0f, 0.0f);
 
-    Letter closest = null;
+    Knob closest = null;
 
-    knobs.ForEach(letter => {
-      Vector3 new_distance = hand.Centre() - letter.Position();
+    knobs.ForEach(knob => {
+      Vector3 new_distance = hand.Centre() - knob.Position();
       if (new_distance.magnitude < distance.magnitude)
       {
-        closest = letter;
+        closest = knob;
         distance = new_distance;
       }
     });
     return closest;
-  }
-
-  private Letter LetterOf(GameObject go)
-  {
-    return go.GetComponent<Letter>();
   }
 }
