@@ -22,4 +22,14 @@ public class Knobs : MonoBehaviour
     }
   }
 
+  // move to Knob instances
+  public void ForEach(Letters.LetterHandler handler)
+  {
+    foreach (Transform letterTransform in transform)
+    {
+      handler(letterTransform.gameObject.GetComponent<Letter>());
+    }
+  }
+
+
 }

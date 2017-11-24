@@ -77,6 +77,29 @@ public class HandTextWriter : MonoBehaviour
     {
       Approach(closest);
     }
+    knobs.ForEach(MoveGrabbed);
+  }
+
+  void MoveGrabbed(Letter letter)
+  {
+    if (letter.grabbed)
+    {
+      float tolerance = 0.01f;
+
+      Vector3 grabPosition = letter.grabbingHand.Centre();
+
+      Debug.Log("hand z: " + grabPosition.z);
+      Debug.Log("letter z: " + letter.Z());
+
+      if (grabPosition.z < (letter.Z() - tolerance))
+      {
+        letter.MoveCloser();
+      }
+      else if (grabPosition.z > (letter.Z() + tolerance))
+      {
+        letter.MoveAway();
+      }
+    }
   }
 
   public void Grab(Letter letter, LeapHand hand)

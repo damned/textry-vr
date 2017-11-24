@@ -11,39 +11,29 @@ public class Letter : MonoBehaviour
   public bool grabbed;
   public LeapHand grabbingHand;
 
-  private GameObject parent;
-  private Rigidbody parentRigidbody;
+  public  GameObject parent;
 
   void Start()
   {
     parent = transform.parent.gameObject;
   }
 
-  void Update()
+  public float Z()
   {
-    if (grabbed)
-    {
-      float tolerance = 0.01f;
-
-      Vector3 grabPosition = grabbingHand.Centre();
-
-      Debug.Log("hand z: " + grabPosition.z);
-      Debug.Log("letter z: " + transform.position.z);
-      if (grabPosition.z < (transform.position.z - tolerance))
-      {
-        Debug.Log("happening!");
-        parent.transform.Translate(new Vector3(0f, 0f, -0.01f));
-      }
-      else if (grabPosition.z > (transform.position.z + tolerance))
-      {
-        Debug.Log("happening!!");
-        parent.transform.Translate(new Vector3(0f, 0f, 0.01f));
-      }
-    }
+    return transform.position.z;
   }
 
-  // move state manage back up
-  // expose change colour & pos info
+  public void MoveAway()
+  {
+    Debug.Log("happening!!");
+    parent.transform.Translate(new Vector3(0f, 0f, 0.01f));
+  }
+
+  public void MoveCloser()
+  {
+    Debug.Log("happening!");
+    parent.transform.Translate(new Vector3(0f, 0f, -0.01f));
+  }
 
   public void ChangeColour(Color color)
   {
