@@ -93,11 +93,11 @@ public class HandTextWriter : MonoBehaviour
 
       if (grabPosition.z < (letter.Z() - tolerance))
       {
-        letter.MoveCloser();
+        knobs.MoveCloser();
       }
       else if (grabPosition.z > (letter.Z() + tolerance))
       {
-        letter.MoveAway();
+        knobs.MoveAway();
       }
     }
   }

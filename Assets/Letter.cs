@@ -11,13 +11,6 @@ public class Letter : MonoBehaviour
   public bool grabbed;
   public LeapHand grabbingHand;
 
-  public  GameObject parent;
-
-  void Start()
-  {
-    parent = transform.parent.gameObject;
-  }
-
   public float Z()
   {
     return transform.position.z;
@@ -26,18 +19,6 @@ public class Letter : MonoBehaviour
   public Vector3 Position()
   {
     return transform.position;
-  }
-
-  public void MoveAway()
-  {
-    Debug.Log("happening!!");
-    parent.transform.Translate(new Vector3(0f, 0f, 0.01f));
-  }
-
-  public void MoveCloser()
-  {
-    Debug.Log("happening!");
-    parent.transform.Translate(new Vector3(0f, 0f, -0.01f));
   }
 
   public void ChangeColour(Color color)

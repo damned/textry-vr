@@ -10,6 +10,18 @@ public class Knobs : MonoBehaviour
     return new Knob(Instantiate(letter.gameObject, transform), new Vector3(x, y, z));
   }
 
+  public void MoveAway()
+  {
+    Debug.Log("happening!!");
+    transform.Translate(new Vector3(0f, 0f, 0.01f));
+  }
+
+  public void MoveCloser()
+  {
+    Debug.Log("happening!");
+    transform.Translate(new Vector3(0f, 0f, -0.01f));
+  }
+
   public void FadeOtherKnobs(GameObject referenceLetter)
   {
     foreach (Transform letterTransform in transform)
