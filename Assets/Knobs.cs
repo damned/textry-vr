@@ -47,4 +47,22 @@ public class Knobs : MonoBehaviour
       handler(knob);
     }
   }
+
+  public Knob FindClosestTo(IHand hand)
+  {
+    Vector3 distance = new Vector3(1, 0.0f, 0.0f);
+
+    Knob closest = null;
+
+    knobs.ForEach(knob => {
+      Vector3 new_distance = hand.Centre() - knob.Position();
+      if (new_distance.magnitude < distance.magnitude)
+      {
+        closest = knob;
+        distance = new_distance;
+      }
+    });
+    return closest;
+  }
+
 }

@@ -9,7 +9,7 @@ public class Knob
 
   public bool approached;
   public bool grabbed;
-  public LeapHand grabbingHand;
+  public IHand grabbingHand;
 
 
   public Knob(GameObject gameObject, Vector3 where)

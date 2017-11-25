@@ -1,4 +1,4 @@
-internal class KnobArranger
+public class KnobArranger
 {
   private Letters letters;
   private Knobs knobs;

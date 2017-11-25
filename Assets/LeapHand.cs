@@ -2,7 +2,7 @@
 using UnityEngine;
 
 using Leap;
-public class LeapHand
+public class LeapHand : IHand
 {
   private readonly LeapHands hands;
   private readonly LiveDebug debug;
