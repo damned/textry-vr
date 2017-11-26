@@ -25,23 +25,27 @@ public class GrabStrategy
       ClearLastClosest(null);
       return text;
     }
+    debug.Log("hand position: " + hand.Centre());
 
     debug.Log("text: " + text);
     var closest = knobs.FindClosestTo(hand);
 
     // debug.Log("Closest: " + closest);
-    ClearLastClosest(closest);
     if (closest == null)
     {
       // debug.Log("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.name).ToArray()));
       return text;
     }
 
-    // debug.Log("Closest: " + closest.name);
     if (hand.GrabStrength() > 0.7)
     {
       if (closest != lastClosest)
       {
+        debug.Log("Closest: " + closest);
+        if (lastClosest != null)
+        {
+          debug.Log("Last closest: " + lastClosest);
+        }
         Grab(closest, hand);
         knobs.FadeOtherKnobs(closest);
         layer += 1;

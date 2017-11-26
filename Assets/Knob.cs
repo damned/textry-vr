@@ -3,7 +3,10 @@ using UnityEngine;
 
 public class Knob
 {
+  public int id;
   private GameObject gameObject;
+
+  private static int knobId = 0;
 
   private readonly Letter letter;
 
@@ -14,6 +17,7 @@ public class Knob
 
   public Knob(GameObject gameObject, Vector3 where)
   {
+    this.id = (++knobId);
     this.gameObject = gameObject;
     this.gameObject.transform.localPosition = where;
     this.letter = gameObject.GetComponent<Letter>();
@@ -54,5 +58,10 @@ public class Knob
   public string Text()
   {
     return letter.letter;
+  }
+
+  public override string ToString()
+  {
+    return "" + id + ": '" + Text() + "'@" + Position();
   }
 }

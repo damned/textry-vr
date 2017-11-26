@@ -30,18 +30,35 @@ public class GrabStrategyTest
   [Test]
   public void creates_new_knobs_layer_when_knob_grabbed()
   {
-    CreateKnobs("a", "b", "c");
+    CreateKnobs("a");
+    var firstAPosition = Knob("a").Position();
 
     strategy = NewGrabStrategy();
 
-    strategy.OnHandUpdate(hand.At(Knob("a").Position()).WithGrabStrength(0f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(0f));
    
-    Assert.That(arranger.layers == 1);
+    Assert.AreEqual(1, arranger.layers);
 
-    strategy.OnHandUpdate(hand.At(Knob("a").Position()).WithGrabStrength(1f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
 
-    Assert.That(arranger.layers == 2); // layers should be exposed as truth of knobs
+    Assert.AreEqual(2, arranger.layers); // layers should be exposed as truth of knobs
                                        // or mock out arranger?
+  }
+
+  [Test]
+  public void only_creates_one_new_layer_when_knob_grabbed()
+  {
+    CreateKnobs("a");
+    var firstAPosition = Knob("a").Position();
+
+    strategy = NewGrabStrategy();
+
+    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(0f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
+
+    Assert.AreEqual(2, arranger.layers);
   }
 
   private Knob Knob(string letter)

@@ -1,7 +1,9 @@
+using UnityEngine;
+
 public class StubDebug : IDebug
 {
-  void IDebug.Log(string arrangement)
+  void IDebug.Log(string message)
   {
-    // nop
+    Debug.Log("[test] " + message);
   }
 }
