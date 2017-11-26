@@ -47,12 +47,6 @@ public class GrabStrategy
           debug.Log("Last closest: " + lastClosest);
         }
         Grab(closest, hand);
-        knobs.FadeOtherKnobs(closest);
-        layer += 1;
-        text += closest.Text();
-        string arrangement = knobArranger.Arrange(layer * 0.2f);
-        debug.Log(arrangement);
-        lastClosest = closest;
       }
     }
     else if (hand.GrabStrength() < 0.4)
@@ -87,11 +81,11 @@ public class GrabStrategy
 
   private void Grab(Knob knob, IHand hand)
   {
+    debug.Log("Grab - approached: " + knob.approached);
     if (knob.approached && !knob.grabbed)
     {
       Grabbed(knob, hand);
     }
-    knob.approached = false;
   }
 
   private void Grabbed(Knob knob, IHand hand)
@@ -99,7 +93,15 @@ public class GrabStrategy
     knob.grabbingHand = hand;
     knob.ChangeColour(Color.red);
 
+    knobs.FadeOtherKnobs(knob);
+    layer += 1;
+    text += knob.Text();
+    string arrangement = knobArranger.Arrange(layer * 0.2f);
+    debug.Log(arrangement);
+    lastClosest = knob;
+
     knob.grabbed = true;
+    knob.approached = false;
   }
 
   private void Approach(Knob knob)

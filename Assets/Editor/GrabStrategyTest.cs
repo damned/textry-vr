@@ -61,6 +61,26 @@ public class GrabStrategyTest
     Assert.AreEqual(2, arranger.layers);
   }
 
+  [Test]
+  public void dont_act_as_if_grab_if_hand_already_closed_as_arrives_at_knob()
+  {
+    CreateKnobs("a");
+    var firstAPosition = Knob("a").Position();
+
+    strategy = NewGrabStrategy();
+
+    Assert.AreEqual(1, arranger.layers);
+
+    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
+
+    Assert.AreEqual(1, arranger.layers);
+  }
+
+  public void need_to_let_go()
+  {
+    // todo
+  }
+
   private Knob Knob(string letter)
   {
     Knob found = null;
