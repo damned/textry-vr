@@ -40,13 +40,15 @@ public class Knob
 
   public void ChangeColour(Color color)
   {
-    Material material = gameObject.GetComponent<Renderer>().material;
+    Renderer renderer = gameObject.GetComponent<Renderer>();
+    Material material = new Material(Shader.Find("Standard"));
     material.color = color;
+    renderer.sharedMaterial = material;
   }
 
   public void Fade(float fadeLevel)
   {
-    gameObject.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, fadeLevel);
+    ChangeColour(new Color(1f, 1f, 1f, fadeLevel));
   }
 
   public string Text()

@@ -2,6 +2,7 @@ public class KnobArranger
 {
   private Letters letters;
   private Knobs knobs;
+  public int layers = 0;
 
   public KnobArranger(Letters letters, Knobs knobs)
   {
@@ -9,8 +10,11 @@ public class KnobArranger
     this.knobs = knobs;
   }
 
+  // this class managing physical layout, so should probs handle zoffset, just
+  // know it's a new logical layer?
   public string Arrange(float zOffset)
   {
+    layers += 1;
     var ySpacing = 0.06f;
     var xSpacing = 0.1f;
     var yOffset = -1.45f;

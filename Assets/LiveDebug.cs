@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LiveDebug : MonoBehaviour {
+public class LiveDebug : MonoBehaviour, IDebug {
 
 	public Text displayText;
 	public bool copyToConsole = false;

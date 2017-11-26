@@ -3,7 +3,7 @@ using UnityEngine;
 public class GrabStrategy
 {
   private readonly Knobs knobs;
-  private readonly LiveDebug debug;
+  private readonly IDebug debug;
   private readonly KnobArranger knobArranger;
 
   private Knob lastClosest = null;
@@ -11,7 +11,7 @@ public class GrabStrategy
   private string text = "";
 
 
-  public GrabStrategy(Knobs knobs, KnobArranger knobArranger, LiveDebug debug)
+  public GrabStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
   {
     this.knobArranger = knobArranger;
     this.debug = debug;
