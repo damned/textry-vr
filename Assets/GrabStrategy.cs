@@ -58,7 +58,7 @@ public class GrabStrategy
     }
     else if (HandIsOpen(hand))
     {
-      ReleaseGrabbedKnobs();
+      ReleaseAllKnobs();
       Approach(closest);
     }
     knobs.ForEach(MoveGrabbed);
@@ -66,28 +66,25 @@ public class GrabStrategy
 
   private void HandleAwayFromKnobs()
   {
-    ReleaseGrabbedKnobs();
+    ReleaseAllKnobs();
   }
 
-  private void ReleaseGrabbedKnobs()
+  private void ReleaseAllKnobs()
   {
     knobs.ForEach(knob =>
     {
-      if (knob.grabbed)
-      {
-        Leave(knob);
-      }
+      Leave(knob);
     });
   }
 
   private static bool HandIsClosed(IHand hand)
   {
-    return hand.GrabStrength() > 0.7;
+    return hand.GrabStrength() >= 0.5;
   }
 
   private static bool HandIsOpen(IHand hand)
   {
-    return hand.GrabStrength() < 0.4;
+    return hand.GrabStrength() < 0.5;
   }
 
   private void MoveGrabbed(Knob knob)
@@ -118,6 +115,9 @@ public class GrabStrategy
     if (knob.approached && !knob.grabbed)
     {
       Grabbed(knob, hand);
+    }
+    else {
+      ReleaseAllKnobs();
     }
   }
 

@@ -137,8 +137,29 @@ public class GrabStrategyTest
     Assert.AreEqual(0, knobs.GrabCount());
   }
 
-  /// what about when open hand not near knob?
+  [Test]
+  public void dont_go_around_approaching_loads_of_different_knobs_then_grabbing_all_and_sundry_when_arrive_again_this_time_closed()
+  {
+    CreateKnobs("a", "b", "c");
+    
+    var firstAPosition = Knob("a").Position();
+    var firstBPosition = Knob("b").Position();
+    var firstCPosition = Knob("c").Position();
 
+    strategy = NewGrabStrategy();
+
+    hand.Open();
+    strategy.OnHandUpdate(hand.At(firstAPosition));
+    strategy.OnHandUpdate(hand.At(firstBPosition));
+    strategy.OnHandUpdate(hand.At(firstCPosition));
+
+    hand.Closed();
+    strategy.OnHandUpdate(hand.At(firstAPosition));
+    strategy.OnHandUpdate(hand.At(firstBPosition));
+    strategy.OnHandUpdate(hand.At(firstCPosition));
+
+    Assert.AreEqual(0, knobs.GrabCount());    
+  }
   private Knob Knob(string letter)
   {
     Knob found = null;
