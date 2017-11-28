@@ -33,6 +33,7 @@ public class GrabStrategy
     // debug.Log("Closest: " + closest);
     if (closest == null)
     {
+      HandleAwayFromKnobs();
       // debug.Log("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.name).ToArray()));
       return text;
     }
@@ -57,14 +58,26 @@ public class GrabStrategy
     }
     else if (HandIsOpen(hand))
     {
-      knobs.ForEach(knob => {
-        if (knob.grabbed){
-          Leave(knob);
-        }
-      });
+      ReleaseGrabbedKnobs();
       Approach(closest);
     }
     knobs.ForEach(MoveGrabbed);
+  }
+
+  private void HandleAwayFromKnobs()
+  {
+    ReleaseGrabbedKnobs();
+  }
+
+  private void ReleaseGrabbedKnobs()
+  {
+    knobs.ForEach(knob =>
+    {
+      if (knob.grabbed)
+      {
+        Leave(knob);
+      }
+    });
   }
 
   private static bool HandIsClosed(IHand hand)

@@ -101,6 +101,42 @@ public class GrabStrategyTest
     Assert.AreEqual(0, knobs.GrabCount());
   }
 
+  [Test]
+  public void need_to_release_grabbed_knob_when_hand_moved_away_from_knobs()
+  {
+    CreateKnobs("a");
+
+    Vector3 somewhereElse = new Vector3(9999, 6543, 7399);
+
+    strategy = NewGrabStrategy();
+
+    strategy.OnHandUpdate(hand.At(Knob("a").Position()).Open());
+    strategy.OnHandUpdate(hand.Closed());
+
+    Assert.AreEqual(1, knobs.GrabCount());
+
+    strategy.OnHandUpdate(hand.At(somewhereElse));
+
+    Assert.AreEqual(0, knobs.GrabCount());
+  }
+
+  [Test]
+  public void need_to_release_grabbed_knob_when_hand_no_longer_present()
+  {
+    CreateKnobs("a");
+
+    strategy = NewGrabStrategy();
+
+    strategy.OnHandUpdate(hand.At(Knob("a").Position()).Open());
+    strategy.OnHandUpdate(hand.Closed());
+
+    Assert.AreEqual(1, knobs.GrabCount());
+
+    strategy.OnHandUpdate(hand.ThatIsNotPresent());
+
+    Assert.AreEqual(0, knobs.GrabCount());
+  }
+
   /// what about when open hand not near knob?
 
   private Knob Knob(string letter)
