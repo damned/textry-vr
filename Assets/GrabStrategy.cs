@@ -53,7 +53,15 @@ public class GrabStrategy
         {
           debug.Log("Last closest: " + lastClosest);
         }
-        Grab(closest, hand);
+        debug.Log("Grab - approached: " + closest.approached);
+        if (closest.approached)
+        {
+          if (!closest.grabbed)
+          {
+            Grabbed(closest, hand);
+          }
+        }
+        UnapproachAllKnobs();
       }
     }
     else if (HandIsOpen(hand))
@@ -71,12 +79,13 @@ public class GrabStrategy
 
   private void ReleaseAllKnobs()
   {
-    knobs.ForEach(knob =>
-    {
-      Leave(knob);
-    });
+    knobs.ForEach(knob => { Leave(knob); });
   }
 
+  private void UnapproachAllKnobs()
+  {
+    knobs.ForEach(knob => { knob.approached = false; });    
+  }
   private static bool HandIsClosed(IHand hand)
   {
     return hand.GrabStrength() >= 0.5;
@@ -106,18 +115,6 @@ public class GrabStrategy
       {
         knobs.MoveAway();
       }
-    }
-  }
-
-  private void Grab(Knob knob, IHand hand)
-  {
-    debug.Log("Grab - approached: " + knob.approached);
-    if (knob.approached && !knob.grabbed)
-    {
-      Grabbed(knob, hand);
-    }
-    else {
-      ReleaseAllKnobs();
     }
   }
 
