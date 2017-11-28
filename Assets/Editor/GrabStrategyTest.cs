@@ -160,6 +160,7 @@ public class GrabStrategyTest
 
     Assert.AreEqual(0, knobs.GrabCount());    
   }
+  
   private Knob Knob(string letter)
   {
     Knob found = null;

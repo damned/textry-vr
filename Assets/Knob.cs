@@ -46,8 +46,22 @@ public class Knob
   {
     Renderer renderer = gameObject.GetComponent<Renderer>();
     Material material = new Material(Shader.Find("Standard"));
+    TryToSetTransparentRenderMode(material);
     material.color = color;
     renderer.sharedMaterial = material;
+  }
+
+  private static void TryToSetTransparentRenderMode(Material material)
+  {
+    // https://forum.unity.com/threads/access-rendering-mode-var-on-standard-shader-via-scripting.287002/#post-1961025
+    material.SetFloat("_Mode", 2);
+    material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+    material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+    material.SetInt("_ZWrite", 0);
+    material.DisableKeyword("_ALPHATEST_ON");
+    material.EnableKeyword("_ALPHABLEND_ON");
+    material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+    material.renderQueue = 3000;
   }
 
   public void Fade(float fadeLevel)
