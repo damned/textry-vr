@@ -11,7 +11,6 @@ public class Knob
   private readonly Letter letter;
 
   public bool approached;
-  public bool grabbed;
   public IHand grabbingHand;
 
 

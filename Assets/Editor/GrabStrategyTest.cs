@@ -85,20 +85,20 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    Assert.AreEqual(0, knobs.GrabCount());
+    Assert.IsFalse(strategy.IsGrabbing());
 
     strategy.OnHandUpdate(hand.At(firstAPosition).Open());
     strategy.OnHandUpdate(hand.Closed());
 
-    Assert.AreEqual(1, knobs.GrabCount());
+    Assert.IsTrue(strategy.IsGrabbing());
 
     strategy.OnHandUpdate(hand.At(firstCPosition));
 
-    Assert.AreEqual(1, knobs.GrabCount());
+    Assert.IsTrue(strategy.IsGrabbing());
 
     strategy.OnHandUpdate(hand.Open());
 
-    Assert.AreEqual(0, knobs.GrabCount());
+    Assert.IsFalse(strategy.IsGrabbing());
   }
 
   [Test]
@@ -113,11 +113,11 @@ public class GrabStrategyTest
     strategy.OnHandUpdate(hand.At(Knob("a").Position()).Open());
     strategy.OnHandUpdate(hand.Closed());
 
-    Assert.AreEqual(1, knobs.GrabCount());
+    Assert.IsTrue(strategy.IsGrabbing());
 
     strategy.OnHandUpdate(hand.At(somewhereElse));
 
-    Assert.AreEqual(0, knobs.GrabCount());
+    Assert.IsFalse(strategy.IsGrabbing());
   }
 
   [Test]
@@ -130,11 +130,11 @@ public class GrabStrategyTest
     strategy.OnHandUpdate(hand.At(Knob("a").Position()).Open());
     strategy.OnHandUpdate(hand.Closed());
 
-    Assert.AreEqual(1, knobs.GrabCount());
+    Assert.IsTrue(strategy.IsGrabbing());
 
     strategy.OnHandUpdate(hand.ThatIsNotPresent());
 
-    Assert.AreEqual(0, knobs.GrabCount());
+    Assert.IsFalse(strategy.IsGrabbing());
   }
 
   [Test]
@@ -158,9 +158,9 @@ public class GrabStrategyTest
     strategy.OnHandUpdate(hand.At(firstBPosition));
     strategy.OnHandUpdate(hand.At(firstCPosition));
 
-    Assert.AreEqual(0, knobs.GrabCount());    
+    Assert.IsFalse(strategy.IsGrabbing());
   }
-  
+
   private Knob Knob(string letter)
   {
     Knob found = null;

@@ -5,6 +5,9 @@ public class GrabStrategy
   private readonly Knobs knobs;
   private readonly IDebug debug;
   private readonly KnobArranger knobArranger;
+  
+  // actually maybe this becomes a Grab object, cos then track which hand for 2 grabs etc. :)
+  private Knob grabbed = null;
 
   private Knob lastClosest = null;
   private int layer = 0;
@@ -42,6 +45,11 @@ public class GrabStrategy
     return text;
   }
 
+  public bool IsGrabbing()
+  {
+    return grabbed != null;
+  }
+
   private void HandleCloseToKnob(IHand hand, Knob closest)
   {
     if (HandIsClosed(hand))
@@ -56,7 +64,7 @@ public class GrabStrategy
         debug.Log("Grab - approached: " + closest.approached);
         if (closest.approached)
         {
-          if (!closest.grabbed)
+          if (grabbed != closest)
           {
             Grabbed(closest, hand);
           }
@@ -69,7 +77,7 @@ public class GrabStrategy
       ReleaseAllKnobs();
       Approach(closest);
     }
-    knobs.ForEach(MoveGrabbed);
+    MoveKnobToHand(grabbed);
   }
 
   private void HandleAwayFromKnobs()
@@ -96,22 +104,22 @@ public class GrabStrategy
     return hand.GrabStrength() < 0.5;
   }
 
-  private void MoveGrabbed(Knob knob)
+  private void MoveKnobToHand(Knob knob)
   {
-    if (knob.grabbed)
+    if (knob != null)
     {
       float tolerance = 0.01f;
 
-      Vector3 grabPosition = knob.grabbingHand.Centre();
+      Vector3 handPosition = knob.grabbingHand.Centre();
 
-      Debug.Log("hand z: " + grabPosition.z);
+      Debug.Log("hand z: " + handPosition.z);
       Debug.Log("knob z: " + knob.Z());
 
-      if (grabPosition.z < (knob.Z() - tolerance))
+      if (handPosition.z < (knob.Z() - tolerance))
       {
         knobs.MoveCloser();
       }
-      else if (grabPosition.z > (knob.Z() + tolerance))
+      else if (handPosition.z > (knob.Z() + tolerance))
       {
         knobs.MoveAway();
       }
@@ -130,7 +138,7 @@ public class GrabStrategy
     debug.Log(arrangement);
     lastClosest = knob;
 
-    knob.grabbed = true;
+    grabbed = knob;
     knob.approached = false;
   }
 
@@ -153,7 +161,7 @@ public class GrabStrategy
   {
     knob.ChangeColour(Color.white);
     knob.approached = false;
-    knob.grabbed = false;
+    grabbed = null;
     knob.grabbingHand = null;
   }
 }

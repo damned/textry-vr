@@ -65,9 +65,4 @@ public class Knobs : MonoBehaviour
     });
     return closest;
   }
-
-  public int GrabCount()
-  {
-    return knobs.Where(knob => knob.grabbed).ToList().Count;
-  }
 }
