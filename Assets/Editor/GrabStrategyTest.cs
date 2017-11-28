@@ -35,11 +35,11 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(0f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).Open());
    
     Assert.AreEqual(1, arranger.layers);
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).Closed());
 
     Assert.AreEqual(2, arranger.layers); // layers should be exposed as truth of knobs
                                        // or mock out arranger?
@@ -53,10 +53,10 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(0f));
-    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
-    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
-    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).Open());
+    strategy.OnHandUpdate(hand.Closed());
+    strategy.OnHandUpdate(hand);
+    strategy.OnHandUpdate(hand);
 
     Assert.AreEqual(2, arranger.layers);
   }
@@ -71,15 +71,37 @@ public class GrabStrategyTest
 
     Assert.AreEqual(1, arranger.layers);
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).WithGrabStrength(1f));
+    strategy.OnHandUpdate(hand.At(firstAPosition).Closed());
 
     Assert.AreEqual(1, arranger.layers);
   }
 
-  public void need_to_let_go()
+  [Test]
+  public void need_to_stay_grabbed_as_move_away_then_release_once_hand_opened()
   {
-    // todo
+    CreateKnobs("a", "b", "c");
+    var firstAPosition = Knob("a").Position();
+    var firstCPosition = Knob("c").Position();
+
+    strategy = NewGrabStrategy();
+
+    Assert.AreEqual(0, knobs.GrabCount());
+
+    strategy.OnHandUpdate(hand.At(firstAPosition).Open());
+    strategy.OnHandUpdate(hand.Closed());
+
+    Assert.AreEqual(1, knobs.GrabCount());
+
+    strategy.OnHandUpdate(hand.At(firstCPosition));
+
+    Assert.AreEqual(1, knobs.GrabCount());
+
+    strategy.OnHandUpdate(hand.Open());
+
+    Assert.AreEqual(0, knobs.GrabCount());
   }
+
+  /// what about when open hand not near knob?
 
   private Knob Knob(string letter)
   {

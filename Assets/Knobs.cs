@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Knobs : MonoBehaviour
@@ -65,4 +66,8 @@ public class Knobs : MonoBehaviour
     return closest;
   }
 
+  public int GrabCount()
+  {
+    return knobs.Where(knob => knob.grabbed).ToList().Count;
+  }
 }

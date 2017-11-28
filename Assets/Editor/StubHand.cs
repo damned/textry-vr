@@ -25,6 +25,16 @@ public class StubHand : IHand
     return this;
   }
 
+  public StubHand Open()
+  {
+    return WithGrabStrength(0f);
+  }
+
+  public StubHand Closed()
+  {
+    return WithGrabStrength(1f);
+  }
+
   public StubHand WithGrabStrength(float strength)
   {
     grabStrength = strength;
