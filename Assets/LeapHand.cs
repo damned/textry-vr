@@ -1,41 +1,41 @@
 
-using UnityEngine;
+// using UnityEngine;
 
-using Leap;
-public class LeapHand : IHand
-{
-  private readonly LeapHands hands;
-  private readonly LiveDebug debug;
+// using Leap;
+// public class LeapHand : IHand
+// {
+//   private readonly LeapHands hands;
+//   private readonly LiveDebug debug;
 
-  public LeapHand(LeapHands hands, LiveDebug debug)
-  {
-    this.debug = debug;
-    this.hands = hands;
-  }
+//   public LeapHand(LeapHands hands, LiveDebug debug)
+//   {
+//     this.debug = debug;
+//     this.hands = hands;
+//   }
 
-  public Vector3 Centre()
-  {
+//   public Vector3 Centre()
+//   {
 
-    Vector palmPosition = GetHand().PalmPosition;
-    Vector3 grabPosition = hands.ToUnityWorldSpace(palmPosition);
+//     Vector palmPosition = GetHand().PalmPosition;
+//     Vector3 grabPosition = hands.ToUnityWorldSpace(palmPosition);
 
-    // debug.Log("grab pos (rel to hand controller): " + localGrabPosition);
-    debug.Log("grab pos (world space): " + grabPosition);
-    return grabPosition;
-  }
+//     // debug.Log("grab pos (rel to hand controller): " + localGrabPosition);
+//     debug.Log("grab pos (world space): " + grabPosition);
+//     return grabPosition;
+//   }
 
-  public bool IsPresent()
-  {
-    return GetHand().IsValid;
-  }
+//   public bool IsPresent()
+//   {
+//     return GetHand().IsValid;
+//   }
 
-  public double GrabStrength()
-  {
-    return GetHand().GrabStrength;
-  }
+//   public double GrabStrength()
+//   {
+//     return GetHand().GrabStrength;
+//   }
 
-  private Hand GetHand()
-  {
-    return hands.GetHand();
-  }
-}
+//   private Hand GetHand()
+//   {
+//     return hands.GetHand();
+//   }
+// }

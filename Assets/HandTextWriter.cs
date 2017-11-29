@@ -11,14 +11,14 @@ public class HandTextWriter : MonoBehaviour
   private LiveDebug debug;
   private Knobs knobs;
   private Letters letters;
-  private LeapHands hands;
+  private IHands hands;
   private KnobArranger knobArranger;
 
   private GrabStrategy grabStrategy;
 
   void Start()
   {
-    hands = GetComponent<LeapHands>();
+    hands = GetComponent<IHands>();
     debug = GetComponent<LiveDebug>();
 
     knobs = GameObject.Find("interactables").GetComponent<Knobs>();
@@ -34,7 +34,7 @@ public class HandTextWriter : MonoBehaviour
     hands.OnHandUpdate += OnHandUpdate;
   }
 
-  private void OnHandUpdate(LeapHand hand)
+  private void OnHandUpdate(IHand hand)
   {
     grabStrategy.OnHandUpdate(hand);
   }
