@@ -53,7 +53,7 @@ public class GrabStrategy
 
   private void HandleCloseToKnob(IHand hand, Knob closest)
   {
-    if (HandIsClosed(hand))
+    if (hand.IsClosed())
     {
       if (closest != lastClosest)
       {
@@ -73,7 +73,7 @@ public class GrabStrategy
         UnapproachAllKnobs();
       }
     }
-    else if (HandIsOpen(hand))
+    else
     {
       ReleaseAllKnobs();
       Approach(closest);
@@ -94,17 +94,6 @@ public class GrabStrategy
   private void UnapproachAllKnobs()
   {
     approached = null;
-  }
-
-  // todo next
-  private static bool HandIsClosed(IHand hand)
-  {
-    return hand.GrabStrength() >= 0.5;
-  }
-
-  private static bool HandIsOpen(IHand hand)
-  {
-    return hand.GrabStrength() < 0.5;
   }
 
   private void MoveKnobToHand(Knob knob)

@@ -38,4 +38,15 @@ public class LeapHand : IHand
   {
     return hands.GetHand();
   }
+
+  private bool IsOpen()
+  {
+    return GrabStrength() < 0.5;
+  }
+  
+  public bool IsClosed()
+  {
+    return !IsOpen();
+  }
+
 }
