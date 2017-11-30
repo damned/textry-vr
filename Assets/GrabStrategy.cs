@@ -7,13 +7,11 @@ public class GrabStrategy
   private readonly KnobArranger knobArranger;
   
   // actually maybe this becomes a Grab object, cos then track which hand for 2 grabs etc. :)
-  private Knob grabbed = null;
-
-  private Knob lastClosest = null;
   private int layer = 0;
-  private string text = "";
-  private Knob approached;
-  private IHand grabbingHand;
+  private string text = ""; 
+
+  private Grab grab =  new Grab();
+
 
   public GrabStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
   {
@@ -26,7 +24,7 @@ public class GrabStrategy
   {
     if (!hand.IsPresent())
     {
-      ClearLastClosest(null);
+      ReleaseAllKnobs();
       return text;
     }
     debug.Log("hand position: " + hand.Centre());
@@ -48,24 +46,18 @@ public class GrabStrategy
 
   public bool IsGrabbing()
   {
-    return grabbed != null;
+    return grab.grabbed != null;
   }
 
   private void HandleCloseToKnob(IHand hand, Knob closest)
   {
     if (hand.IsClosed())
     {
-      if (closest != lastClosest)
+      if (closest != grab.grabbed)
       {
-        debug.Log("Closest: " + closest);
-        if (lastClosest != null)
+        if (closest == grab.approached)
         {
-          debug.Log("Last closest: " + lastClosest);
-        }
-        debug.Log("Grab - approached: " + approached);
-        if (closest == approached)
-        {
-          if (grabbed != closest)
+          if (grab.grabbed != closest)
           {
             Grabbed(closest, hand);
           }
@@ -78,7 +70,7 @@ public class GrabStrategy
       ReleaseAllKnobs();
       Approach(closest);
     }
-    MoveKnobToHand(grabbed);
+    MoveKnobToHand(grab.grabbed);
   }
 
   private void HandleAwayFromKnobs()
@@ -93,7 +85,7 @@ public class GrabStrategy
 
   private void UnapproachAllKnobs()
   {
-    approached = null;
+    grab.approached = null;
   }
 
   private void MoveKnobToHand(Knob knob)
@@ -102,7 +94,7 @@ public class GrabStrategy
     {
       float tolerance = 0.01f;
 
-      Vector3 handPosition = grabbingHand.Centre();
+      Vector3 handPosition = grab.hand.Centre();
 
       Debug.Log("hand z: " + handPosition.z);
       Debug.Log("knob z: " + knob.Z());
@@ -120,7 +112,7 @@ public class GrabStrategy
 
   private void Grabbed(Knob knob, IHand hand)
   {
-    grabbingHand = hand;
+    grab.hand = hand;
     knob.ChangeColour(Color.red);
 
     knobs.FadeOtherKnobs(knob);
@@ -128,32 +120,22 @@ public class GrabStrategy
     text += knob.Text();
     string arrangement = knobArranger.Arrange(layer * 0.2f);
     debug.Log(arrangement);
-    lastClosest = knob;
 
-    grabbed = knob;
-    approached = null;
+    grab.grabbed = knob;
+    grab.approached = null;
   }
 
   private void Approach(Knob knob)
   {
-    approached = knob;
+    grab.approached = knob;
     knob.ChangeColour(Color.black);
-  }
-
-  private void ClearLastClosest(Knob closest)
-  {
-    if (lastClosest != null && lastClosest != closest)
-    {
-      Leave(lastClosest);
-      lastClosest = null;
-    }
   }
 
   private void Leave(Knob knob)
   {
     knob.ChangeColour(Color.white);
-    approached = null;
-    grabbed = null;
-    grabbingHand = null;
+    grab.approached = null;
+    grab.grabbed = null;
+    grab.hand = null;
   }
 }
