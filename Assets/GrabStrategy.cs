@@ -12,7 +12,8 @@ public class GrabStrategy
   private Knob lastClosest = null;
   private int layer = 0;
   private string text = "";
-
+  private Knob approached;
+  private IHand grabbingHand;
 
   public GrabStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
   {
@@ -61,8 +62,8 @@ public class GrabStrategy
         {
           debug.Log("Last closest: " + lastClosest);
         }
-        debug.Log("Grab - approached: " + closest.approached);
-        if (closest.approached)
+        debug.Log("Grab - approached: " + approached);
+        if (closest == approached)
         {
           if (grabbed != closest)
           {
@@ -92,8 +93,10 @@ public class GrabStrategy
 
   private void UnapproachAllKnobs()
   {
-    knobs.ForEach(knob => { knob.approached = false; });    
+    approached = null;
   }
+
+  // todo next
   private static bool HandIsClosed(IHand hand)
   {
     return hand.GrabStrength() >= 0.5;
@@ -110,7 +113,7 @@ public class GrabStrategy
     {
       float tolerance = 0.01f;
 
-      Vector3 handPosition = knob.grabbingHand.Centre();
+      Vector3 handPosition = grabbingHand.Centre();
 
       Debug.Log("hand z: " + handPosition.z);
       Debug.Log("knob z: " + knob.Z());
@@ -128,7 +131,7 @@ public class GrabStrategy
 
   private void Grabbed(Knob knob, IHand hand)
   {
-    knob.grabbingHand = hand;
+    grabbingHand = hand;
     knob.ChangeColour(Color.red);
 
     knobs.FadeOtherKnobs(knob);
@@ -139,12 +142,12 @@ public class GrabStrategy
     lastClosest = knob;
 
     grabbed = knob;
-    knob.approached = false;
+    approached = null;
   }
 
   private void Approach(Knob knob)
   {
-    knob.approached = true;
+    approached = knob;
     knob.ChangeColour(Color.black);
   }
 
@@ -160,8 +163,8 @@ public class GrabStrategy
   private void Leave(Knob knob)
   {
     knob.ChangeColour(Color.white);
-    knob.approached = false;
+    approached = null;
     grabbed = null;
-    knob.grabbingHand = null;
+    grabbingHand = null;
   }
 }
