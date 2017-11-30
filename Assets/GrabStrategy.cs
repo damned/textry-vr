@@ -57,10 +57,7 @@ public class GrabStrategy
       {
         if (closest == grab.approached)
         {
-          if (grab.grabbed != closest)
-          {
-            Grabbed(closest, hand);
-          }
+          Grabbed(closest, hand);
         }
         UnapproachAllKnobs();
       }
