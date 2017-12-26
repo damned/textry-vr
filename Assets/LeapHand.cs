@@ -49,4 +49,8 @@ public class LeapHand : IHand
     return !IsOpen();
   }
 
+  public HandSide Side()
+  {
+    return HandSide.Right;
+  }
 }

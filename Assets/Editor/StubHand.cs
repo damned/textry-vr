@@ -78,4 +78,9 @@ public class StubHand : IHand
   {
     return isPresent;
   }
+
+  public HandSide Side()
+  {
+    return HandSide.Right;
+  }
 }

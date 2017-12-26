@@ -8,4 +8,9 @@ public class Grab
   public Grab()
   {
   }
+
+  public HandSide Side()
+  {
+    return HandSide.Right;
+  }
 }

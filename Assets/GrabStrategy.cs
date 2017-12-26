@@ -44,7 +44,7 @@ public class GrabStrategy
     return text;
   }
 
-  public bool IsGrabbing()
+  public bool IsGrabbing(HandSide side)
   {
     return grab.grabbed != null;
   }
