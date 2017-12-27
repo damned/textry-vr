@@ -77,8 +77,18 @@ public class VrtkHand : MonoBehaviour, IHand
         return controllerTransform;
     }
 
+    public HandSide Side()
+    {
+        return HandSide.Right;
+    }
 
+    public bool IsClosed()
+    {
+        return !IsOpen();
+    }
 
-
-  
+    private bool IsOpen()
+    {
+      return grabStrength == 0f;
+    }
 }

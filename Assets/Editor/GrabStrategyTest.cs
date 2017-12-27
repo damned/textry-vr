@@ -9,7 +9,7 @@ public class GrabStrategyTest
   private Letters letters;
   private KnobArranger arranger;
   private GrabStrategy strategy;
-  private StubHand hand;
+  private StubHand rightHand;
 
   // todo: thoughts from typing tests:
   // already thinking grab strategy should do knobs.add_layer([knobs]); then
@@ -24,7 +24,7 @@ public class GrabStrategyTest
     knobs = knobsObject.AddComponent<Knobs>();
     letters = lettersObject.AddComponent<Letters>();
     arranger = new KnobArranger(letters, knobs);
-    hand = new StubHand();
+    rightHand = new StubHand(HandSide.Left);
   }
 
   [Test]
@@ -35,11 +35,11 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).Open());
+    strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
    
     Assert.AreEqual(1, arranger.layers);
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).Closed());
+    strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
 
     Assert.AreEqual(2, arranger.layers); // layers should be exposed as truth of knobs
                                        // or mock out arranger?
@@ -53,10 +53,10 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).Open());
-    strategy.OnHandUpdate(hand.Closed());
-    strategy.OnHandUpdate(hand);
-    strategy.OnHandUpdate(hand);
+    strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
+    strategy.OnHandUpdate(rightHand);
+    strategy.OnHandUpdate(rightHand);
 
     Assert.AreEqual(2, arranger.layers);
   }
@@ -71,7 +71,7 @@ public class GrabStrategyTest
 
     Assert.AreEqual(1, arranger.layers);
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).Closed());
+    strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
 
     Assert.AreEqual(1, arranger.layers);
   }
@@ -85,20 +85,20 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    Assert.IsFalse(strategy.IsGrabbing());
+    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
 
-    strategy.OnHandUpdate(hand.At(firstAPosition).Open());
-    strategy.OnHandUpdate(hand.Closed());
+    strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
 
-    Assert.IsTrue(strategy.IsGrabbing());
+    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
 
-    strategy.OnHandUpdate(hand.At(firstCPosition));
+    strategy.OnHandUpdate(rightHand.At(firstCPosition));
 
-    Assert.IsTrue(strategy.IsGrabbing());
+    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
 
-    strategy.OnHandUpdate(hand.Open());
+    strategy.OnHandUpdate(rightHand.Open());
 
-    Assert.IsFalse(strategy.IsGrabbing());
+    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
   }
 
   [Test]
@@ -110,14 +110,14 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    strategy.OnHandUpdate(hand.At(Knob("a").Position()).Open());
-    strategy.OnHandUpdate(hand.Closed());
+    strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
 
-    Assert.IsTrue(strategy.IsGrabbing());
+    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
 
-    strategy.OnHandUpdate(hand.At(somewhereElse));
+    strategy.OnHandUpdate(rightHand.At(somewhereElse));
 
-    Assert.IsFalse(strategy.IsGrabbing());
+    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
   }
 
   [Test]
@@ -127,14 +127,14 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    strategy.OnHandUpdate(hand.At(Knob("a").Position()).Open());
-    strategy.OnHandUpdate(hand.Closed());
+    strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
 
-    Assert.IsTrue(strategy.IsGrabbing());
+    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
 
-    strategy.OnHandUpdate(hand.ThatIsNotPresent());
+    strategy.OnHandUpdate(rightHand.ThatIsNotPresent());
 
-    Assert.IsFalse(strategy.IsGrabbing());
+    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
   }
 
   [Test]
@@ -148,26 +148,64 @@ public class GrabStrategyTest
 
     strategy = NewGrabStrategy();
 
-    hand.Open();
-    strategy.OnHandUpdate(hand.At(firstAPosition));
-    strategy.OnHandUpdate(hand.At(firstBPosition));
-    strategy.OnHandUpdate(hand.At(firstCPosition));
+    rightHand.Open();
+    strategy.OnHandUpdate(rightHand.At(firstAPosition));
+    strategy.OnHandUpdate(rightHand.At(firstBPosition));
+    strategy.OnHandUpdate(rightHand.At(firstCPosition));
 
-    hand.Closed();
-    strategy.OnHandUpdate(hand.At(firstAPosition));
-    strategy.OnHandUpdate(hand.At(firstBPosition));
-    strategy.OnHandUpdate(hand.At(firstCPosition));
+    rightHand.Closed();
+    strategy.OnHandUpdate(rightHand.At(firstAPosition));
+    strategy.OnHandUpdate(rightHand.At(firstBPosition));
+    strategy.OnHandUpdate(rightHand.At(firstCPosition));
 
-    Assert.IsFalse(strategy.IsGrabbing());
+    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
   }
 
-  private Knob Knob(string letter)
+  [Test]
+  public void second_grab_with_other_hand_adds_to_text()
+  {
+    CreateKnobs("a", "b");
+
+    var leftHand = new StubHand(HandSide.Left);
+
+    strategy = NewGrabStrategy();
+
+    strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
+    strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()).Open());
+    strategy.OnHandUpdate(leftHand.Closed());
+   
+    Assert.AreEqual("ab", strategy.Text());
+  }
+
+  [Test]
+  public void second_hand_presence_does_not_release_first_grab()
+  {
+    CreateKnobs("a", "b");
+
+    var leftHand = new StubHand(HandSide.Left);
+
+    strategy = NewGrabStrategy();
+
+    strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
+    strategy.OnHandUpdate(leftHand.At(Knob("b", 0).Position()).Open());
+   
+    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
+    Assert.IsTrue(strategy.IsGrabbing(HandSide.Left));
+  }
+
+  private Knob Knob(string letter, int index = 0)
   {
     Knob found = null;
+    int count = 0;
     knobs.ForEach(knob => {
       if (knob.Text() == letter)
       {
-        found = knob;
+        if (count == index) {
+          found = knob;
+        }
+        count++;
       }
     });
     if (found == null)

@@ -38,4 +38,19 @@
 //   {
 //     return hands.GetHand();
 //   }
+
+  // private bool IsOpen()
+  // {
+  //   return GrabStrength() < 0.5;
+  // }
+  
+  // public bool IsClosed()
+  // {
+  //   return !IsOpen();
+  // }
+
+  // public HandSide Side()
+  // {
+  //   return HandSide.Right;
+  // }
 // }

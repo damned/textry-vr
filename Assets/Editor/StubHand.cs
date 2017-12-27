@@ -6,11 +6,13 @@ public class StubHand : IHand
   private Vector3 centre;
   private float grabStrength;
   private bool isPresent;
+  private HandSide side;
 
-  public StubHand()
+  public StubHand(HandSide side)
   {
     At(0f, 0f, 0f);
     WithGrabStrength(0f);
+    this.side = side;
   }
 
   public StubHand At(float x, float y, float z)
@@ -33,6 +35,16 @@ public class StubHand : IHand
   public StubHand Closed()
   {
     return WithGrabStrength(1f);
+  }
+
+  public bool IsOpen()
+  {
+    return grabStrength < 0.5f;
+  }
+
+  public bool IsClosed()
+  {
+    return !IsOpen();
   }
 
   public StubHand WithGrabStrength(float strength)
@@ -67,5 +79,10 @@ public class StubHand : IHand
   public bool IsPresent()
   {
     return isPresent;
+  }
+
+  public HandSide Side()
+  {
+    return side;
   }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GrabStrategy
@@ -7,11 +8,10 @@ public class GrabStrategy
   private readonly KnobArranger knobArranger;
   
   // actually maybe this becomes a Grab object, cos then track which hand for 2 grabs etc. :)
-  private Knob grabbed = null;
-
-  private Knob lastClosest = null;
   private int layer = 0;
-  private string text = "";
+  private string text = ""; 
+
+  private Grab grab =  new Grab();
 
 
   public GrabStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
@@ -25,7 +25,7 @@ public class GrabStrategy
   {
     if (!hand.IsPresent())
     {
-      ClearLastClosest(null);
+      ReleaseAllKnobs();
       return text;
     }
     // debug.Log("hand position: " + hand.Centre());
@@ -45,39 +45,32 @@ public class GrabStrategy
     return text;
   }
 
-  public bool IsGrabbing()
+  public bool IsGrabbing(HandSide side)
   {
-    return grabbed != null;
+    return grab.grabbed != null;
   }
 
   private void HandleCloseToKnob(IHand hand, Knob closest)
   {
-    if (HandIsClosed(hand))
+    if (hand.IsClosed())
     {
-      if (closest != lastClosest)
+      if (closest != grab.grabbed)
       {
         // debug.Log("Closest: " + closest);
-        if (lastClosest != null)
+        // debug.Log("Grab - approached: " + grab.approached);
+        if (closest == grab.approached)
         {
-          // debug.Log("Last closest: " + lastClosest);
-        }
-        // debug.Log("Grab - approached: " + closest.approached);
-        if (closest.approached)
-        {
-          if (grabbed != closest)
-          {
-            Grabbed(closest, hand);
-          }
+          Grabbed(closest, hand);
         }
         UnapproachAllKnobs();
       }
     }
-    else if (HandIsOpen(hand))
+    else
     {
       ReleaseAllKnobs();
       Approach(closest);
     }
-    MoveKnobToHand(grabbed);
+    MoveKnobToHand(grab.grabbed);
   }
 
   private void HandleAwayFromKnobs()
@@ -92,16 +85,7 @@ public class GrabStrategy
 
   private void UnapproachAllKnobs()
   {
-    knobs.ForEach(knob => { knob.approached = false; });    
-  }
-  private static bool HandIsClosed(IHand hand)
-  {
-    return hand.GrabStrength() >= 0.5;
-  }
-
-  private static bool HandIsOpen(IHand hand)
-  {
-    return hand.GrabStrength() < 0.5;
+    grab.approached = null;
   }
 
   private void MoveKnobToHand(Knob knob)
@@ -110,7 +94,7 @@ public class GrabStrategy
     {
       float tolerance = 0.01f;
 
-      Vector3 handPosition = knob.grabbingHand.Centre();
+      Vector3 handPosition = grab.hand.Centre();
 
       Debug.Log("hand z: " + handPosition.z);
       Debug.Log("knob z: " + knob.Z());
@@ -128,7 +112,7 @@ public class GrabStrategy
 
   private void Grabbed(Knob knob, IHand hand)
   {
-    knob.grabbingHand = hand;
+    grab.hand = hand;
     knob.ChangeColour(Color.red);
 
     knobs.FadeOtherKnobs(knob);
@@ -136,32 +120,27 @@ public class GrabStrategy
     text += knob.Text();
     string arrangement = knobArranger.Arrange(layer * 0.2f);
     debug.Log(arrangement);
-    lastClosest = knob;
 
-    grabbed = knob;
-    knob.approached = false;
+    grab.grabbed = knob;
+    grab.approached = null;
   }
 
   private void Approach(Knob knob)
   {
-    knob.approached = true;
+    grab.approached = knob;
     knob.ChangeColour(Color.black);
-  }
-
-  private void ClearLastClosest(Knob closest)
-  {
-    if (lastClosest != null && lastClosest != closest)
-    {
-      Leave(lastClosest);
-      lastClosest = null;
-    }
   }
 
   private void Leave(Knob knob)
   {
     knob.ChangeColour(Color.white);
-    knob.approached = false;
-    grabbed = null;
-    knob.grabbingHand = null;
+    grab.approached = null;
+    grab.grabbed = null;
+    grab.hand = null;
+  }
+
+  public string Text()
+  {
+    return text;
   }
 }

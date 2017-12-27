@@ -10,9 +10,6 @@ public class Knob
 
   private readonly Letter letter;
 
-  public bool approached;
-  public IHand grabbingHand;
-
 
   public Knob(GameObject gameObject, Vector3 where)
   {
@@ -29,7 +26,6 @@ public class Knob
       return gameObject.name;
     }
   }
-
 
   public float Z()
   {
