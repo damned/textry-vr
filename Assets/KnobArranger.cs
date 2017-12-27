@@ -17,7 +17,7 @@ public class KnobArranger
     layers += 1;
     var ySpacing = 0.06f;
     var xSpacing = 0.1f;
-    var yOffset = -1.45f;
+    var yOffset = -0f;
     var xOffset = 0f;
     var slots = 6;
     var index = 0;
