@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GrabStrategy
@@ -134,5 +135,10 @@ public class GrabStrategy
     grab.approached = null;
     grab.grabbed = null;
     grab.hand = null;
+  }
+
+  public string Text()
+  {
+    return text;
   }
 }
