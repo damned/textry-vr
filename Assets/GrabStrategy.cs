@@ -23,6 +23,13 @@ public class GrabStrategy
 
   public string OnHandUpdate(IHand hand)
   {
+    // HARDCODE to continue working even though both hands updating - logic doesn't cope with right and left yet
+    debug.Log("hand side: " + hand.Side());
+    if (hand.Side() == HandSide.Left)
+    {
+      return text;
+    }
+
     if (!hand.IsPresent())
     {
       ReleaseAllKnobs();
@@ -118,7 +125,7 @@ public class GrabStrategy
     knobs.FadeOtherKnobs(knob);
     layer += 1;
     text += knob.Text();
-    string arrangement = knobArranger.Arrange(layer * 0.2f);
+    string arrangement = knobArranger.Arrange(layer * 0.2f, knob.Text());
     debug.Log(arrangement);
 
     grab.grabbed = knob;

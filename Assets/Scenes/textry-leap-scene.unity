@@ -3440,10 +3440,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 6
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 6
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -4758,7 +4758,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a203fa1cf7afa749942656d516f4222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hand: {fileID: 2037349382}
+  rightHand: {fileID: 2037349382}
+  leftHand: {fileID: 1045857627}
 --- !u!1 &763330548
 GameObject:
   m_ObjectHideFlags: 0
@@ -5789,7 +5790,7 @@ MonoBehaviour:
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
+  m_DynamicPixelsPerUnit: 10
 --- !u!223 &879034191
 Canvas:
   m_ObjectHideFlags: 0
@@ -6537,8 +6538,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1045857626}
   - component: {fileID: 1045857630}
-  - component: {fileID: 1045857629}
-  - component: {fileID: 1045857628}
   - component: {fileID: 1045857627}
   m_Layer: 0
   m_Name: LeftController
@@ -6568,43 +6567,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1045857625}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65eb64f0f2fd6d64faddbcf5d7d3bdbb, type: 3}
+  m_Script: {fileID: 11500000, guid: b2f772f5e1c56f749b6efeacc15bf289, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useButton: 3
-  controllerEvents: {fileID: 0}
-  interactTouch: {fileID: 0}
-  interactGrab: {fileID: 0}
---- !u!114 &1045857628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1045857625}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 947b27445602ed640b885db7e667dfc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grabButton: 7
-  grabPrecognition: 0
-  throwMultiplier: 1
-  createRigidBodyWhenNotTouching: 0
-  controllerAttachPoint: {fileID: 0}
-  controllerEvents: {fileID: 0}
-  interactTouch: {fileID: 0}
---- !u!114 &1045857629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1045857625}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64e104da36bd3b04b90c6ae969ac66dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  customColliderContainer: {fileID: 0}
+  debug: {fileID: 744432060}
 --- !u!114 &1045857630
 MonoBehaviour:
   m_ObjectHideFlags: 0

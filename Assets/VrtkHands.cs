@@ -9,13 +9,15 @@ using System;
 
 public class VrtkHands : MonoBehaviour, IHands
 {
-  public VrtkHand hand;
+  public VrtkHand rightHand;
+  public VrtkHand leftHand;
 
   public event HandHandler OnHandUpdate;
 
   void Update()
   {
-    OnHandUpdate(hand);
+    OnHandUpdate(rightHand);
+    OnHandUpdate(leftHand);
   }
 
 }

@@ -1,4 +1,5 @@
 
+using System;
 using UnityEngine;
 using VRTK;
 
@@ -9,22 +10,40 @@ public class VrtkHand : MonoBehaviour, IHand
 
   private float grabStrength = 0f;
   
+  private HandSide side;
 
   void Start()
   {
     HookUpEvents();
+    RecognizeSide();
   }
 
-  public VrtkHand(VrtkHands hands)
+  private void RecognizeSide()
+  {
+    if (gameObject.name.StartsWith("Left")) {
+      side = HandSide.Left;
+    }
+    else {
+      side = HandSide.Right;
+    }
+  }
+
+    public VrtkHand(VrtkHands hands)
   {
     this.hands = hands;
   }
 
   public Vector3 Centre()
   {
-    GameObject controllerRightHand = VRTK_DeviceFinder.GetControllerRightHand(true);
+    GameObject controllerHand;
+    if (side == HandSide.Right) {
+      controllerHand = VRTK_DeviceFinder.GetControllerRightHand(true);
+    }
+    else {
+      controllerHand = VRTK_DeviceFinder.GetControllerLeftHand(true);      
+    }
 
-    return ControllerTransform(controllerRightHand).position;
+    return ControllerTransform(controllerHand).position;
   }
 
   public bool IsPresent()
@@ -79,7 +98,7 @@ public class VrtkHand : MonoBehaviour, IHand
 
     public HandSide Side()
     {
-        return HandSide.Right;
+        return side;
     }
 
     public bool IsClosed()
