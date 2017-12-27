@@ -28,7 +28,7 @@ public class GrabStrategy
       ClearLastClosest(null);
       return text;
     }
-    debug.Log("hand position: " + hand.Centre());
+    // debug.Log("hand position: " + hand.Centre());
 
     debug.Log("text: " + text);
     var closest = knobs.FindClosestTo(hand);
@@ -56,12 +56,12 @@ public class GrabStrategy
     {
       if (closest != lastClosest)
       {
-        debug.Log("Closest: " + closest);
+        // debug.Log("Closest: " + closest);
         if (lastClosest != null)
         {
-          debug.Log("Last closest: " + lastClosest);
+          // debug.Log("Last closest: " + lastClosest);
         }
-        debug.Log("Grab - approached: " + closest.approached);
+        // debug.Log("Grab - approached: " + closest.approached);
         if (closest.approached)
         {
           if (grabbed != closest)

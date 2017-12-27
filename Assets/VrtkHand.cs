@@ -46,13 +46,13 @@ public class VrtkHand : MonoBehaviour, IHand
 
     private void DoTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
-      Debug.Log("pressed");
+      // Debug.Log("pressed");
       grabStrength = 1f;
     }
 
     private void DoTriggerReleased(object sender, ControllerInteractionEventArgs e)
     {
-      Debug.Log("released");
+      // Debug.Log("released");
       grabStrength = 0f;
     }
 

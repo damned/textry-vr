@@ -8,8 +8,8 @@ public class Letters : MonoBehaviour
   {
     foreach (Transform letterTransform in transform)
     {
-      Debug.Log("letter transform: " + letterTransform);
-      Debug.Log("letter go: " + letterTransform.gameObject.name);
+      // Debug.Log("letter transform: " + letterTransform);
+      // Debug.Log("letter go: " + letterTransform.gameObject.name);
       handler(letterTransform.gameObject.GetComponent<Letter>());
     }
   }
