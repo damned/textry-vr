@@ -24,7 +24,7 @@ public class GrabStrategyTest
     knobs = knobsObject.AddComponent<Knobs>();
     letters = lettersObject.AddComponent<Letters>();
     arranger = new KnobArranger(letters, knobs);
-    rightHand = new StubHand(HandSide.Left);
+    rightHand = new StubHand(HandSide.Right);
   }
 
   [Test]
