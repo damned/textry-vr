@@ -25,7 +25,7 @@ public class Gesture
     approached = null;
     grabbed = null;
     hand = null;
-    knob.ChangeColour(Color.white);
+    knob.Leave();
   }
 
   public void Grab(Knob knob)
@@ -37,7 +37,7 @@ public class Gesture
   public void Touch(Knob knob)
   {
     approached = knob;
-    knob.ChangeColour(Color.black);
+    knob.Touch();
   }
 
   public void NotTouching()

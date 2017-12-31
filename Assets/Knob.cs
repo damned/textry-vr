@@ -32,6 +32,16 @@ public class Knob
     return Position().z;
   }
 
+  public void Touch()
+  {
+    ChangeColour(Color.black);
+  }
+
+  public void Leave()
+  {
+    ChangeColour(Color.white);
+  }
+
   public Vector3 Position()
   {
     return letter.Position();
