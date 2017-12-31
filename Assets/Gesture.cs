@@ -25,4 +25,15 @@ public class Gesture
     grabbed = null;
     hand = null;
   }
+
+  public void Grab(Knob knob)
+  {
+    grabbed = knob;
+    approached = null;
+  }
+
+  public void Touch(Knob knob)
+  {
+    approached = knob;
+  }
 }

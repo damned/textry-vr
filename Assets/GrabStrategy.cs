@@ -80,7 +80,7 @@ public class GrabStrategy
     else
     {
       ReleaseAllKnobs();
-      Approach(closest);
+      Touch(closest);
     }
     MoveKnobToHand(Gesture().grabbed);
   }
@@ -133,13 +133,12 @@ public class GrabStrategy
     string arrangement = knobArranger.Arrange(layer * 0.2f, knob.Text());
     debug.Log(arrangement);
 
-    Gesture().grabbed = knob;
-    Gesture().approached = null;
+    Gesture().Grab(knob);
   }
 
-  private void Approach(Knob knob)
+  public void Touch(Knob knob)
   {
-    Gesture().approached = knob;
+    Gesture().Touch(knob);
     knob.ChangeColour(Color.black);
   }
 
