@@ -7,7 +7,7 @@ public class Gestures
     this.gestures = gestures;
   }
 
-  public Gesture GestureFor(HandSide side = HandSide.Right)
+  public Gesture GestureFor(HandSide side)
   {
     foreach (var gesture in gestures)
     {

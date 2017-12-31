@@ -1,3 +1,5 @@
+using System;
+
 public class Gesture
 {
 
@@ -15,5 +17,12 @@ public class Gesture
   public HandSide Side()
   {
     return side;
+  }
+
+  public void Leave()
+  {
+    approached = null;
+    grabbed = null;
+    hand = null;
   }
 }

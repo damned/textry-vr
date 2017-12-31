@@ -54,7 +54,7 @@ public class GrabStrategy
 
   public Gesture Gesture()
   {
-    return gestures.GestureFor();
+    return gestures.GestureFor(HandSide.Right);
   }
 
   public bool IsGrabbing(HandSide side)
@@ -146,9 +146,7 @@ public class GrabStrategy
   private void Leave(Knob knob)
   {
     knob.ChangeColour(Color.white);
-    Gesture().approached = null;
-    Gesture().grabbed = null;
-    Gesture().hand = null;
+    Gesture().Leave();
   }
 
   public string Text()
