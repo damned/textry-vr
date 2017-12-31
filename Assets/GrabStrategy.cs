@@ -74,7 +74,7 @@ public class GrabStrategy
         {
           Grabbed(closest, hand);
         }
-        UnapproachAllKnobs();
+        Gesture().NotTouching();
       }
     }
     else
@@ -95,11 +95,7 @@ public class GrabStrategy
     knobs.ForEach(knob => { Leave(knob); });
   }
 
-  private void UnapproachAllKnobs()
-  {
-    Gesture().approached = null;
-  }
-
+  // move to Knobs
   private void MoveKnobToHand(Knob knob)
   {
     if (knob != null)

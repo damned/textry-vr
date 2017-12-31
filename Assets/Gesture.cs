@@ -36,4 +36,9 @@ public class Gesture
   {
     approached = knob;
   }
+
+  public void NotTouching()
+  {
+    approached = null;
+  }
 }
