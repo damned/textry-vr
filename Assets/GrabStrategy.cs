@@ -135,13 +135,11 @@ public class GrabStrategy
   public void Touch(Knob knob)
   {
     Gesture().Touch(knob);
-    knob.ChangeColour(Color.black);
   }
 
   private void Leave(Knob knob)
   {
-    knob.ChangeColour(Color.white);
-    Gesture().Leave();
+    Gesture().Leave(knob);
   }
 
   public string Text()

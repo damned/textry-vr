@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class Gesture
 {
@@ -19,11 +20,12 @@ public class Gesture
     return side;
   }
 
-  public void Leave()
+  public void Leave(Knob knob)
   {
     approached = null;
     grabbed = null;
     hand = null;
+    knob.ChangeColour(Color.white);
   }
 
   public void Grab(Knob knob)
@@ -35,6 +37,7 @@ public class Gesture
   public void Touch(Knob knob)
   {
     approached = knob;
+    knob.ChangeColour(Color.black);
   }
 
   public void NotTouching()
