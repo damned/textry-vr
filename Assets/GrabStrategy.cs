@@ -7,11 +7,11 @@ public class GrabStrategy
   private readonly IDebug debug;
   private readonly KnobArranger knobArranger;
   
-  // actually maybe this becomes a Grab object, cos then track which hand for 2 grabs etc. :)
   private int layer = 0;
   private string text = ""; 
 
-  private Grab grab =  new Grab();
+
+  private Gestures gestures = new Gestures(new Gesture(HandSide.Right), new Gesture(HandSide.Left)); 
 
 
   public GrabStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
@@ -52,20 +52,25 @@ public class GrabStrategy
     return text;
   }
 
+  public Gesture Gesture()
+  {
+    return gestures.GestureFor();
+  }
+
   public bool IsGrabbing(HandSide side)
   {
-    return grab.grabbed != null;
+    return Gesture().grabbed != null;
   }
 
   private void HandleCloseToKnob(IHand hand, Knob closest)
   {
     if (hand.IsClosed())
     {
-      if (closest != grab.grabbed)
+      if (closest != Gesture().grabbed)
       {
         // debug.Log("Closest: " + closest);
-        // debug.Log("Grab - approached: " + grab.approached);
-        if (closest == grab.approached)
+        // debug.Log("Grab - approached: " + Gesture().approached);
+        if (closest == Gesture().approached)
         {
           Grabbed(closest, hand);
         }
@@ -77,7 +82,7 @@ public class GrabStrategy
       ReleaseAllKnobs();
       Approach(closest);
     }
-    MoveKnobToHand(grab.grabbed);
+    MoveKnobToHand(Gesture().grabbed);
   }
 
   private void HandleAwayFromKnobs()
@@ -92,7 +97,7 @@ public class GrabStrategy
 
   private void UnapproachAllKnobs()
   {
-    grab.approached = null;
+    Gesture().approached = null;
   }
 
   private void MoveKnobToHand(Knob knob)
@@ -101,7 +106,7 @@ public class GrabStrategy
     {
       float tolerance = 0.01f;
 
-      Vector3 handPosition = grab.hand.Centre();
+      Vector3 handPosition = Gesture().hand.Centre();
 
       Debug.Log("hand z: " + handPosition.z);
       Debug.Log("knob z: " + knob.Z());
@@ -119,7 +124,7 @@ public class GrabStrategy
 
   private void Grabbed(Knob knob, IHand hand)
   {
-    grab.hand = hand;
+    Gesture().hand = hand;
     knob.ChangeColour(Color.red);
 
     knobs.FadeOtherKnobs(knob);
@@ -128,22 +133,22 @@ public class GrabStrategy
     string arrangement = knobArranger.Arrange(layer * 0.2f, knob.Text());
     debug.Log(arrangement);
 
-    grab.grabbed = knob;
-    grab.approached = null;
+    Gesture().grabbed = knob;
+    Gesture().approached = null;
   }
 
   private void Approach(Knob knob)
   {
-    grab.approached = knob;
+    Gesture().approached = knob;
     knob.ChangeColour(Color.black);
   }
 
   private void Leave(Knob knob)
   {
     knob.ChangeColour(Color.white);
-    grab.approached = null;
-    grab.grabbed = null;
-    grab.hand = null;
+    Gesture().approached = null;
+    Gesture().grabbed = null;
+    Gesture().hand = null;
   }
 
   public string Text()
