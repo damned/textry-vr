@@ -34,6 +34,7 @@ public class Gesture
   {
     grabbed = knob;
     approached = null;
+    knob.Grab();
   }
 
   public void Touch(Knob knob)

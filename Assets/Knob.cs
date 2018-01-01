@@ -10,6 +10,7 @@ public class Knob
 
   private readonly Letter letter;
 
+  public Color MainColor { get; private set; }
 
   public Knob(GameObject gameObject, Vector3 where)
   {
@@ -17,6 +18,7 @@ public class Knob
     this.gameObject = gameObject;
     this.gameObject.transform.localPosition = where;
     this.letter = gameObject.GetComponent<Letter>();
+    MainColor = Color.white;
   }
 
   public string Name
@@ -30,6 +32,11 @@ public class Knob
   public float Z()
   {
     return Position().z;
+  }
+
+  public void Grab()
+  {
+    ChangeColour(Color.red);;
   }
 
   public void Touch()
@@ -54,6 +61,7 @@ public class Knob
     TryToSetTransparentRenderMode(material);
     material.color = color;
     renderer.sharedMaterial = material;
+    MainColor = color;
   }
 
   private static void TryToSetTransparentRenderMode(Material material)

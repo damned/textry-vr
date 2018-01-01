@@ -32,17 +32,20 @@ public class GrabStrategyTest
   {
     CreateKnobs("a");
     var firstAPosition = Knob("a").Position();
+    Assert.AreEqual(Color.white, Knob("a").MainColor);
 
     strategy = NewGrabStrategy();
 
     strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
    
     Assert.AreEqual(1, arranger.layers);
+    Assert.AreEqual(Color.black, Knob("a").MainColor);
 
     strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
 
     Assert.AreEqual(2, arranger.layers); // layers should be exposed as truth of knobs
                                        // or mock out arranger?
+    Assert.AreEqual(Color.red, Knob("a").MainColor);
   }
 
   [Test]
@@ -95,10 +98,12 @@ public class GrabStrategyTest
     strategy.OnHandUpdate(rightHand.At(firstCPosition));
 
     Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
+    Assert.AreEqual(Color.red, Knob("a").MainColor);
 
     strategy.OnHandUpdate(rightHand.Open());
 
     Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
+    Assert.AreEqual(Color.white, Knob("a").MainColor);
   }
 
   [Test]

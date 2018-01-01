@@ -24,9 +24,9 @@ public class GrabStrategy
   public string OnHandUpdate(IHand hand)
   {
     // HARDCODE to continue working even though both hands updating - logic doesn't cope with right and left yet
-    debug.Log("hand side: " + hand.Side());
     var side = HandSide.Right;
-    if (hand.Side() == HandSide.Left)
+    debug.Log("hand side: " + hand.Side());
+    if (hand.Side() != side)
     {
       return text;
     }
@@ -122,7 +122,6 @@ public class GrabStrategy
   private void Grabbed(Knob knob, IHand hand, HandSide side)
   {
     Gesture(side).hand = hand;
-    knob.ChangeColour(Color.red);
 
     knobs.FadeOtherKnobs(knob);
     layer += 1;
