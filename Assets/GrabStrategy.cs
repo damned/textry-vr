@@ -33,6 +33,7 @@ public class GrabStrategy
       return text;
     }
 
+    var gesture = Gesture(side);
     if (!hand.IsPresent())
     {
       Gesture(side).Leave();
@@ -51,7 +52,7 @@ public class GrabStrategy
       return text;
     }
 
-    HandleCloseToKnob(hand, closest, side);
+    HandleCloseToKnob(gesture, closest);
     return text;
   }
 
@@ -72,37 +73,38 @@ public class GrabStrategy
     return gestures.GestureFor(side).IsGrabbing;
   }
 
-  private void HandleCloseToKnob(IHand hand, Knob closest, HandSide side)
+  private void HandleCloseToKnob(Gesture gesture, Knob closest)
   {
+    var hand = gesture.hand;
     if (hand.IsClosed())
     {
-      if (closest != Gesture(side).grabbed)
+      if (closest != gesture.grabbed)
       {
         // debug.Log("Closest: " + closest);
         // debug.Log("Grab - approached: " + Gesture().approached);
-        if (closest == Gesture(side).approached)
+        if (closest == gesture.approached)
         {
-          Grabbed(closest, hand, side);
+          Grabbed(closest, gesture);
         }
-        Gesture(side).NotTouching();
+        gesture.NotTouching();
       }
     }
     else
     {
-      Gesture(side).Leave();
-      Gesture(side).Touch(closest);
+      gesture.Leave();
+      gesture.Touch(closest);
     }
-    MoveKnobToHand(Gesture(side).grabbed, side);
+    MoveKnobToHand(gesture.grabbed, gesture);
   }
 
   // move to Knobs
-  private void MoveKnobToHand(Knob knob, HandSide side)
+  private void MoveKnobToHand(Knob knob, Gesture gesture)
   {
     if (knob != null)
     {
       float tolerance = 0.01f;
 
-      Vector3 handPosition = Gesture(side).hand.Centre();
+      Vector3 handPosition = gesture.hand.Centre();
 
       Debug.Log("hand z: " + handPosition.z);
       Debug.Log("knob z: " + knob.Z());
@@ -118,7 +120,7 @@ public class GrabStrategy
     }
   }
 
-  private void Grabbed(Knob knob, IHand hand, HandSide side)
+  private void Grabbed(Knob knob, Gesture gesture)
   {
     // should probs get knobs to fade all unhandled knobs only, probs only within grab layer?
     knobs.FadeOtherKnobs(knob);
@@ -127,7 +129,7 @@ public class GrabStrategy
     string arrangement = knobArranger.Arrange(layer * 0.2f, knob.Text());
     debug.Log(arrangement);
 
-    Gesture(side).Grab(knob);
+    gesture.Grab(knob);
   }
 
   public string Text()
