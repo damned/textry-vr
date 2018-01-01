@@ -49,6 +49,27 @@ public class GrabStrategyTest
   }
 
   [Test]
+  public void knobs_become_unhandled_once_nearer_to_another()
+  {
+    CreateKnobs("a", "b");
+    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
+    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("b").HandlingState);
+
+    strategy = NewGrabStrategy();
+
+    rightHand.Open();
+    strategy.OnHandUpdate(rightHand.At(Knob("a").Position()));
+   
+    Assert.AreEqual(KnobHandlingState.Touched, Knob("a").HandlingState);
+    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("b").HandlingState);
+
+    strategy.OnHandUpdate(rightHand.At(Knob("b").Position()));
+
+    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
+    Assert.AreEqual(KnobHandlingState.Touched, Knob("b").HandlingState);
+  } 
+
+  [Test]
   public void only_creates_one_new_layer_when_knob_grabbed()
   {
     CreateKnobs("a");

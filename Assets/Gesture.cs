@@ -22,12 +22,20 @@ public class Gesture
     return side;
   }
 
-  public void Leave(Knob knob)
+  public void Leave()
   {
-    approached = null;
+    LeaveAny(grabbed);
     grabbed = null;
+    LeaveAny(approached);
+    approached = null;
     hand = null;
-    knob.Leave();
+  }
+
+  private void LeaveAny(Knob knob)
+  {
+    if (knob != null) {
+      knob.Leave();
+    }    
   }
 
   public void Grab(Knob knob)
