@@ -88,35 +88,15 @@ public class GrabStrategy
         }
         gesture.NotTouching();
       }
+      if (gesture.IsGrabbing)
+      {
+        gesture.MoveGrabbedKnobToHand();
+      }
     }
     else
     {
       gesture.Leave();
       gesture.Touch(closest);
-    }
-    MoveKnobToHand(gesture.grabbed, gesture);
-  }
-
-  // move to Knobs
-  private void MoveKnobToHand(Knob knob, Gesture gesture)
-  {
-    if (knob != null)
-    {
-      float tolerance = 0.01f;
-
-      Vector3 handPosition = gesture.hand.Centre();
-
-      Debug.Log("hand z: " + handPosition.z);
-      Debug.Log("knob z: " + knob.Z());
-
-      if (handPosition.z < (knob.Z() - tolerance))
-      {
-        knobs.MoveCloser();
-      }
-      else if (handPosition.z > (knob.Z() + tolerance))
-      {
-        knobs.MoveAway();
-      }
     }
   }
 

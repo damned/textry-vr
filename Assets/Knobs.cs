@@ -13,7 +13,7 @@ public class Knobs : MonoBehaviour
 
   public Knob Create(Letter letter, float x, float y, float z)
   {
-    Knob knob = new Knob(Instantiate(letter.gameObject, transform), new Vector3(x, y, z));
+    Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z));
     knobs.Add(knob);
     return knob;
   }

@@ -7,7 +7,7 @@ public enum KnobHandlingState { Unhandled, Touched, Grabbed }
 public class Knob
 {
 
-  private static Dictionary<KnobHandlingState, Color> handlingStateColors = new Dictionary<KnobHandlingState, Color>() 
+  private static Dictionary<KnobHandlingState, Color> handlingStateColors = new Dictionary<KnobHandlingState, Color>()
   {
     { KnobHandlingState.Unhandled, Color.white },
     { KnobHandlingState.Touched, Color.black },
@@ -22,9 +22,11 @@ public class Knob
   private readonly Letter letter;
 
   public KnobHandlingState HandlingState { get; private set; }
+  private readonly Knobs knobs;
 
-  public Knob(GameObject gameObject, Vector3 where)
+  public Knob(Knobs knobs, GameObject gameObject, Vector3 where)
   {
+    this.knobs = knobs;
     this.id = (++knobId);
     this.gameObject = gameObject;
     this.gameObject.transform.localPosition = where;
@@ -39,7 +41,23 @@ public class Knob
     }
   }
 
-  public float Z()
+  public void GrabbingHandMove(Vector3 handPosition)
+  {
+    Debug.Log("hand z: " + handPosition.z);
+    Debug.Log("knob z: " + Z());
+
+    float tolerance = 0.01f;
+    if (handPosition.z < (Z() - tolerance))
+    {
+      knobs.MoveCloser();
+    }
+    else if (handPosition.z > (Z() + tolerance))
+    {
+      knobs.MoveAway();
+    }
+  }
+
+  private float Z()
   {
     return Position().z;
   }
@@ -104,7 +122,7 @@ public class Knob
     return "" + id + ": '" + Text() + "'@" + Position();
   }
 
-  private void UpdateColor() 
+  private void UpdateColor()
   {
     ChangeColour(handlingStateColors[HandlingState]);
   }

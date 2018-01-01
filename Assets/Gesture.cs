@@ -55,4 +55,9 @@ public class Gesture
   {
     approached = null;
   }
+
+  public void MoveGrabbedKnobToHand()
+  {
+    grabbed.GrabbingHandMove(hand.Centre());
+  }
 }
