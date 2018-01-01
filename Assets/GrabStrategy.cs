@@ -123,6 +123,7 @@ public class GrabStrategy
   {
     Gesture(side).hand = hand;
 
+    // should probs get knobs to fade all unhandled knobs only, probs only within grab layer?
     knobs.FadeOtherKnobs(knob);
     layer += 1;
     text += knob.Text();

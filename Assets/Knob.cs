@@ -1,8 +1,19 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum KnobHandlingState { Unhandled, Touched, Grabbed }
 
 public class Knob
 {
+
+  private static Dictionary<KnobHandlingState, Color> handlingStateColors = new Dictionary<KnobHandlingState, Color>() 
+  {
+    { KnobHandlingState.Unhandled, Color.white },
+    { KnobHandlingState.Touched, Color.black },
+    { KnobHandlingState.Grabbed, Color.red }
+  };
+
   public int id;
   private GameObject gameObject;
 
@@ -10,7 +21,7 @@ public class Knob
 
   private readonly Letter letter;
 
-  public Color MainColor { get; private set; }
+  public KnobHandlingState HandlingState { get; private set; }
 
   public Knob(GameObject gameObject, Vector3 where)
   {
@@ -18,7 +29,6 @@ public class Knob
     this.gameObject = gameObject;
     this.gameObject.transform.localPosition = where;
     this.letter = gameObject.GetComponent<Letter>();
-    MainColor = Color.white;
   }
 
   public string Name
@@ -36,17 +46,20 @@ public class Knob
 
   public void Grab()
   {
-    ChangeColour(Color.red);;
+    HandlingState = KnobHandlingState.Grabbed;
+    UpdateColor();
   }
 
   public void Touch()
   {
-    ChangeColour(Color.black);
+    HandlingState = KnobHandlingState.Touched;
+    UpdateColor();
   }
 
   public void Leave()
   {
-    ChangeColour(Color.white);
+    HandlingState = KnobHandlingState.Unhandled;
+    UpdateColor();
   }
 
   public Vector3 Position()
@@ -61,7 +74,6 @@ public class Knob
     TryToSetTransparentRenderMode(material);
     material.color = color;
     renderer.sharedMaterial = material;
-    MainColor = color;
   }
 
   private static void TryToSetTransparentRenderMode(Material material)
@@ -90,5 +102,10 @@ public class Knob
   public override string ToString()
   {
     return "" + id + ": '" + Text() + "'@" + Position();
+  }
+
+  private void UpdateColor() 
+  {
+    ChangeColour(handlingStateColors[HandlingState]);
   }
 }
