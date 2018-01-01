@@ -10,6 +10,8 @@ public class Gesture
   
   private readonly HandSide side;
 
+  public bool IsGrabbing { get { return grabbed != null; } }
+
   public Gesture(HandSide side)
   {
     this.side = side;

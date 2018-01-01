@@ -25,6 +25,7 @@ public class GrabStrategy
   {
     // HARDCODE to continue working even though both hands updating - logic doesn't cope with right and left yet
     debug.Log("hand side: " + hand.Side());
+    var side = HandSide.Right;
     if (hand.Side() == HandSide.Left)
     {
       return text;
@@ -32,7 +33,7 @@ public class GrabStrategy
 
     if (!hand.IsPresent())
     {
-      ReleaseAllKnobs();
+      ReleaseAllKnobs(side);
       return text;
     }
     // debug.Log("hand position: " + hand.Centre());
@@ -43,66 +44,66 @@ public class GrabStrategy
     // debug.Log("Closest: " + closest);
     if (closest == null)
     {
-      HandleAwayFromKnobs();
+      HandleAwayFromKnobs(side);
       // debug.Log("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.name).ToArray()));
       return text;
     }
 
-    HandleCloseToKnob(hand, closest);
+    HandleCloseToKnob(hand, closest, side);
     return text;
   }
 
-  public Gesture Gesture()
+  public Gesture Gesture(HandSide side)
   {
-    return gestures.GestureFor(HandSide.Right);
+    return gestures.GestureFor(side);
   }
 
   public bool IsGrabbing(HandSide side)
   {
-    return Gesture().grabbed != null;
+    return gestures.GestureFor(side).IsGrabbing;
   }
 
-  private void HandleCloseToKnob(IHand hand, Knob closest)
+  private void HandleCloseToKnob(IHand hand, Knob closest, HandSide side)
   {
     if (hand.IsClosed())
     {
-      if (closest != Gesture().grabbed)
+      if (closest != Gesture(side).grabbed)
       {
         // debug.Log("Closest: " + closest);
         // debug.Log("Grab - approached: " + Gesture().approached);
-        if (closest == Gesture().approached)
+        if (closest == Gesture(side).approached)
         {
-          Grabbed(closest, hand);
+          Grabbed(closest, hand, side);
         }
-        Gesture().NotTouching();
+        Gesture(side).NotTouching();
       }
     }
     else
     {
-      ReleaseAllKnobs();
-      Touch(closest);
+      ReleaseAllKnobs(side);
+      Touch(closest, side);
     }
-    MoveKnobToHand(Gesture().grabbed);
+    MoveKnobToHand(Gesture(side).grabbed, side);
   }
 
-  private void HandleAwayFromKnobs()
+  private void HandleAwayFromKnobs(HandSide side)
   {
-    ReleaseAllKnobs();
+    ReleaseAllKnobs(side);
   }
 
-  private void ReleaseAllKnobs()
+  private void ReleaseAllKnobs(HandSide side)
   {
-    knobs.ForEach(knob => { Leave(knob); });
+    knobs.ForEach(knob => { Leave(knob, side); });
   }
 
   // move to Knobs
-  private void MoveKnobToHand(Knob knob)
+  private void MoveKnobToHand(Knob knob, HandSide side)
   {
     if (knob != null)
     {
       float tolerance = 0.01f;
 
-      Vector3 handPosition = Gesture().hand.Centre();
+      Vector3 handPosition = Gesture(side).hand.Centre();
 
       Debug.Log("hand z: " + handPosition.z);
       Debug.Log("knob z: " + knob.Z());
@@ -118,9 +119,9 @@ public class GrabStrategy
     }
   }
 
-  private void Grabbed(Knob knob, IHand hand)
+  private void Grabbed(Knob knob, IHand hand, HandSide side)
   {
-    Gesture().hand = hand;
+    Gesture(side).hand = hand;
     knob.ChangeColour(Color.red);
 
     knobs.FadeOtherKnobs(knob);
@@ -129,17 +130,17 @@ public class GrabStrategy
     string arrangement = knobArranger.Arrange(layer * 0.2f, knob.Text());
     debug.Log(arrangement);
 
-    Gesture().Grab(knob);
+    Gesture(side).Grab(knob);
   }
 
-  public void Touch(Knob knob)
+  public void Touch(Knob knob, HandSide side)
   {
-    Gesture().Touch(knob);
+    Gesture(side).Touch(knob);
   }
 
-  private void Leave(Knob knob)
+  private void Leave(Knob knob, HandSide side)
   {
-    Gesture().Leave(knob);
+    Gesture(side).Leave(knob);
   }
 
   public string Text()
