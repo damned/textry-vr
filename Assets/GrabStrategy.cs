@@ -38,10 +38,9 @@ public class GrabStrategy
     var gesture = Gesture(side);
     if (!hand.IsPresent())
     {
-      Gesture(side).Leave();
+      gesture.HandNotNearKnob();
       return text;
     }
-    // debug.Log("hand position: " + hand.Centre());
 
     debug.Log("text: " + text);
     var closest = knobs.FindClosestTo(hand);
@@ -49,14 +48,14 @@ public class GrabStrategy
     // debug.Log("Closest: " + closest);
     if (closest == null)
     {
-      Gesture(side).Leave();
-      // debug.Log("Nearly grabbed things: " + string.Join(", ", close_things.ToList().Select(t => t.name).ToArray()));
+      gesture.HandNotNearKnob();
       return text;
     }
 
-    HandleCloseToKnob(gesture, closest);
+    gesture.HandNearKnob(closest);
     return text;
   }
+
 
   // yes this is a bit odd, around construction-time access to vrtk
   // instances - have a look sometime when on vive setup 
@@ -74,34 +73,6 @@ public class GrabStrategy
   {
     return gestures.GestureFor(side).IsGrabbing;
   }
-
-  private void HandleCloseToKnob(Gesture gesture, Knob closest)
-  {
-    var hand = gesture.hand;
-    if (hand.IsClosed())
-    {
-      if (closest != gesture.grabbed)
-      {
-        // debug.Log("Closest: " + closest);
-        // debug.Log("Grab - approached: " + Gesture().approached);
-        if (closest == gesture.approached)
-        {
-          gesture.Grab(closest);
-        }
-        gesture.NotTouching();
-      }
-      if (gesture.IsGrabbing)
-      {
-        gesture.MoveGrabbedKnobToHand();
-      }
-    }
-    else
-    {
-      gesture.Leave();
-      gesture.Touch(closest);
-    }
-  }
-
   public void OnGrab(Knob knob)
   {
     knobs.FadeOtherKnobs(knob);

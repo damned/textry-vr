@@ -56,13 +56,39 @@ public class Gesture
     knob.Touch();
   }
 
-  public void NotTouching()
-  {
-    approached = null;
-  }
-
   public void MoveGrabbedKnobToHand()
   {
     grabbed.GrabbingHandMove(hand.Centre());
+  }
+
+  public void HandNotNearKnob()
+  {
+    Leave();
+  }
+
+  public void HandNearKnob(Knob closest)
+  {
+    if (hand.IsClosed())
+    {
+      if (closest != grabbed)
+      {
+        // debug.Log("Closest: " + closest);
+        // debug.Log("Grab - approached: " + Gesture().approached);
+        if (closest == approached)
+        {
+          Grab(closest);
+        }
+        approached = null;
+      }
+      if (IsGrabbing)
+      {
+        MoveGrabbedKnobToHand();
+      }
+    }
+    else
+    {
+      Leave();
+      Touch(closest);
+    }
   }
 }
