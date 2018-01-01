@@ -1,8 +1,12 @@
 using System;
 using UnityEngine;
 
+public delegate void KnobHandler(Knob knob);
+
+
 public class Gesture
 {
+  public event KnobHandler OnGrab;
 
   public Knob grabbed = null;
   public Knob approached;
@@ -43,6 +47,7 @@ public class Gesture
     grabbed = knob;
     approached = null;
     knob.Grab();
+    OnGrab(knob);
   }
 
   public void Touch(Knob knob)

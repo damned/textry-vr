@@ -19,6 +19,8 @@ public class GrabStrategy
     this.knobArranger = knobArranger;
     this.debug = debug;
     this.knobs = knobs;
+    gestures.GestureFor(HandSide.Right).OnGrab += OnGrab;
+    gestures.GestureFor(HandSide.Left).OnGrab += OnGrab;
   }
 
   public string OnHandUpdate(IHand hand)
@@ -84,7 +86,7 @@ public class GrabStrategy
         // debug.Log("Grab - approached: " + Gesture().approached);
         if (closest == gesture.approached)
         {
-          Grabbed(closest, gesture);
+          gesture.Grab(closest);
         }
         gesture.NotTouching();
       }
@@ -100,16 +102,13 @@ public class GrabStrategy
     }
   }
 
-  private void Grabbed(Knob knob, Gesture gesture)
+  public void OnGrab(Knob knob)
   {
-    // should probs get knobs to fade all unhandled knobs only, probs only within grab layer?
     knobs.FadeOtherKnobs(knob);
     layer += 1;
     text += knob.Text();
     string arrangement = knobArranger.Arrange(layer * 0.2f, knob.Text());
     debug.Log(arrangement);
-
-    gesture.Grab(knob);
   }
 
   public string Text()
