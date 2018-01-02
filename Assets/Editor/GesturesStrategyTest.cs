@@ -187,7 +187,7 @@ public class GesturesStrategyTest
     Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
   }
 
-  // [Test]
+  [Test]
   public void second_grab_with_other_hand_adds_to_text()
   {
     CreateKnobs("a", "b");

@@ -18,22 +18,19 @@ public class GesturesStrategy
     this.debug = debug;
     this.gestures = gestures;
 
+    // move up and out to text writer
     gestures.GestureFor(HandSide.Right).OnGrab += OnGrab;
     gestures.GestureFor(HandSide.Left).OnGrab += OnGrab;
   }
 
   public string OnHandUpdate(IHand hand)
   {
-    // HARDCODE to continue working even though both hands updating - logic doesn't cope with right and left yet
-    var side = HandSide.Right; // hand.Side()
+    // move up and out to text writer
+    var side = hand.Side();
     var gesture = gestures.GestureFor(side);
     
 
     debug.Log("hand side: " + hand.Side());
-    if (hand.Side() != side)
-    {
-      return text;
-    }
 
     // yes this is a bit odd, around construction-time access to vrtk
     // instances - have a look sometime when on vive setup 
