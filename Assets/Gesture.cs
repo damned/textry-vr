@@ -6,6 +6,7 @@ public delegate void KnobHandler(Knob knob);
 public class Gesture
 {
   public event KnobHandler OnGrab;
+  public event KnobHandler OnRelease;
 
   public Knob grabbed = null;
   public Knob approached;
@@ -97,7 +98,11 @@ public class Gesture
 
   private void LeaveKnob()
   {
-    LeaveAny(grabbed);
+    if (grabbed != null)
+    {
+      grabbed.Leave();
+      OnRelease(grabbed);
+    }
     grabbed = null;
     LeaveAny(approached);
     approached = null;

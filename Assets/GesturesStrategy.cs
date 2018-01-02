@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GesturesStrategy
@@ -10,7 +11,8 @@ public class GesturesStrategy
   private int layer = 0;
   private string text = ""; 
 
-  private readonly Gestures gestures; 
+  private readonly Gestures gestures;
+  private readonly List<string> words = new List<string>();
 
   public GesturesStrategy(Gestures gestures, KnobArranger knobArranger, IDebug debug)
   {
@@ -18,9 +20,11 @@ public class GesturesStrategy
     this.debug = debug;
     this.gestures = gestures;
 
-    // move up and out to text writer
+    // move up and out to text writer, use lister interface
     gestures.GestureFor(HandSide.Right).OnGrab += OnGrab;
     gestures.GestureFor(HandSide.Left).OnGrab += OnGrab;
+    gestures.GestureFor(HandSide.Right).OnRelease += OnRelease;
+    gestures.GestureFor(HandSide.Left).OnRelease += OnRelease;
   }
 
   public string OnHandUpdate(IHand hand)
@@ -37,6 +41,7 @@ public class GesturesStrategy
     gesture.hand = hand;
 
     gesture.OnHandUpdate(hand);
+    debug.Log("words: " + String.Join(", ", words.ToArray()));
     debug.Log("text: " + text);
     return text;
   }
@@ -54,8 +59,20 @@ public class GesturesStrategy
     debug.Log(arrangement);
   }
 
+  public void OnRelease(Knob knob)
+  {
+    words.Add(text);
+    text = "";
+  }
+
+
   public string Text()
   {
     return text;
+  }
+
+  public List<string> Words()
+  {
+    return words;
   }
 }

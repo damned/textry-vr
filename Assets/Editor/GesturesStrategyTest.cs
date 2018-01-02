@@ -204,7 +204,7 @@ public class GesturesStrategyTest
     Assert.AreEqual("ab", strategy.Text());
   }
 
-  // [Test]
+  [Test]
   public void second_hand_presence_does_not_release_first_grab()
   {
     CreateKnobs("a", "b");
@@ -218,7 +218,23 @@ public class GesturesStrategyTest
     strategy.OnHandUpdate(leftHand.At(Knob("b", 0).Position()).Open());
    
     Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
-    Assert.IsTrue(strategy.IsGrabbing(HandSide.Left));
+    Assert.IsFalse(strategy.IsGrabbing(HandSide.Left));
+  }
+
+  [Test]
+  public void grabbing_and_releasing_single_letter_generates_one_char_word()
+  {
+    CreateKnobs("a");
+
+    strategy = NewGesturesStrategy();
+
+    strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
+    strategy.OnHandUpdate(rightHand.Open());
+    
+    Assert.AreEqual(1, strategy.Words().Count);
+    Assert.AreEqual("a", strategy.Words()[0]);
+    Assert.AreEqual("", strategy.Text());
   }
 
   private Knob Knob(string letter, int index = 0)
