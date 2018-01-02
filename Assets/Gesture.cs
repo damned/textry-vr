@@ -11,13 +11,15 @@ public class Gesture
   public Knob grabbed = null;
   public Knob approached;
   public IHand hand;
-  
+
   private readonly HandSide side;
 
   public bool IsGrabbing { get { return grabbed != null; } }
+  private readonly Knobs knobs;
 
-  public Gesture(HandSide side)
+  public Gesture(HandSide side, Knobs knobs)
   {
+    this.knobs = knobs;
     this.side = side;
   }
 
@@ -37,9 +39,10 @@ public class Gesture
 
   private void LeaveAny(Knob knob)
   {
-    if (knob != null) {
+    if (knob != null)
+    {
       knob.Leave();
-    }    
+    }
   }
 
   public void Grab(Knob knob)
@@ -60,6 +63,26 @@ public class Gesture
   {
     grabbed.GrabbingHandMove(hand.Centre());
   }
+
+  public void OnHandUpdate(IHand hand, HandSide side)
+  {
+    if (!hand.IsPresent())
+    {
+      HandNotNearKnob();
+      return;
+    }
+
+    var closest = knobs.FindClosestTo(hand.Centre());
+
+    if (closest == null)
+    {
+      HandNotNearKnob();
+      return;
+    }
+
+    HandNearKnob(closest);
+  }
+
 
   public void HandNotNearKnob()
   {

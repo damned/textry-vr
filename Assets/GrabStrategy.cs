@@ -10,15 +10,15 @@ public class GrabStrategy
   private int layer = 0;
   private string text = ""; 
 
-
-  private Gestures gestures = new Gestures(new Gesture(HandSide.Right), new Gesture(HandSide.Left)); 
-
+  private readonly Gestures gestures; 
 
   public GrabStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
   {
     this.knobArranger = knobArranger;
     this.debug = debug;
     this.knobs = knobs;
+    this.gestures = new Gestures(knobs);
+
     gestures.GestureFor(HandSide.Right).OnGrab += OnGrab;
     gestures.GestureFor(HandSide.Left).OnGrab += OnGrab;
   }
@@ -36,26 +36,10 @@ public class GrabStrategy
     }
 
     var gesture = Gesture(side);
-    if (!hand.IsPresent())
-    {
-      gesture.HandNotNearKnob();
-      return text;
-    }
-
+    gesture.OnHandUpdate(hand, side);
     debug.Log("text: " + text);
-    var closest = knobs.FindClosestTo(hand);
-
-    // debug.Log("Closest: " + closest);
-    if (closest == null)
-    {
-      gesture.HandNotNearKnob();
-      return text;
-    }
-
-    gesture.HandNearKnob(closest);
     return text;
   }
-
 
   // yes this is a bit odd, around construction-time access to vrtk
   // instances - have a look sometime when on vive setup 
@@ -73,9 +57,10 @@ public class GrabStrategy
   {
     return gestures.GestureFor(side).IsGrabbing;
   }
+
   public void OnGrab(Knob knob)
   {
-    knobs.FadeOtherKnobs(knob);
+    knobs.FadeOtherKnobs(knob); // move out to knob events: allows knobs dep to move from here
     layer += 1;
     text += knob.Text();
     string arrangement = knobArranger.Arrange(layer * 0.2f, knob.Text());

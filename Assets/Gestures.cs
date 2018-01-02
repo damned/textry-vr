@@ -1,10 +1,11 @@
 public class Gestures
 {
-  private Gesture[] gestures;
+  private readonly Knobs knobs;
+  private readonly Gesture[] gestures;
 
-  public Gestures(params Gesture [] gestures)
+  public Gestures(Knobs knobs)
   {
-    this.gestures = gestures;
+    this.gestures = new Gesture [] {new Gesture(HandSide.Right, knobs), new Gesture(HandSide.Left, knobs)};
   }
 
   public Gesture GestureFor(HandSide side)

@@ -8,12 +8,10 @@ public class GesturesTest
   [Test]
   public void GestureForReturnsAppropriateGestureForSide()
   {
-    Gesture leftGesture = new Gesture(HandSide.Left);
-    Gesture rightGesture = new Gesture(HandSide.Right);
-    var gestures =  new Gestures(leftGesture, rightGesture);
+    var gestures =  new Gestures(null);
 
-    Assert.AreEqual(rightGesture, gestures.GestureFor(HandSide.Right));
-    Assert.AreEqual(leftGesture, gestures.GestureFor(HandSide.Left));
+    Assert.AreEqual(HandSide.Right, gestures.GestureFor(HandSide.Right).Side());
+    Assert.AreEqual(HandSide.Left, gestures.GestureFor(HandSide.Left).Side());
   }
 
 }
