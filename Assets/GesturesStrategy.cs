@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class GrabStrategy
+public class GesturesStrategy
 {
   private readonly Knobs knobs;
   private readonly IDebug debug;
@@ -12,7 +12,7 @@ public class GrabStrategy
 
   private readonly Gestures gestures; 
 
-  public GrabStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
+  public GesturesStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
   {
     this.knobArranger = knobArranger;
     this.debug = debug;
@@ -25,27 +25,24 @@ public class GrabStrategy
 
   public string OnHandUpdate(IHand hand)
   {
-    EnsureHandAndGestureWired(hand);
-
     // HARDCODE to continue working even though both hands updating - logic doesn't cope with right and left yet
-    var side = HandSide.Right;
+    var side = HandSide.Right; // hand.Side()
+    var gesture = Gesture(side);
+    
+
     debug.Log("hand side: " + hand.Side());
     if (hand.Side() != side)
     {
       return text;
     }
 
-    var gesture = Gesture(side);
+    // yes this is a bit odd, around construction-time access to vrtk
+    // instances - have a look sometime when on vive setup 
+    gesture.hand = hand;
+
     gesture.OnHandUpdate(hand, side);
     debug.Log("text: " + text);
     return text;
-  }
-
-  // yes this is a bit odd, around construction-time access to vrtk
-  // instances - have a look sometime when on vive setup 
-  private void EnsureHandAndGestureWired(IHand hand)
-  {
-    Gesture(hand.Side()).hand = hand;
   }
 
   public Gesture Gesture(HandSide side)

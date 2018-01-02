@@ -14,7 +14,7 @@ public class HandTextWriter : MonoBehaviour
   private IHands hands;
   private KnobArranger knobArranger;
 
-  private GrabStrategy grabStrategy;
+  private GesturesStrategy gesturesStrategy;
 
   void Start()
   {
@@ -29,14 +29,14 @@ public class HandTextWriter : MonoBehaviour
     knobArranger = new KnobArranger(letters, knobs);
     knobArranger.Arrange(0f);
 
-    grabStrategy = new GrabStrategy(knobs, knobArranger, debug);
+    gesturesStrategy = new GesturesStrategy(knobs, knobArranger, debug);
 
     hands.OnHandUpdate += OnHandUpdate;
   }
 
   private void OnHandUpdate(IHand hand)
   {
-    grabStrategy.OnHandUpdate(hand);
+    gesturesStrategy.OnHandUpdate(hand);
   }
 
   void Update()

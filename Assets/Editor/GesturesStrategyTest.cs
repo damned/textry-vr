@@ -3,17 +3,17 @@ using NUnit.Framework;
 using UnityEngine;
 
 [TestFixture]
-public class GrabStrategyTest
+public class GesturesStrategyTest
 {
   private Knobs knobs;
   private Letters letters;
   private KnobArranger arranger;
-  private GrabStrategy strategy;
+  private GesturesStrategy strategy;
   private StubHand rightHand;
 
   // todo: thoughts from typing tests:
-  // already thinking grab strategy should do knobs.add_layer([knobs]); then
-  // grab strategy should hand off "knob grabbed" to whatever's going to manage
+  // already thinking gesture strategy should do knobs.add_layer([knobs]); then
+  // gesture strategy should hand off "knob grabbed" to whatever's going to manage
   //     what the next layer of knobs should actually be:  a text predicter?
 
   [SetUp]
@@ -34,7 +34,7 @@ public class GrabStrategyTest
     var firstAPosition = Knob("a").Position();
     Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
    
@@ -55,7 +55,7 @@ public class GrabStrategyTest
     Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
     Assert.AreEqual(KnobHandlingState.Unhandled, Knob("b").HandlingState);
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     rightHand.Open();
     strategy.OnHandUpdate(rightHand.At(Knob("a").Position()));
@@ -75,7 +75,7 @@ public class GrabStrategyTest
     CreateKnobs("a");
     var firstAPosition = Knob("a").Position();
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
     strategy.OnHandUpdate(rightHand.Closed());
@@ -91,7 +91,7 @@ public class GrabStrategyTest
     CreateKnobs("a");
     var firstAPosition = Knob("a").Position();
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     Assert.AreEqual(1, arranger.layers);
 
@@ -107,7 +107,7 @@ public class GrabStrategyTest
     var firstAPosition = Knob("a").Position();
     var firstCPosition = Knob("c").Position();
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
 
@@ -134,7 +134,7 @@ public class GrabStrategyTest
 
     Vector3 somewhereElse = new Vector3(9999, 6543, 7399);
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
@@ -151,7 +151,7 @@ public class GrabStrategyTest
   {
     CreateKnobs("a");
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
@@ -172,7 +172,7 @@ public class GrabStrategyTest
     var firstBPosition = Knob("b").Position();
     var firstCPosition = Knob("c").Position();
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     rightHand.Open();
     strategy.OnHandUpdate(rightHand.At(firstAPosition));
@@ -194,7 +194,7 @@ public class GrabStrategyTest
 
     var leftHand = new StubHand(HandSide.Left);
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
@@ -211,7 +211,7 @@ public class GrabStrategyTest
 
     var leftHand = new StubHand(HandSide.Left);
 
-    strategy = NewGrabStrategy();
+    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
@@ -241,9 +241,9 @@ public class GrabStrategyTest
     return found;
   }
 
-  private GrabStrategy NewGrabStrategy()
+  private GesturesStrategy NewGesturesStrategy()
   {
-    return new GrabStrategy(knobs, arranger, new StubDebug());
+    return new GesturesStrategy(knobs, arranger, new StubDebug());
   }
 
   private void CreateKnobs(params string[] allLetters)
