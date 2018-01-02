@@ -11,9 +11,10 @@ public class Knobs : MonoBehaviour
 
   private List<Knob> knobs = new List<Knob>();
 
-  public Knob Create(Letter letter, float x, float y, float z)
+  // extract Layer
+  public Knob Create(Letter letter, float x, float y, float z, int layer)
   {
-    Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z));
+    Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z), layer);
     knobs.Add(knob);
     return knob;
   }
@@ -64,5 +65,16 @@ public class Knobs : MonoBehaviour
       }
     });
     return closest;
+  }
+
+  public void Reset()
+  {
+    var knobsNotInFirstLayer = knobs.Where(knob => {
+      return knob.Layer != 0;
+    });
+    foreach (var knob in knobsNotInFirstLayer) {
+      knob.Delete();
+    };
+    knobs.RemoveAll(knob => knobsNotInFirstLayer.Contains(knob));
   }
 }

@@ -46,14 +46,20 @@ public class KnobArranger
         x += xSpacing;
       }
       index += 1;
-      var knob = knobs.Create(letter, x, y, z);
+      var knob = knobs.Create(letter, x, y, z, layers - 1);
       placement += knob.Name + ", ";
     });
     return placement;
   }
 
-    private object LayerLetters(string lastLetter)
-    {
-        return letters;
-    }
+  private object LayerLetters(string lastLetter)
+  {
+      return letters;
+  }
+
+  public void ResetLayers()
+  {
+    knobs.Reset();
+    layers = 1;
+  }
 }

@@ -24,8 +24,11 @@ public class Knob
   public KnobHandlingState HandlingState { get; private set; }
   private readonly Knobs knobs;
 
-  public Knob(Knobs knobs, GameObject gameObject, Vector3 where)
+  public int Layer { get; }
+
+  public Knob(Knobs knobs, GameObject gameObject, Vector3 where, int layer)
   {
+    this.Layer = layer;
     this.knobs = knobs;
     this.id = (++knobId);
     this.gameObject = gameObject;
@@ -67,6 +70,14 @@ public class Knob
     HandlingState = KnobHandlingState.Grabbed;
     UpdateColor();
     knobs.FadeOtherKnobs(this);
+  }
+
+  public void Delete()
+  {
+    if (Application.isEditor)
+      UnityEngine.Object.DestroyImmediate(gameObject);
+     else
+      UnityEngine.Object.Destroy(gameObject);
   }
 
   public void Touch()

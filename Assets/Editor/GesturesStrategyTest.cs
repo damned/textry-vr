@@ -222,7 +222,7 @@ public class GesturesStrategyTest
   }
 
   [Test]
-  public void grabbing_and_releasing_single_letter_generates_one_char_word()
+  public void grabbing_and_releasing_single_letter_generates_one_char_word_and_resets_layers()
   {
     CreateKnobs("a");
 
@@ -235,6 +235,7 @@ public class GesturesStrategyTest
     Assert.AreEqual(1, strategy.Words().Count);
     Assert.AreEqual("a", strategy.Words()[0]);
     Assert.AreEqual("", strategy.Text());
+    Assert.AreEqual(1, arranger.layers);
   }
 
   private Knob Knob(string letter, int index = 0)
