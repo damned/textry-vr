@@ -12,12 +12,11 @@ public class GesturesStrategy
 
   private readonly Gestures gestures; 
 
-  public GesturesStrategy(Knobs knobs, KnobArranger knobArranger, IDebug debug)
+  public GesturesStrategy(Gestures gestures, KnobArranger knobArranger, IDebug debug)
   {
     this.knobArranger = knobArranger;
     this.debug = debug;
-    this.knobs = knobs;
-    this.gestures = new Gestures(knobs);
+    this.gestures = gestures;
 
     gestures.GestureFor(HandSide.Right).OnGrab += OnGrab;
     gestures.GestureFor(HandSide.Left).OnGrab += OnGrab;
@@ -27,7 +26,7 @@ public class GesturesStrategy
   {
     // HARDCODE to continue working even though both hands updating - logic doesn't cope with right and left yet
     var side = HandSide.Right; // hand.Side()
-    var gesture = Gesture(side);
+    var gesture = gestures.GestureFor(side);
     
 
     debug.Log("hand side: " + hand.Side());
@@ -40,14 +39,9 @@ public class GesturesStrategy
     // instances - have a look sometime when on vive setup 
     gesture.hand = hand;
 
-    gesture.OnHandUpdate(hand, side);
+    gesture.OnHandUpdate(hand);
     debug.Log("text: " + text);
     return text;
-  }
-
-  public Gesture Gesture(HandSide side)
-  {
-    return gestures.GestureFor(side);
   }
 
   public bool IsGrabbing(HandSide side)
@@ -57,7 +51,6 @@ public class GesturesStrategy
 
   public void OnGrab(Knob knob)
   {
-    knobs.FadeOtherKnobs(knob); // move out to knob events: allows knobs dep to move from here
     layer += 1;
     text += knob.Text();
     string arrangement = knobArranger.Arrange(layer * 0.2f, knob.Text());

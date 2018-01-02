@@ -3,7 +3,6 @@ using UnityEngine;
 
 public delegate void KnobHandler(Knob knob);
 
-
 public class Gesture
 {
   public event KnobHandler OnGrab;
@@ -28,43 +27,7 @@ public class Gesture
     return side;
   }
 
-  public void Leave()
-  {
-    LeaveAny(grabbed);
-    grabbed = null;
-    LeaveAny(approached);
-    approached = null;
-    hand = null;
-  }
-
-  private void LeaveAny(Knob knob)
-  {
-    if (knob != null)
-    {
-      knob.Leave();
-    }
-  }
-
-  public void Grab(Knob knob)
-  {
-    grabbed = knob;
-    approached = null;
-    knob.Grab();
-    OnGrab(knob);
-  }
-
-  public void Touch(Knob knob)
-  {
-    approached = knob;
-    knob.Touch();
-  }
-
-  public void MoveGrabbedKnobToHand()
-  {
-    grabbed.GrabbingHandMove(hand.Centre());
-  }
-
-  public void OnHandUpdate(IHand hand, HandSide side)
+  public void OnHandUpdate(IHand hand)
   {
     if (!hand.IsPresent())
     {
@@ -83,13 +46,17 @@ public class Gesture
     HandNearKnob(closest);
   }
 
-
-  public void HandNotNearKnob()
+  private void MoveGrabbedKnobToHand()
   {
-    Leave();
+    grabbed.GrabbingHandMove(hand.Centre());
   }
 
-  public void HandNearKnob(Knob closest)
+  private void HandNotNearKnob()
+  {
+    LeaveKnob();
+  }
+
+  private void HandNearKnob(Knob closest)
   {
     if (hand.IsClosed())
     {
@@ -99,7 +66,7 @@ public class Gesture
         // debug.Log("Grab - approached: " + Gesture().approached);
         if (closest == approached)
         {
-          Grab(closest);
+          GrabKnob(closest);
         }
         approached = null;
       }
@@ -110,8 +77,39 @@ public class Gesture
     }
     else
     {
-      Leave();
-      Touch(closest);
+      LeaveKnob();
+      TouchKnob(closest);
     }
   }
+  private void GrabKnob(Knob knob)
+  {
+    grabbed = knob;
+    approached = null;
+    knob.Grab();
+    OnGrab(knob);
+  }
+
+  private void TouchKnob(Knob knob)
+  {
+    approached = knob;
+    knob.Touch();
+  }
+
+  private void LeaveKnob()
+  {
+    LeaveAny(grabbed);
+    grabbed = null;
+    LeaveAny(approached);
+    approached = null;
+    hand = null;
+  }
+
+  private void LeaveAny(Knob knob)
+  {
+    if (knob != null)
+    {
+      knob.Leave();
+    }
+  }
+
 }

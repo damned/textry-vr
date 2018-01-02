@@ -243,7 +243,8 @@ public class GesturesStrategyTest
 
   private GesturesStrategy NewGesturesStrategy()
   {
-    return new GesturesStrategy(knobs, arranger, new StubDebug());
+    var gestures = new Gestures(knobs);
+    return new GesturesStrategy(gestures, arranger, new StubDebug());
   }
 
   private void CreateKnobs(params string[] allLetters)

@@ -29,7 +29,9 @@ public class HandTextWriter : MonoBehaviour
     knobArranger = new KnobArranger(letters, knobs);
     knobArranger.Arrange(0f);
 
-    gesturesStrategy = new GesturesStrategy(knobs, knobArranger, debug);
+    var gestures = new Gestures(knobs);
+    
+    gesturesStrategy = new GesturesStrategy(gestures, knobArranger, debug);
 
     hands.OnHandUpdate += OnHandUpdate;
   }

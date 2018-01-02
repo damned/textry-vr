@@ -66,6 +66,7 @@ public class Knob
   {
     HandlingState = KnobHandlingState.Grabbed;
     UpdateColor();
+    knobs.FadeOtherKnobs(this);
   }
 
   public void Touch()
