@@ -9,6 +9,7 @@ public class GesturesStrategyTest
   private Letters letters;
   private KnobArranger arranger;
   private GesturesStrategy strategy;
+  private StubHand leftHand;
   private StubHand rightHand;
 
   // todo: thoughts from typing tests:
@@ -24,6 +25,7 @@ public class GesturesStrategyTest
     knobs = knobsObject.AddComponent<Knobs>();
     letters = lettersObject.AddComponent<Letters>();
     arranger = new KnobArranger(letters, knobs);
+    leftHand = new StubHand(HandSide.Left);
     rightHand = new StubHand(HandSide.Right);
   }
 
@@ -192,8 +194,6 @@ public class GesturesStrategyTest
   {
     CreateKnobs("a", "b");
 
-    var leftHand = new StubHand(HandSide.Left);
-
     strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
@@ -208,8 +208,6 @@ public class GesturesStrategyTest
   public void second_hand_presence_does_not_release_first_grab()
   {
     CreateKnobs("a", "b");
-
-    var leftHand = new StubHand(HandSide.Left);
 
     strategy = NewGesturesStrategy();
 
@@ -236,6 +234,37 @@ public class GesturesStrategyTest
     Assert.AreEqual("a", strategy.Words()[0]);
     Assert.AreEqual("", strategy.Text());
     Assert.AreEqual(1, arranger.layers);
+  }
+
+  [Test]
+  public void word_creation_continues_while_one_of_the_hands_retains_a_grab()
+  {
+    CreateKnobs("a", "b", "c");
+
+    strategy = NewGesturesStrategy();
+    
+    strategy.OnHandUpdate(rightHand.At(Knob("c", 0).Position()).Open());
+    strategy.OnHandUpdate(leftHand.Open());
+
+    strategy.OnHandUpdate(rightHand.Closed());
+    strategy.OnHandUpdate(leftHand.At(Knob("a", 1).Position()).Open());
+
+    strategy.OnHandUpdate(rightHand.Closed());
+    strategy.OnHandUpdate(leftHand.Closed());
+
+    strategy.OnHandUpdate(rightHand.Open().At(Knob("b", 2).Position()));
+    strategy.OnHandUpdate(leftHand.Closed());
+
+    strategy.OnHandUpdate(rightHand.Closed());
+    strategy.OnHandUpdate(leftHand.Open());
+
+    Assert.AreEqual(0, strategy.Words().Count);
+    Assert.AreEqual("cab", strategy.Text());
+
+    strategy.OnHandUpdate(rightHand.Open());
+    
+    Assert.AreEqual("cab", strategy.Words()[0]);
+    Assert.AreEqual("", strategy.Text());
   }
 
   private Knob Knob(string letter, int index = 0)

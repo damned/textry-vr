@@ -44,6 +44,8 @@ public class Knob
     }
   }
 
+  public bool Deleted { get; internal set; }
+
   public void GrabbingHandMove(Vector3 handPosition)
   {
     Debug.Log("hand z: " + handPosition.z);
@@ -75,9 +77,14 @@ public class Knob
   public void Delete()
   {
     if (Application.isEditor)
+    {
       UnityEngine.Object.DestroyImmediate(gameObject);
-     else
+    }
+    else
+    {
       UnityEngine.Object.Destroy(gameObject);
+    }
+    Deleted = true;
   }
 
   public void Touch()

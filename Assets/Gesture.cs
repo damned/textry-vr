@@ -79,7 +79,10 @@ public class Gesture
     else
     {
       LeaveKnob();
-      TouchKnob(closest);
+      if (!closest.Deleted)
+      {
+        TouchKnob(closest);
+      }
     }
   }
   private void GrabKnob(Knob knob)
@@ -98,14 +101,14 @@ public class Gesture
 
   private void LeaveKnob()
   {
+    LeaveAny(approached);
+    approached = null;
     if (grabbed != null)
     {
       grabbed.Leave();
+      grabbed = null;
       OnRelease(grabbed);
     }
-    grabbed = null;
-    LeaveAny(approached);
-    approached = null;
     hand = null;
   }
 

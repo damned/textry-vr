@@ -61,11 +61,17 @@ public class GesturesStrategy
 
   public void OnRelease(Knob knob)
   {
+    if (!gestures.AnyGrabs()) {
+      CompleteWord();
+    }
+  }
+
+  private void CompleteWord()
+  {
     words.Add(text);
     text = "";
     knobArranger.ResetLayers();
   }
-
 
   public string Text()
   {
