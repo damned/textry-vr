@@ -31,11 +31,21 @@ public class Knobs : MonoBehaviour
     transform.Translate(new Vector3(0f, 0f, -0.01f));
   }
 
-  public void FadeOtherKnobs(Knob referenceKnob)
+  public void OnKnobStateChange()
   {
+    var unhandledKnobs = new List<Knob>();
+    var anyGrabbed = knobs.Any(k => k.HandlingState == KnobHandlingState.Grabbed);
     foreach (var knob in knobs)
     {
-      if (knob != referenceKnob)
+      // maybe better to distribute context event info and let knob fade itself
+      if (knob.HandlingState == KnobHandlingState.Unhandled)
+      {
+        unhandledKnobs.Add(knob);
+      }
+    }
+    if (anyGrabbed)
+    {
+      foreach (var knob in unhandledKnobs)
       {
         knob.Fade(fadeLevel);
       }

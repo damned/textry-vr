@@ -45,6 +45,7 @@ public class Knob
   }
 
   public bool Deleted { get; internal set; }
+  public bool Faded { get; private set; }
 
   public void GrabbingHandMove(Vector3 handPosition)
   {
@@ -71,7 +72,7 @@ public class Knob
   {
     HandlingState = KnobHandlingState.Grabbed;
     UpdateColor();
-    knobs.FadeOtherKnobs(this);
+    knobs.OnKnobStateChange();
   }
 
   public void Delete()
@@ -107,6 +108,10 @@ public class Knob
   public void ChangeColour(Color color)
   {
     Renderer renderer = gameObject.GetComponent<Renderer>();
+    if (renderer == null)
+    {
+      return; // test mode
+    }
     Material material = new Material(Shader.Find("Standard"));
     TryToSetTransparentRenderMode(material);
     material.color = color;
@@ -129,6 +134,7 @@ public class Knob
   public void Fade(float fadeLevel)
   {
     ChangeColour(new Color(1f, 1f, 1f, fadeLevel));
+    Faded = true;
   }
 
   public string Text()

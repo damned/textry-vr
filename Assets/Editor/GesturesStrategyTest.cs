@@ -267,6 +267,24 @@ public class GesturesStrategyTest
     Assert.AreEqual("", strategy.Text());
   }
 
+  [Test]
+  public void knob_remains_grabbed_while_second_grab_made_by_other_hand()
+  {
+    CreateKnobs("a", "b");
+
+    strategy = NewGesturesStrategy();
+    
+    strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
+    strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()).Open());
+
+    Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a", 0).HandlingState);
+
+    strategy.OnHandUpdate(leftHand.Closed());
+    
+    Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a", 0).HandlingState);    
+  }
+
   private Knob Knob(string letter, int index = 0)
   {
     Knob found = null;
