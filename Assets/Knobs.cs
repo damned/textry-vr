@@ -10,6 +10,7 @@ public class Knobs : MonoBehaviour
   public float fadeLevel = 0.4f;
 
   private List<Knob> knobs = new List<Knob>();
+  private Nullable<Vector3> initialPosition = new Nullable<Vector3>();
 
   // extract Layer
   public Knob Create(Letter letter, float x, float y, float z, int layer)
@@ -22,12 +23,14 @@ public class Knobs : MonoBehaviour
   public void MoveAway()
   {
     Debug.Log("happening!!");
+    CaptureInitialPosition();
     transform.Translate(new Vector3(0f, 0f, 0.01f));
   }
 
   public void MoveCloser()
   {
     Debug.Log("happening!");
+    CaptureInitialPosition();
     transform.Translate(new Vector3(0f, 0f, -0.01f));
   }
 
@@ -101,5 +104,22 @@ public class Knobs : MonoBehaviour
       knob.Delete();
     };
     knobs.RemoveAll(knob => knobsNotInFirstLayer.Contains(knob));
+    ResetToInitialPosition();
+  }
+
+  private void CaptureInitialPosition()
+  {
+    if (!initialPosition.HasValue)
+    {
+      initialPosition = transform.localPosition;
+    }
+  }
+
+  private void ResetToInitialPosition()
+  {
+    if (initialPosition.HasValue)
+    {
+      transform.localPosition = initialPosition.Value;
+    }
   }
 }
