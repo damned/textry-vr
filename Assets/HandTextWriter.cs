@@ -26,7 +26,8 @@ public class HandTextWriter : MonoBehaviour
 
     debug.Log("knobs and letters: " + knobs + ", " + letters);
 
-    var layerCreator = new LetterBasedLayerCreator(letters, new ProbableAlphabeticPredictor());
+    var predictor = new DataBasedAlphabeticPredictor(EnglishWords.AsList());
+    var layerCreator = new LetterBasedLayerCreator(letters, predictor);
     knobArranger = new KnobArranger(letters, knobs, layerCreator);
     knobArranger.Arrange(0f);
 

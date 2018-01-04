@@ -51,6 +51,14 @@ public class DataBasedAlphabeticPredictorTest
     Assert.AreEqual("i", LettersToString(predictor.LettersAfter("jack")));
   }
 
+  [Test]
+  public void PredictsSecondLettersForAllWords()
+  {
+    var predictor = new DataBasedAlphabeticPredictor(Words("john", "jack"));
+
+    Assert.AreEqual("oa", LettersToString(predictor.LettersAfter("j")));
+  }
+
   private List<string> Words(params string [] words)
   {
     return words.ToList();

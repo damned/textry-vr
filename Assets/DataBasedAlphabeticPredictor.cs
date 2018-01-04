@@ -16,14 +16,18 @@ public class DataBasedAlphabeticPredictor : IAlphabeticPredictor
     {
       return AToZ();
     }
-    var next = new List<string>();
-    next.Add(ProbableWord(previousLetters)[previousLetters.Length].ToString());
-    return next;
+    var probableWords = ProbableWords(previousLetters);
+    return LettersAt(previousLetters.Length, probableWords);
   }
 
-  private string ProbableWord(string previousLetters)
+  private static List<string> LettersAt(int index, List<string> probableWords)
   {
-    return words.Find(w => w.StartsWith(previousLetters));
+    return probableWords.Select(word => word[index].ToString()).ToList();
+  }
+
+  private List<string> ProbableWords(string previousLetters)
+  {
+    return words.Where(w => w.StartsWith(previousLetters)).ToList();
   }
 
   private static List<string> AToZ()
