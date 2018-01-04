@@ -34,6 +34,12 @@ public class Knobs : MonoBehaviour
     transform.Translate(new Vector3(0f, 0f, -0.01f));
   }
 
+  public void MoveInZ(float z)
+  {
+    transform.Translate(new Vector3(0f, 0f, z));
+  }
+
+
   public void OnKnobStateChange()
   {
     if (AnyGrabbed())

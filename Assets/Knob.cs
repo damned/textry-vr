@@ -53,13 +53,10 @@ public class Knob
     Debug.Log("knob z: " + Z());
 
     float tolerance = 0.01f;
-    if (handPosition.z < (Z() - tolerance))
+    float separationInZ = handPosition.z - Z();
+    if (Math.Abs(separationInZ) > tolerance)
     {
-      knobs.MoveCloser();
-    }
-    else if (handPosition.z > (Z() + tolerance))
-    {
-      knobs.MoveAway();
+      knobs.MoveInZ(separationInZ);
     }
   }
 
