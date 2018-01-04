@@ -285,6 +285,27 @@ public class GesturesStrategyTest
     Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a", 0).HandlingState);    
   }
 
+  [Test]
+  public void moving_grabbing_hand_drags_knobs_in_z_to_match_location()
+  {
+    CreateKnobs("a");
+
+    strategy = NewGesturesStrategy();
+
+    var initialAPosition = Knob("a", 0).Position();
+
+    strategy.OnHandUpdate(rightHand.At(initialAPosition).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
+
+    Assert.AreEqual(initialAPosition, Knob("a", 0).Position());
+
+    var movedHandPosition = new Vector3(initialAPosition.x, initialAPosition.y, initialAPosition.z + 1);
+
+    strategy.OnHandUpdate(rightHand.At(movedHandPosition));
+    
+    Assert.AreEqual(movedHandPosition, Knob("a", 0).Position());    
+  }
+
   private Knob Knob(string letter, int index = 0)
   {
     Knob found = null;

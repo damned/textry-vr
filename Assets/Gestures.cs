@@ -14,16 +14,21 @@ public class Gestures
   public Gestures(params Gesture[] gestures)
   {
     this.gestures = new List<Gesture>(gestures);
+    foreach (var gesture in gestures)
+    {
+      gesture.OnGrabMove += GrabGestureMoved;
+      gesture.OnGrab += GrabMade;
+    }
   }
 
   public Gesture GestureFor(HandSide side)
   {
     foreach (var gesture in gestures)
     {
-        if (gesture.Side() == side)
-        {
-          return gesture;
-        }
+      if (gesture.Side() == side)
+      {
+        return gesture;
+      }
     };
     return null;
   }
@@ -31,5 +36,15 @@ public class Gestures
   public bool AnyGrabs()
   {
     return gestures.Any(g => g.IsGrabbing);
+  }
+
+  public void GrabGestureMoved(Gesture gesture)
+  {
+    gesture.grabbed.GrabbingHandMove(gesture.hand.Centre());
+  }
+
+  public void GrabMade(Knob knob)
+  {
+    // todo - understand latest grab
   }
 }
