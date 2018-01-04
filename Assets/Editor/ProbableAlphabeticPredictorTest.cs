@@ -6,13 +6,13 @@ using NUnit.Framework;
 using UnityEngine;
 
 [TestFixture]
-public class ProbableLayerCreatorTest
+public class ProbableAlphabeticPredictorTest
 {
   [Test]
   public void WithNoPreviousLetterNextLayerHasWholeAlphabet()
   {
-    var creator = new ProbableLayerCreator(A.Letters(AToZ()));
-    var next = creator.LayerLetters("");
+    var predictor = new ProbableAlphabeticPredictor();
+    var next = predictor.LettersAfter("");
 
     Assert.AreEqual("abcdefghijklmnopqrstuvwxyz", LettersToString(next));
   }
@@ -21,8 +21,8 @@ public class ProbableLayerCreatorTest
   [Test]
   public void AfterAVowelIsProbablyAConsonant()
   {
-    var creator = new ProbableLayerCreator(A.Letters(AToZ()));
-    var next = creator.LayerLetters("i");
+    var predictor = new ProbableAlphabeticPredictor();
+    var next = predictor.LettersAfter("i");
 
     Assert.AreEqual("bcdfghjklmnpqrstvwxyz", LettersToString(next));
   }
@@ -30,9 +30,8 @@ public class ProbableLayerCreatorTest
   [Test]
   public void AfterAConsonantIsProbablyAVowel()
   {
-    var creator = new ProbableLayerCreator(A.Letters(AToZ()));
-
-    var next = creator.LayerLetters("t");
+    var predictor = new ProbableAlphabeticPredictor();
+    var next = predictor.LettersAfter("t");
 
     Assert.AreEqual("aeiou", LettersToString(next));
   }
@@ -42,14 +41,13 @@ public class ProbableLayerCreatorTest
     return "abcdefghijklmnopqrstuvwxyz".Select(ch => ch.ToString()).ToList();
   }
 
-  private static string LettersToString(List<Letter> next)
+  private static string LettersToString(List<string> next)
   {
     var nextLetters = "";
     foreach (var letter in next)
     {
-      nextLetters += letter.letter;
+      nextLetters += letter;
     }
-
     return nextLetters;
   }
 }
