@@ -2,11 +2,11 @@ using System;
 using UnityEngine;
 
 public delegate void KnobHandler(Knob knob);
-public delegate void GestureHandler(Gesture gesture);
+public delegate void GestureHandler(Gesture gesture, Knob knob);
 
 public class Gesture
 {
-  public event KnobHandler OnGrab;
+  public event GestureHandler OnGrab;
   public event KnobHandler OnRelease;
   public event GestureHandler OnGrabMove;
 
@@ -70,7 +70,7 @@ public class Gesture
       }
       if (IsGrabbing)
       {
-        OnGrabMove(this);
+        OnGrabMove(this, grabbed);
       }
     }
     else
@@ -88,7 +88,7 @@ public class Gesture
     grabbed = knob;
     approached = null;
     knob.Grab();
-    OnGrab(knob);
+    OnGrab(this, knob);
   }
 
   private void TouchKnob(Knob knob)

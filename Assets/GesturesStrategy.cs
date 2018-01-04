@@ -51,7 +51,7 @@ public class GesturesStrategy
     return gestures.GestureFor(side).IsGrabbing;
   }
 
-  public void OnGrab(Knob knob)
+  public void OnGrab(Gesture gesture, Knob knob)
   {
     layer += 1;
     text += knob.Text();

@@ -306,6 +306,37 @@ public class GesturesStrategyTest
     Assert.AreEqual(movedHandPosition, Knob("a", 0).Position());    
   }
 
+  [Test]
+  public void knobs_move_to_latest_grab_only()
+  {
+    CreateKnobs("a", "b");
+
+    strategy = NewGesturesStrategy();
+
+    var initialAPosition = Knob("a", 0).Position();
+
+    strategy.OnHandUpdate(rightHand.At(initialAPosition).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
+
+    var initialBPosition = Knob("b", 1).Position();
+
+    strategy.OnHandUpdate(leftHand.At(initialBPosition).Open());
+    strategy.OnHandUpdate(leftHand.Closed());
+
+    Vector3 movedRightPosition = MovedInZ(initialAPosition, 0.5f);
+    Vector3 movedLeftPosition = MovedInZ(initialBPosition, 0.7f);
+
+    strategy.OnHandUpdate(leftHand.At(movedLeftPosition));
+    strategy.OnHandUpdate(rightHand.At(movedRightPosition));
+
+    Assert.AreEqual(movedLeftPosition, Knob("b", 1).Position());
+  }
+
+  private static Vector3 MovedInZ(Vector3 position, float offset)
+  { 
+    return new Vector3(position.x, position.y, position.z + offset);
+  }
+
   private Knob Knob(string letter, int index = 0)
   {
     Knob found = null;

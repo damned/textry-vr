@@ -6,6 +6,7 @@ public class Gestures
 {
   private readonly Knobs knobs;
   private readonly List<Gesture> gestures;
+  private HandSide latestGrabSide;
 
   public Gestures(Knobs knobs) : this(new Gesture [] {new Gesture(HandSide.Right, knobs), new Gesture(HandSide.Left, knobs)})
   {
@@ -38,13 +39,21 @@ public class Gestures
     return gestures.Any(g => g.IsGrabbing);
   }
 
-  public void GrabGestureMoved(Gesture gesture)
+  public void GrabGestureMoved(Gesture gesture, Knob grabbedKnob)
   {
-    gesture.grabbed.GrabbingHandMove(gesture.hand.Centre());
+    if (IsControllingGrab(gesture))
+    {
+      grabbedKnob.GrabbingHandMove(gesture.hand.Centre());
+    }
   }
 
-  public void GrabMade(Knob knob)
+  private bool IsControllingGrab(Gesture gesture)
   {
-    // todo - understand latest grab
+    return latestGrabSide == gesture.Side();
+  }
+
+  public void GrabMade(Gesture gesture, Knob knob)
+  {
+    latestGrabSide = gesture.hand.Side();
   }
 }
