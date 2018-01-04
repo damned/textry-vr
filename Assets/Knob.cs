@@ -9,7 +9,7 @@ public class Knob
 
   private static Dictionary<KnobHandlingState, Color> handlingStateColors = new Dictionary<KnobHandlingState, Color>()
   {
-    { KnobHandlingState.Unhandled, Color.white },
+    { KnobHandlingState.Unhandled, Color.yellow },
     { KnobHandlingState.Touched, Color.black },
     { KnobHandlingState.Grabbed, Color.red }
   };
@@ -144,7 +144,7 @@ public class Knob
     return "" + id + ": '" + Text() + "'@" + Position();
   }
 
-  private void UpdateColor()
+  public void UpdateColor()
   {
     ChangeColour(handlingStateColors[HandlingState]);
   }

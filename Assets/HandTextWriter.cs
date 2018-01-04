@@ -26,7 +26,8 @@ public class HandTextWriter : MonoBehaviour
 
     debug.Log("knobs and letters: " + knobs + ", " + letters);
 
-    knobArranger = new KnobArranger(letters, knobs);
+    var layerCreator = new ProbableLayerCreator(letters);
+    knobArranger = new KnobArranger(letters, knobs, layerCreator);
     knobArranger.Arrange(0f);
 
     var gestures = new Gestures(knobs);

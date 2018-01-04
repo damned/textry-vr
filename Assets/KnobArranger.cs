@@ -5,9 +5,11 @@ public class KnobArranger
   private Letters letters;
   private Knobs knobs;
   public int layers = 0;
+  private readonly ILayerCreator layerCreator;
 
-  public KnobArranger(Letters letters, Knobs knobs)
+  public KnobArranger(Letters letters, Knobs knobs, ILayerCreator layerCreator)
   {
+    this.layerCreator = layerCreator;
     this.letters = letters;
     this.knobs = knobs;
   }
@@ -30,10 +32,10 @@ public class KnobArranger
     var xIndex = 0;
     var z = -1f + zOffset;
 
-    var layerLetters = LayerLetters(lastLetter);
+    var layerLetters = layerCreator.LayerLetters(lastLetter);
 
     string placement = "placed: ";
-    letters.ForEach((letter) =>
+    layerLetters.ForEach((letter) =>
     {
       xIndex = index % slots;
       if (xIndex == 0)
@@ -50,11 +52,6 @@ public class KnobArranger
       placement += knob.Name + ", ";
     });
     return placement;
-  }
-
-  private object LayerLetters(string lastLetter)
-  {
-      return letters;
   }
 
   public void ResetLayers()

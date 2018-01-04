@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Builders
@@ -12,6 +13,21 @@ namespace Builders
       letter.letter = s;
 
       return letter;
+    }
+
+    internal static Letters Letters(List<string> alphabet)
+    {
+      GameObject lettersGo = new GameObject();
+      var letters = lettersGo.AddComponent<Letters>();
+      foreach(var letter in alphabet)
+      {
+        var letterGo = new GameObject();
+        var letterObject = letterGo.AddComponent<Letter>();
+        letterObject.letter = letter;
+        letterGo.transform.parent = lettersGo.transform;
+      }
+
+      return letters;
     }
   }
 }

@@ -7,7 +7,7 @@ public class Knobs : MonoBehaviour
 {
   public delegate void KnobHandler(Knob knob);
 
-  public float fadeLevel = 0.4f;
+  public float fadeLevel = 0.1f;
 
   private List<Knob> knobs = new List<Knob>();
   private Nullable<Vector3> initialPosition = new Nullable<Vector3>();
@@ -17,21 +17,8 @@ public class Knobs : MonoBehaviour
   {
     Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z), layer);
     knobs.Add(knob);
+    knob.UpdateColor();
     return knob;
-  }
-
-  public void MoveAway()
-  {
-    Debug.Log("happening!!");
-    CaptureInitialPosition();
-    transform.Translate(new Vector3(0f, 0f, 0.01f));
-  }
-
-  public void MoveCloser()
-  {
-    Debug.Log("happening!");
-    CaptureInitialPosition();
-    transform.Translate(new Vector3(0f, 0f, -0.01f));
   }
 
   public void MoveInZ(float z)

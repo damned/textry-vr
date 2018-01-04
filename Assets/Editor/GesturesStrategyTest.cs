@@ -24,7 +24,7 @@ public class GesturesStrategyTest
     var lettersObject = new GameObject("letters");
     knobs = knobsObject.AddComponent<Knobs>();
     letters = lettersObject.AddComponent<Letters>();
-    arranger = new KnobArranger(letters, knobs);
+    arranger = new KnobArranger(letters, knobs, new PredictiveLayerCreator(letters));
     leftHand = new StubHand(HandSide.Left);
     rightHand = new StubHand(HandSide.Right);
   }
