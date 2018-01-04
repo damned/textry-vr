@@ -11,12 +11,13 @@ public class ProbableAlphabeticPredictor : IAlphabeticPredictor
 
   private static List<string> alphabet = AToZ();
 
-  public List<string> LettersAfter(string lastLetter)
+  public List<string> LettersAfter(string previousLetters)
   {
-    if (lastLetter == "")
+    if (previousLetters == "")
     {
       return FilteredLetters(letter => true);
     }
+    var lastLetter = previousLetters[previousLetters.Length - 1].ToString();
     if (vowels.Contains(lastLetter))
     {
       return FilteredLetters(ConsonantsFilter());

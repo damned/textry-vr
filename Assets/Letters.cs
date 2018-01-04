@@ -6,7 +6,6 @@ public class Letters : MonoBehaviour
 
   public void ForEach(LetterHandler handler)
   {
-    Debug.Log("sdfadddasdfxxxxxxxxxxxxxxxxx");
     foreach (Transform letterTransform in transform)
     {
       // Debug.Log("letter transform: " + letterTransform);

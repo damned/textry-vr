@@ -36,6 +36,24 @@ public class ProbableAlphabeticPredictorTest
     Assert.AreEqual("aeiou", LettersToString(next));
   }
 
+  [Test]
+  public void AfterSeveralLettersPredictionIsBasedOnLastConsonant()
+  {
+    var predictor = new ProbableAlphabeticPredictor();
+    var next = predictor.LettersAfter("aaaaoooooooooooh");
+
+    Assert.AreEqual("aeiou", LettersToString(next));
+  }
+
+  [Test]
+  public void AfterSeveralLettersPredictionIsBasedOnLastVowel()
+  {
+    var predictor = new ProbableAlphabeticPredictor();
+    var next = predictor.LettersAfter("frnngghhha");
+
+    Assert.AreEqual("bcdfghjklmnpqrstvwxyz", LettersToString(next));
+  }
+
   private List<string> AToZ()
   {
     return "abcdefghijklmnopqrstuvwxyz".Select(ch => ch.ToString()).ToList();

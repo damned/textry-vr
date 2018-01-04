@@ -22,9 +22,9 @@ public class LetterBasedLayerCreator : ILayerCreator
     });
   }
 
-  public List<Letter> LayerLetters(string lastLetter)
+  public List<Letter> LayerLetters(string previousLetters)
   {
-    return LetterObjectsOf(predictor.LettersAfter(lastLetter));
+    return LetterObjectsOf(predictor.LettersAfter(previousLetters));
   }
 
   private List<Letter> LetterObjectsOf(List<string> letters)
