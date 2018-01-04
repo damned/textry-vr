@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
 
@@ -75,25 +76,36 @@ public class VrtkHand : MonoBehaviour, IHand
       grabStrength = 0f;
     }
 
+    static private List<string> validControllerNames = new List<string>(new string [] {
+      "Controller (left)",  // vrtk  steam vr
+      "Controller (right)",
+      "LeftHand",           // vrtk simulator
+      "RightHand"
+    });
+    static private List<string> validControllerParentNames = new List<string>(new string [] {
+      "[CameraRig]",         // vrtk  steam vr
+      "VRSimulatorCameraRig" // vrtk simulator
+    });
+
     private Transform ControllerTransform(GameObject controller)
     {
-        GameObject controllerModel = controller;
-        GameObject controllerParent = controllerModel.transform.parent.gameObject;
+      GameObject controllerModel = controller;
+      GameObject controllerParent = controllerModel.transform.parent.gameObject;
 
-        if (controllerModel.name.StartsWith("Controller") && controllerParent.name.Equals("[CameraRig]")) {
-            // Debug.Log("We appear to have controller reference within sensed play area");
-        }
-        else {
-            Debug.LogError("Hmm controller event hierarchy wasn't as we expected :/  was trying to find moving controller whose local position reflected un-transformed sensed location");
-            Debug.LogError("expected controller: " + controllerModel.name);
-            Debug.LogError("expected play area object (camera rig): " + controllerParent.name);
-        }
+      if (validControllerNames.Contains(controllerModel.name) && validControllerParentNames.Contains(controllerParent.name)) {
+        // Debug.Log("We appear to have controller reference within sensed play area");
+      }
+      else {
+        Debug.LogError("Hmm controller event hierarchy wasn't as we expected :/  was trying to find moving controller whose local position reflected un-transformed sensed location");
+        Debug.LogError("expected controller: " + controllerModel.name);
+        Debug.LogError("expected play area object (camera rig): " + controllerParent.name);
+      }
 
-        Transform controllerTransform = controllerModel.transform;
+      Transform controllerTransform = controllerModel.transform;
 
-        // Debug.Log("clicked! at " + controllerTransform.position + " (local " + controllerTransform.localPosition + ")");
+      // Debug.Log("clicked! at " + controllerTransform.position + " (local " + controllerTransform.localPosition + ")");
 
-        return controllerTransform;
+      return controllerTransform;
     }
 
     public HandSide Side()
