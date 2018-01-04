@@ -33,8 +33,23 @@ public class Knobs : MonoBehaviour
 
   public void OnKnobStateChange()
   {
+    if (AnyGrabbed())
+    {
+      Fade(UnhandledKnobs());
+    }
+  }
+
+  private void Fade(List<Knob> unhandledKnobs)
+  {
+    foreach (var knob in unhandledKnobs)
+    {
+      knob.Fade(fadeLevel);
+    }
+  }
+
+  private List<Knob> UnhandledKnobs()
+  {
     var unhandledKnobs = new List<Knob>();
-    var anyGrabbed = knobs.Any(k => k.HandlingState == KnobHandlingState.Grabbed);
     foreach (var knob in knobs)
     {
       // maybe better to distribute context event info and let knob fade itself
@@ -43,13 +58,13 @@ public class Knobs : MonoBehaviour
         unhandledKnobs.Add(knob);
       }
     }
-    if (anyGrabbed)
-    {
-      foreach (var knob in unhandledKnobs)
-      {
-        knob.Fade(fadeLevel);
-      }
-    }
+
+    return unhandledKnobs;
+  }
+
+  private bool AnyGrabbed()
+  {
+    return knobs.Any(k => k.HandlingState == KnobHandlingState.Grabbed);
   }
 
   public void ForEach(KnobHandler handler)
