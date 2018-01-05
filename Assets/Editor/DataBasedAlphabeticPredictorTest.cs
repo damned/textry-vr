@@ -52,6 +52,14 @@ public class DataBasedAlphabeticPredictorTest
   }
 
   [Test]
+  public void SuggestedNextLettersAreLimitedToOnePerLetter()
+  {
+    var predictor = new DataBasedAlphabeticPredictor(Words("jackie", "jaffie", "jazzy"));
+
+    Assert.AreEqual("a", LettersToString(predictor.LettersAfter("j")));
+  }
+
+  [Test]
   public void PredictsSecondLettersForAllWords()
   {
     var predictor = new DataBasedAlphabeticPredictor(Words("john", "jack"));

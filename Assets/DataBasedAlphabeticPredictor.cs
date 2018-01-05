@@ -17,17 +17,17 @@ public class DataBasedAlphabeticPredictor : IAlphabeticPredictor
       return AToZ();
     }
     var probableWords = ProbableWords(previousLetters);
-    return LettersAt(previousLetters.Length, probableWords);
+    return LettersAt(previousLetters.Length, probableWords).Distinct().ToList();
   }
 
-  private static List<string> LettersAt(int index, List<string> probableWords)
+  private static IEnumerable<string> LettersAt(int index, IEnumerable<string> probableWords)
   {
-    return probableWords.Select(word => word[index].ToString()).ToList();
+    return probableWords.Select(word => word[index].ToString());
   }
 
-  private List<string> ProbableWords(string previousLetters)
+  private IEnumerable<string> ProbableWords(string previousLetters)
   {
-    return words.Where(w => w.StartsWith(previousLetters)).ToList();
+    return words.Where(w => w.StartsWith(previousLetters));
   }
 
   private static List<string> AToZ()
