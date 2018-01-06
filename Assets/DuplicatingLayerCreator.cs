@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-public class PredictiveLayerCreator : ILayerCreator
+public class DuplicatingLayerCreator : ILayerCreator
 {
   private readonly Letters letters;
 
-  public PredictiveLayerCreator(Letters letters)
+  public DuplicatingLayerCreator(Letters letters)
   {
     this.letters = letters;
   }
