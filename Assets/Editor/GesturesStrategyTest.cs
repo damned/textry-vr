@@ -314,7 +314,16 @@ public class GesturesStrategyTest
   [Test]
   public void updates_latest_touch_created_layer_by_moving_within_previous_layer_to_touch_another()
   {
-    // xxxxxx
+    CreateKnobs("a", "b");
+    
+    strategy.OnHandUpdate(rightHand.At(Knob("b", 0).Position()).Open());
+    strategy.OnHandUpdate(rightHand.Closed());
+
+    strategy.OnHandUpdate(leftHand.At(Knob("a", 1).Position()).Open());
+    strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()));
+
+    Assert.AreEqual("bb", strategy.Text());
+    Assert.AreEqual(3, knobs.LayerCount);
   }
 
   private static Vector3 MovedInZ(Vector3 position, float offset)
