@@ -71,16 +71,26 @@ public class GesturesStrategy
   {
     if (gestures.AnyGrabs())
     {
-      if (knob.Layer >= layer)
+      if (KnobInLastLayer(knob))
       {
         AddLayer(knob, byTouch: true);
       }
-      else if (knob.Layer == layer - 1)
+      else if (KnobInPenultimateLayer(knob))
       {
         RemoveLayer();
         AddLayer(knob, byTouch: true);
       }
     }
+  }
+
+  private bool KnobInPenultimateLayer(Knob knob)
+  {
+    return knob.Layer == layer - 1;
+  }
+
+  private bool KnobInLastLayer(Knob knob)
+  {
+    return knob.Layer == layer;
   }
 
   public void OnRelease(Knob knob)
