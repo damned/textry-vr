@@ -27,6 +27,8 @@ public class GesturesStrategyTest
     arranger = new KnobArranger(letters, knobs, new PredictiveLayerCreator(letters));
     leftHand = new StubHand(HandSide.Left);
     rightHand = new StubHand(HandSide.Right);
+    var gestures = new Gestures(knobs);
+    strategy =new GesturesStrategy(gestures, arranger, new StubDebug());
   }
 
   [Test]
@@ -35,8 +37,6 @@ public class GesturesStrategyTest
     CreateKnobs("a");
     var firstAPosition = Knob("a").Position();
     Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
-
-    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
    
@@ -57,8 +57,6 @@ public class GesturesStrategyTest
     Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
     Assert.AreEqual(KnobHandlingState.Unhandled, Knob("b").HandlingState);
 
-    strategy = NewGesturesStrategy();
-
     rightHand.Open();
     strategy.OnHandUpdate(rightHand.At(Knob("a").Position()));
    
@@ -77,8 +75,6 @@ public class GesturesStrategyTest
     CreateKnobs("a");
     var firstAPosition = Knob("a").Position();
 
-    strategy = NewGesturesStrategy();
-
     strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
     strategy.OnHandUpdate(rightHand.Closed());
     strategy.OnHandUpdate(rightHand);
@@ -93,8 +89,6 @@ public class GesturesStrategyTest
     CreateKnobs("a");
     var firstAPosition = Knob("a").Position();
 
-    strategy = NewGesturesStrategy();
-
     Assert.AreEqual(1, arranger.layers);
 
     strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
@@ -108,8 +102,6 @@ public class GesturesStrategyTest
     CreateKnobs("a", "b", "c");
     var firstAPosition = Knob("a").Position();
     var firstCPosition = Knob("c").Position();
-
-    strategy = NewGesturesStrategy();
 
     Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
 
@@ -136,8 +128,6 @@ public class GesturesStrategyTest
 
     Vector3 somewhereElse = new Vector3(9999, 6543, 7399);
 
-    strategy = NewGesturesStrategy();
-
     strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
 
@@ -152,8 +142,6 @@ public class GesturesStrategyTest
   public void need_to_release_grabbed_knob_when_hand_no_longer_present()
   {
     CreateKnobs("a");
-
-    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
@@ -174,8 +162,6 @@ public class GesturesStrategyTest
     var firstBPosition = Knob("b").Position();
     var firstCPosition = Knob("c").Position();
 
-    strategy = NewGesturesStrategy();
-
     rightHand.Open();
     strategy.OnHandUpdate(rightHand.At(firstAPosition));
     strategy.OnHandUpdate(rightHand.At(firstBPosition));
@@ -194,8 +180,6 @@ public class GesturesStrategyTest
   {
     CreateKnobs("a", "b");
 
-    strategy = NewGesturesStrategy();
-
     strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
     strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()).Open());
@@ -209,8 +193,6 @@ public class GesturesStrategyTest
   {
     CreateKnobs("a", "b");
 
-    strategy = NewGesturesStrategy();
-
     strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
     strategy.OnHandUpdate(leftHand.At(Knob("b", 0).Position()).Open());
@@ -223,8 +205,6 @@ public class GesturesStrategyTest
   public void grabbing_and_releasing_single_letter_generates_one_char_word_and_resets_layers()
   {
     CreateKnobs("a");
-
-    strategy = NewGesturesStrategy();
 
     strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
@@ -241,8 +221,6 @@ public class GesturesStrategyTest
   {
     CreateKnobs("a", "b", "c");
 
-    strategy = NewGesturesStrategy();
-    
     strategy.OnHandUpdate(rightHand.At(Knob("c", 0).Position()).Open());
     strategy.OnHandUpdate(leftHand.Open());
 
@@ -272,8 +250,6 @@ public class GesturesStrategyTest
   {
     CreateKnobs("a", "b");
 
-    strategy = NewGesturesStrategy();
-    
     strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
     strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()).Open());
@@ -289,8 +265,6 @@ public class GesturesStrategyTest
   public void moving_grabbing_hand_drags_knobs_in_z_to_match_location()
   {
     CreateKnobs("a");
-
-    strategy = NewGesturesStrategy();
 
     var initialAPosition = Knob("a", 0).Position();
 
@@ -310,8 +284,6 @@ public class GesturesStrategyTest
   public void knobs_move_to_latest_grab_only()
   {
     CreateKnobs("a", "b");
-
-    strategy = NewGesturesStrategy();
 
     var initialAPosition = Knob("a", 0).Position();
 
@@ -337,8 +309,6 @@ public class GesturesStrategyTest
   {
     CreateKnobs("a", "b");
     
-    strategy = NewGesturesStrategy();
-
     strategy.OnHandUpdate(rightHand.At(Knob("b", 0).Position()).Open());
     strategy.OnHandUpdate(rightHand.Closed());
 
@@ -376,12 +346,6 @@ public class GesturesStrategyTest
       throw new InvalidOperationException("not a named knob: " + letter);
     }
     return found;
-  }
-
-  private GesturesStrategy NewGesturesStrategy()
-  {
-    var gestures = new Gestures(knobs);
-    return new GesturesStrategy(gestures, arranger, new StubDebug());
   }
 
   private void CreateKnobs(params string[] allLetters)
