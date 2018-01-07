@@ -7,7 +7,7 @@ public class Knobs : MonoBehaviour
 {
   public delegate void KnobHandler(Knob knob);
 
-  public float fadeLevel = 0.05f;
+  public float fadeLevel = 0.1f;
 
   private List<Knob> knobs = new List<Knob>();
   private Nullable<Vector3> initialPosition = new Nullable<Vector3>();
