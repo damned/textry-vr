@@ -347,12 +347,6 @@ public class GesturesStrategyTest
     Assert.AreEqual(3, knobs.LayerCount);
   }
 
-  // [Test]
-  public void updates_latest_touch_created_layer_by_moving_within_previous_layer_to_touch_another()
-  {
-    // xxxxxx
-  }
-
   private static Vector3 MovedInZ(Vector3 position, float offset)
   { 
     return new Vector3(position.x, position.y, position.z + offset);

@@ -12,7 +12,7 @@ public class Gesture
   public event GestureHandler OnGrabMove;
 
   public Knob grabbed = null;
-  private Knob touched;
+  public Knob approached;
   public IHand hand;
 
   private readonly HandSide side;
@@ -62,12 +62,12 @@ public class Gesture
       if (closest != grabbed)
       {
         // debug.Log("Closest: " + closest);
-        // debug.Log("Grab - touched: " + touched);
-        if (closest == touched)
+        // debug.Log("Grab - approached: " + Gesture().approached);
+        if (closest == approached)
         {
           GrabKnob(closest);
         }
-        touched = null;
+        approached = null;
       }
       if (IsGrabbing)
       {
@@ -87,22 +87,22 @@ public class Gesture
   private void GrabKnob(Knob knob)
   {
     grabbed = knob;
-    touched = null; // rename to touched
+    approached = null; // rename to touched
     knob.Grab();
     OnGrab(this, knob);
   }
 
   private void TouchKnob(Knob knob)
   {
-    touched = knob;
+    approached = knob;
     knob.Touch();
     OnTouch(this, knob);
   }
 
   private void LeaveKnob()
   {
-    LeaveAny(touched);
-    touched = null;
+    LeaveAny(approached);
+    approached = null;
     if (grabbed != null)
     {
       grabbed.Leave();
