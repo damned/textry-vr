@@ -59,10 +59,4 @@ public class KnobArranger
     knobs.Reset();
     layers = 1;
   }
-
-  public void RemoveLayer()
-  {
-    knobs.RemoveLayer();
-    layers -= 1;
-  }
 }

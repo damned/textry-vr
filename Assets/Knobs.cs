@@ -96,31 +96,17 @@ public class Knobs : MonoBehaviour
 
   public void Reset()
   {
-    RemoveKnobs(knobs.Where(knob =>
-    {
+    var knobsNotInFirstLayer = knobs.Where(knob => {
       return knob.Layer != 0;
-    }));
+    });
+    foreach (var knob in knobsNotInFirstLayer) {
+      knob.Delete();
+    };
+    knobs.RemoveAll(knob => knobsNotInFirstLayer.Contains(knob));
     LayerCount = 1;
     ResetToInitialPosition();
   }
 
-  public void RemoveLayer()
-  {
-    RemoveKnobs(knobs.Where(knob =>
-    {
-      return knob.Layer == LayerCount;
-    }));
-    LayerCount -= 1;
-  }
-
-  private void RemoveKnobs(IEnumerable<Knob> knobsToRemove)
-  {
-    foreach (var knob in knobsToRemove)
-    {
-      knob.Delete();
-    };
-    knobs.RemoveAll(knob => knobsToRemove.Contains(knob));
-  }
   private void CaptureInitialPosition()
   {
     if (!initialPosition.HasValue)

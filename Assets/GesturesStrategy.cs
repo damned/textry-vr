@@ -67,19 +67,22 @@ public class GesturesStrategy
     return grabbedLayer == layer;
   }
 
+  private void AddLayer(Knob knob, bool byTouch)
+  {
+    layer += 1;
+    if (!byTouch) {
+      grabbedLayer = layer;
+    }
+    text += knob.Text();
+    string arrangement = knobArranger.Arrange(layer * 0.2f, text);
+    debug.Log(arrangement);
+  }
+
   public void OnTouch(Gesture gesture, Knob knob)
   {
-    if (gestures.AnyGrabs())
+    if (gestures.AnyGrabs() && knob.Layer >= layer)
     {
-      if (knob.Layer >= layer)
-      {
-        AddLayer(knob, byTouch: true);
-      }
-      else if (knob.Layer == layer - 1)
-      {
-        RemoveLayer();
-        AddLayer(knob, byTouch: true);
-      }
+      AddLayer(knob, byTouch: true);
     }
   }
 
@@ -95,24 +98,6 @@ public class GesturesStrategy
     words.Add(text);
     text = "";
     knobArranger.ResetLayers();
-  }
-
-  private void RemoveLayer()
-  {
-    layer -= 1;
-    text = text.Substring(0, text.Length - 1);
-    knobArranger.RemoveLayer();
-  }
-
-  private void AddLayer(Knob knob, bool byTouch)
-  {
-    layer += 1;
-    if (!byTouch) {
-      grabbedLayer = layer;
-    }
-    text += knob.Text();
-    string arrangement = knobArranger.Arrange(layer * 0.2f, text);
-    debug.Log(arrangement);
   }
 
   public string Text()
