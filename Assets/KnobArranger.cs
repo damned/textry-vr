@@ -19,9 +19,9 @@ public class KnobArranger
   public string Arrange(float zOffset, string lastLetter = "")
   {
     layers += 1;
-    var ySpacing = 0.06f;
-    var xSpacing = 0.1f;
-    var yOffset = -0f;
+    var ySpacing = 0.05f;
+    var xSpacing = 0.08f;
+    var yOffset = -0.2f;
     var xOffset = 0f;
     var slots = 6;
     var index = 0;

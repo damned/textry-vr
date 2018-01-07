@@ -55,7 +55,7 @@ public class GesturesStrategy
   {
     layer += 1;
     text += knob.Text();
-    string arrangement = knobArranger.Arrange(layer * 0.2f, text);
+    string arrangement = knobArranger.Arrange(layer * 0.08f, text);
     debug.Log(arrangement);
   }
 
