@@ -9,12 +9,11 @@ public class GesturesStrategy
   private readonly KnobArranger knobArranger;
   
   private int layer = 0;
-  private int grabbedLayer = 0;
   private string text = ""; 
 
   private readonly Gestures gestures;
   private readonly List<string> words = new List<string>();
-  
+
   public GesturesStrategy(Gestures gestures, KnobArranger knobArranger, IDebug debug)
   {
     this.knobArranger = knobArranger;
@@ -26,8 +25,6 @@ public class GesturesStrategy
     gestures.GestureFor(HandSide.Left).OnGrab += OnGrab;
     gestures.GestureFor(HandSide.Right).OnRelease += OnRelease;
     gestures.GestureFor(HandSide.Left).OnRelease += OnRelease;
-    gestures.GestureFor(HandSide.Right).OnTouch += OnTouch;
-    gestures.GestureFor(HandSide.Left).OnTouch += OnTouch;
   }
 
   public string OnHandUpdate(IHand hand)
@@ -56,34 +53,10 @@ public class GesturesStrategy
 
   public void OnGrab(Gesture gesture, Knob knob)
   {
-    if (LastLayerWasCreatedByGrab())
-    {
-      AddLayer(knob, byTouch: false);
-    }
-  }
-
-  private bool LastLayerWasCreatedByGrab()
-  {
-    return grabbedLayer == layer;
-  }
-
-  private void AddLayer(Knob knob, bool byTouch)
-  {
     layer += 1;
-    if (!byTouch) {
-      grabbedLayer = layer;
-    }
     text += knob.Text();
     string arrangement = knobArranger.Arrange(layer * 0.2f, text);
     debug.Log(arrangement);
-  }
-
-  public void OnTouch(Gesture gesture, Knob knob)
-  {
-    if (gestures.AnyGrabs() && knob.Layer >= layer)
-    {
-      AddLayer(knob, byTouch: true);
-    }
   }
 
   public void OnRelease(Knob knob)

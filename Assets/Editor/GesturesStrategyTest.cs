@@ -332,21 +332,6 @@ public class GesturesStrategyTest
     Assert.AreEqual(movedLeftPosition, Knob("b", 1).Position());
   }
 
-  [Test]
-  public void creates_third_layer_by_only_touching_second_layer_knob()
-  {
-    CreateKnobs("a", "b");
-    
-    strategy = NewGesturesStrategy();
-
-    strategy.OnHandUpdate(rightHand.At(Knob("b", 0).Position()).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
-
-    strategy.OnHandUpdate(leftHand.At(Knob("a", 1).Position()).Open());
-
-    Assert.AreEqual(3, knobs.LayerCount);
-  }
-
   private static Vector3 MovedInZ(Vector3 position, float offset)
   { 
     return new Vector3(position.x, position.y, position.z + offset);

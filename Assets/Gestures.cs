@@ -2,11 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// hmm "interesting" breakdown of responsibility between Gestures and GestureStrategy...
-// now looking at "if grabbed, touch opens/updates next layer" and i'm not sure which...
-// Gestures defo has lower level right/left handling, and GS has higher level text layer
-// interaction...
-// maybe Gestures should raise OnTouchWhileGrabbed, OnControllingGrabMove....
 public class Gestures
 {
   private readonly Knobs knobs;
@@ -61,5 +56,4 @@ public class Gestures
   {
     latestGrabSide = gesture.hand.Side();
   }
-
 }

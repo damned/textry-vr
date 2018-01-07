@@ -12,18 +12,12 @@ public class Knobs : MonoBehaviour
   private List<Knob> knobs = new List<Knob>();
   private Nullable<Vector3> initialPosition = new Nullable<Vector3>();
 
-  public int LayerCount { get; private set; }
-
   // extract Layer
   public Knob Create(Letter letter, float x, float y, float z, int layer)
   {
     Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z), layer);
     knobs.Add(knob);
     knob.UpdateColor();
-    if (layer > LayerCount - 1)
-    {
-      LayerCount = layer + 1;
-    }
     return knob;
   }
 
@@ -103,7 +97,6 @@ public class Knobs : MonoBehaviour
       knob.Delete();
     };
     knobs.RemoveAll(knob => knobsNotInFirstLayer.Contains(knob));
-    LayerCount = 1;
     ResetToInitialPosition();
   }
 
