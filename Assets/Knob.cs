@@ -49,8 +49,8 @@ public class Knob
 
   public void GrabbingHandMove(Vector3 handPosition)
   {
-    Debug.Log("hand z: " + handPosition.z);
-    Debug.Log("knob z: " + Z());
+    // Debug.Log("hand z: " + handPosition.z);
+    // Debug.Log("knob z: " + Z());
 
     float tolerance = 0.01f;
     float separationInZ = handPosition.z - Z();

@@ -23,6 +23,7 @@ public class Knobs : MonoBehaviour
 
   public void MoveInZ(float z)
   {
+    CaptureInitialPosition();
     transform.Translate(new Vector3(0f, 0f, z));
   }
 
@@ -105,14 +106,18 @@ public class Knobs : MonoBehaviour
     if (!initialPosition.HasValue)
     {
       initialPosition = transform.localPosition;
+      Debug.Log("Initial knobs position: " + initialPosition.Value);
     }
   }
 
   private void ResetToInitialPosition()
   {
+    Debug.Log("resetting");
     if (initialPosition.HasValue)
     {
+      Debug.Log("Before reset knobs position: " + transform.localPosition);
       transform.localPosition = initialPosition.Value;
+      Debug.Log("Reset knobs position: " + transform.localPosition);
     }
   }
 }

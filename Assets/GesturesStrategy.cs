@@ -70,6 +70,7 @@ public class GesturesStrategy
   {
     words.Add(text);
     text = "";
+    layer = 0;
     knobArranger.ResetLayers();
   }
 
