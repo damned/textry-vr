@@ -20,9 +20,15 @@ public class GesturesStrategyTest
   [SetUp]
   public void SetUp()
   {
-    CreateGameObjects();
-    var layerCreator = new DuplicatingLayerCreator(letters);
-    CreateTestObjects(layerCreator);
+    var knobsObject = new GameObject("knobs");
+    var lettersObject = new GameObject("letters");
+    knobs = knobsObject.AddComponent<Knobs>();
+    letters = lettersObject.AddComponent<Letters>();
+    arranger = new KnobArranger(letters, knobs, new DuplicatingLayerCreator(letters));
+    leftHand = new StubHand(HandSide.Left);
+    rightHand = new StubHand(HandSide.Right);
+    var gestures = new Gestures(knobs);
+    strategy =new GesturesStrategy(gestures, arranger, new StubDebug());
   }
 
   [Test]
@@ -357,22 +363,5 @@ public class GesturesStrategyTest
     letter.AddComponent<Letter>().letter = name;
     letter.AddComponent<MeshRenderer>();
     return letter;
-  }
-
-  private void CreateGameObjects()
-  {
-    var knobsObject = new GameObject("knobs");
-    var lettersObject = new GameObject("letters");
-    knobs = knobsObject.AddComponent<Knobs>();
-    letters = lettersObject.AddComponent<Letters>();
-  }
-
-  private void CreateTestObjects(ILayerCreator layerCreator)
-  {
-    arranger = new KnobArranger(letters, knobs, layerCreator);
-    leftHand = new StubHand(HandSide.Left);
-    rightHand = new StubHand(HandSide.Right);
-    var gestures = new Gestures(knobs);
-    strategy = new GesturesStrategy(gestures, arranger, new StubDebug());
   }
 }
