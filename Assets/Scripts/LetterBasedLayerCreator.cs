@@ -28,18 +28,21 @@ public class LetterBasedLayerCreator : ILayerCreator
     {
         Prediction prediction = predictor.PredictionAfter(previousLetters);
         LayerContents layerContents = new LayerContents(LetterObjectsOf(prediction.letters));
-        layerContents.suggestion = Suggestion(prediction);
+        layerContents.suggestions = Suggestions(prediction);
         return layerContents;
     }
 
-    private List<Letter> Suggestion(Prediction prediction)
+    private List<List<Letter>> Suggestions(Prediction prediction)
     {
         if (prediction.suggestions.Count == 0)
         {
-            return new List<Letter>();
+            return new List<List<Letter>>();
         }
-        var firstSuggestion = prediction.suggestions[0];
-        return LetterObjectsOf(firstSuggestion.ToCharArray().Select(c => c.ToString()).ToList());
+        List<List<Letter>> list = new List<List<Letter>>();
+        prediction.suggestions.ForEach(suggestion => {
+            list.Add(LetterObjectsOf(suggestion.ToCharArray().Select(c => c.ToString()).ToList()));
+        });
+        return list;
     }
 
     private List<Letter> LetterObjectsOf(List<string> letters)

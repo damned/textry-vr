@@ -19,6 +19,7 @@ public class DataBasedAlphabeticPredictor : IAlphabeticPredictor
         var probableWords = ProbableWords(previousLetters);
         Prediction prediction = new Prediction(LettersAt(previousLetters.Length, probableWords).Distinct().ToList());
         prediction.suggestions.Add("elephant");
+        prediction.suggestions.Add("therefore");
         return prediction;
     }
 

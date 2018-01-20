@@ -26,7 +26,7 @@ public class KnobArranger
         var z = -1f + zOffset;
         LayerContents layerContents = layerCreator.NextLayer(lastLetter);
         var layerLetters = layerContents.letters;
-        var suggestionLetters = layerContents.suggestion;
+        var suggestions = layerContents.suggestions;
 
         var slots = (int)Math.Sqrt(layerLetters.Count) + 1;
         var xStart = -(xSpacing * slots) / 2;
@@ -51,7 +51,11 @@ public class KnobArranger
             var knob = knobs.Create(letter, x, y, z, layers - 1);
             placement += knob.Name + ", ";
         });
-        knobs.CreateSuggestion(suggestionLetters, xStart, 0, z);
+        y = yOffset;
+        suggestions.ForEach(suggestion => {
+          y += ySpacing;
+          knobs.CreateSuggestion(suggestion, xStart, y, z);
+        });
         return placement;
     }
 
