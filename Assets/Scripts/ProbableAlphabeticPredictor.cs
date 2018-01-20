@@ -11,7 +11,7 @@ public class ProbableAlphabeticPredictor : IAlphabeticPredictor
 
   private static List<string> alphabet = AToZ();
 
-  public List<string> LettersAfter(string previousLetters)
+  public Prediction PredictionAfter(string previousLetters)
   {
     if (previousLetters == "")
     {
@@ -34,7 +34,7 @@ public class ProbableAlphabeticPredictor : IAlphabeticPredictor
   {
     return letter => vowels.Contains(letter);
   }
-  private List<string> FilteredLetters(Func<string, bool> filter)
+  private Prediction FilteredLetters(Func<string, bool> filter)
   {
     var layerLetters = new List<string>();
     alphabet.ForEach(letter =>
@@ -44,7 +44,7 @@ public class ProbableAlphabeticPredictor : IAlphabeticPredictor
         layerLetters.Add(letter);
       };
     });
-    return layerLetters;
+    return new Prediction(layerLetters);
   }
 
   private static List<string> AToZ()

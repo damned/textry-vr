@@ -25,7 +25,7 @@ public class LetterBasedLayerCreator : ILayerCreator
 
   public LayerContents NextLayer(string previousLetters)
   {
-    return new LayerContents(LetterObjectsOf(predictor.LettersAfter(previousLetters)));
+    return new LayerContents(LetterObjectsOf(predictor.PredictionAfter(previousLetters).letters));
   }
 
   private List<Letter> LetterObjectsOf(List<string> letters)

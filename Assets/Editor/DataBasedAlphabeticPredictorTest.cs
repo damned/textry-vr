@@ -12,7 +12,7 @@ public class DataBasedAlphabeticPredictorTest
   public void WithNoPreviousLetterNextLayerHasWholeAlphabet()
   {
     var predictor = new DataBasedAlphabeticPredictor(Words());
-    var next = predictor.LettersAfter("");
+    var next = predictor.PredictionAfter("");
 
     Assert.AreEqual("abcdefghijklmnopqrstuvwxyz", LettersToString(next));
   }
@@ -21,7 +21,7 @@ public class DataBasedAlphabeticPredictorTest
   public void PredictsSecondLetterForOneWord()
   {
     var predictor = new DataBasedAlphabeticPredictor(Words("light"));
-    var next = predictor.LettersAfter("l");
+    var next = predictor.PredictionAfter("l");
 
     Assert.AreEqual("i", LettersToString(next));
   }
@@ -30,7 +30,7 @@ public class DataBasedAlphabeticPredictorTest
   public void PredictsSecondLetterForThePossibleWord()
   {
     var predictor = new DataBasedAlphabeticPredictor(Words("jack", "doe"));
-    var next = predictor.LettersAfter("d");
+    var next = predictor.PredictionAfter("d");
 
     Assert.AreEqual("o", LettersToString(next));
   }
@@ -40,7 +40,7 @@ public class DataBasedAlphabeticPredictorTest
   {
     var predictor = new DataBasedAlphabeticPredictor(Words("jack", "doe"));
 
-    Assert.AreEqual("e", LettersToString(predictor.LettersAfter("do")));
+    Assert.AreEqual("e", LettersToString(predictor.PredictionAfter("do")));
   }
 
   [Test]
@@ -48,7 +48,7 @@ public class DataBasedAlphabeticPredictorTest
   {
     var predictor = new DataBasedAlphabeticPredictor(Words("jackie", "doe"));
 
-    Assert.AreEqual("i", LettersToString(predictor.LettersAfter("jack")));
+    Assert.AreEqual("i", LettersToString(predictor.PredictionAfter("jack")));
   }
 
   [Test]
@@ -56,7 +56,7 @@ public class DataBasedAlphabeticPredictorTest
   {
     var predictor = new DataBasedAlphabeticPredictor(Words("jackie", "jaffie", "jazzy"));
 
-    Assert.AreEqual("a", LettersToString(predictor.LettersAfter("j")));
+    Assert.AreEqual("a", LettersToString(predictor.PredictionAfter("j")));
   }
 
   [Test]
@@ -64,7 +64,7 @@ public class DataBasedAlphabeticPredictorTest
   {
     var predictor = new DataBasedAlphabeticPredictor(Words("john", "jack"));
 
-    Assert.AreEqual("oa", LettersToString(predictor.LettersAfter("j")));
+    Assert.AreEqual("oa", LettersToString(predictor.PredictionAfter("j")));
   }
 
   private List<string> Words(params string [] words)
@@ -72,10 +72,10 @@ public class DataBasedAlphabeticPredictorTest
     return words.ToList();
   }
 
-  private static string LettersToString(List<string> next)
+  private static string LettersToString(Prediction next)
   {
     var nextLetters = "";
-    foreach (var letter in next)
+    foreach (var letter in next.letters)
     {
       nextLetters += letter;
     }

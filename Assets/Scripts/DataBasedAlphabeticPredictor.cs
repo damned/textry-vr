@@ -10,14 +10,14 @@ public class DataBasedAlphabeticPredictor : IAlphabeticPredictor
     this.words = words;
   }
 
-  public List<string> LettersAfter(string previousLetters)
+  public Prediction PredictionAfter(string previousLetters)
   {
     if (previousLetters == "")
     {
-      return AToZ();
+      return new Prediction(AToZ());
     }
     var probableWords = ProbableWords(previousLetters);
-    return LettersAt(previousLetters.Length, probableWords).Distinct().ToList();
+    return new Prediction(LettersAt(previousLetters.Length, probableWords).Distinct().ToList());
   }
 
   private static IEnumerable<string> LettersAt(int index, IEnumerable<string> probableWords)

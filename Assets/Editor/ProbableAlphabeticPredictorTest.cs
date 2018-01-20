@@ -12,7 +12,7 @@ public class ProbableAlphabeticPredictorTest
   public void WithNoPreviousLetterNextLayerHasWholeAlphabet()
   {
     var predictor = new ProbableAlphabeticPredictor();
-    var next = predictor.LettersAfter("");
+    var next = predictor.PredictionAfter("");
 
     Assert.AreEqual("abcdefghijklmnopqrstuvwxyz", LettersToString(next));
   }
@@ -22,7 +22,7 @@ public class ProbableAlphabeticPredictorTest
   public void AfterAVowelIsProbablyAConsonant()
   {
     var predictor = new ProbableAlphabeticPredictor();
-    var next = predictor.LettersAfter("i");
+    var next = predictor.PredictionAfter("i");
 
     Assert.AreEqual("bcdfghjklmnpqrstvwxyz", LettersToString(next));
   }
@@ -31,7 +31,7 @@ public class ProbableAlphabeticPredictorTest
   public void AfterAConsonantIsProbablyAVowel()
   {
     var predictor = new ProbableAlphabeticPredictor();
-    var next = predictor.LettersAfter("t");
+    var next = predictor.PredictionAfter("t");
 
     Assert.AreEqual("aeiou", LettersToString(next));
   }
@@ -40,7 +40,7 @@ public class ProbableAlphabeticPredictorTest
   public void AfterSeveralLettersPredictionIsBasedOnLastConsonant()
   {
     var predictor = new ProbableAlphabeticPredictor();
-    var next = predictor.LettersAfter("aaaaoooooooooooh");
+    var next = predictor.PredictionAfter("aaaaoooooooooooh");
 
     Assert.AreEqual("aeiou", LettersToString(next));
   }
@@ -49,7 +49,7 @@ public class ProbableAlphabeticPredictorTest
   public void AfterSeveralLettersPredictionIsBasedOnLastVowel()
   {
     var predictor = new ProbableAlphabeticPredictor();
-    var next = predictor.LettersAfter("frnngghhha");
+    var next = predictor.PredictionAfter("frnngghhha");
 
     Assert.AreEqual("bcdfghjklmnpqrstvwxyz", LettersToString(next));
   }
@@ -59,10 +59,10 @@ public class ProbableAlphabeticPredictorTest
     return "abcdefghijklmnopqrstuvwxyz".Select(ch => ch.ToString()).ToList();
   }
 
-  private static string LettersToString(List<string> next)
+  private static string LettersToString(Prediction next)
   {
     var nextLetters = "";
-    foreach (var letter in next)
+    foreach (var letter in next.letters)
     {
       nextLetters += letter;
     }
