@@ -6,10 +6,4 @@ public class Letter : MonoBehaviour
 {
 
   public string letter;
-
-  public Vector3 Position()
-  {
-    return transform.position;
-  }
-
 }

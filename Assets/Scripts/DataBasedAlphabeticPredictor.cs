@@ -3,35 +3,37 @@ using System.Linq;
 
 public class DataBasedAlphabeticPredictor : IAlphabeticPredictor
 {
-  private readonly List<string> words;
+    private readonly List<string> words;
 
-  public DataBasedAlphabeticPredictor(List<string> words)
-  {
-    this.words = words;
-  }
-
-  public Prediction PredictionAfter(string previousLetters)
-  {
-    if (previousLetters == "")
+    public DataBasedAlphabeticPredictor(List<string> words)
     {
-      return new Prediction(AToZ());
+        this.words = words;
     }
-    var probableWords = ProbableWords(previousLetters);
-    return new Prediction(LettersAt(previousLetters.Length, probableWords).Distinct().ToList());
-  }
 
-  private static IEnumerable<string> LettersAt(int index, IEnumerable<string> probableWords)
-  {
-    return probableWords.Select(word => word[index].ToString());
-  }
+    public Prediction PredictionAfter(string previousLetters)
+    {
+        if (previousLetters == "")
+        {
+            return new Prediction(AToZ());
+        }
+        var probableWords = ProbableWords(previousLetters);
+        Prediction prediction = new Prediction(LettersAt(previousLetters.Length, probableWords).Distinct().ToList());
+        prediction.suggestions.Add("elephant");
+        return prediction;
+    }
 
-  private IEnumerable<string> ProbableWords(string previousLetters)
-  {
-    return words.Where(w => w.StartsWith(previousLetters));
-  }
+    private static IEnumerable<string> LettersAt(int index, IEnumerable<string> probableWords)
+    {
+        return probableWords.Select(word => word[index].ToString());
+    }
 
-  private static List<string> AToZ()
-  {
-    return "abcdefghijklmnopqrstuvwxyz".Select(ch => ch.ToString()).ToList();
-  }
+    private IEnumerable<string> ProbableWords(string previousLetters)
+    {
+        return words.Where(w => w.StartsWith(previousLetters));
+    }
+
+    private static List<string> AToZ()
+    {
+        return "abcdefghijklmnopqrstuvwxyz".Select(ch => ch.ToString()).ToList();
+    }
 }

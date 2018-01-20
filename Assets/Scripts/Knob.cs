@@ -23,7 +23,7 @@ public class Knob
 
     public int Layer { get; }
 
-    public Knob(Knobs knobs, GameObject gameObject, Vector3 where, int layer)
+    public Knob(Knobs knobs, GameObject gameObject, Vector3 where, int layer = -1)
     {
         this.Layer = layer;
         this.knobs = knobs;
@@ -88,7 +88,7 @@ public class Knob
 
     public Vector3 Position()
     {
-        return letter.Position() - visualOffset;
+        return gameObject.transform.position - visualOffset;
     }
 
     public void ChangeColour(Color color)
@@ -137,7 +137,11 @@ public class Knob
 
     public string Text()
     {
-        return letter.letter;
+        if (letter != null)
+        {
+            return letter.letter;        
+        }
+        return "x";
     }
 
     public override string ToString()
