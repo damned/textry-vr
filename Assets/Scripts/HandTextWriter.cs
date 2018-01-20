@@ -9,8 +9,8 @@ public class HandTextWriter : MonoBehaviour
   public float range = 2f;
 
   private LiveDebug debug;
-  private Knobs knobs;
-  private Letters letters;
+  public Knobs knobs;
+  public Letters letters;
   private IHands hands;
   private KnobArranger knobArranger;
 
@@ -20,11 +20,6 @@ public class HandTextWriter : MonoBehaviour
   {
     hands = GetComponent<IHands>();
     debug = GetComponent<LiveDebug>();
-
-    knobs = GameObject.Find("interactables").GetComponent<Knobs>();
-    letters = GameObject.Find("letters").GetComponent<Letters>();
-
-    debug.Log("knobs and letters: " + knobs + ", " + letters);
 
     var predictor = new DataBasedAlphabeticPredictor(EnglishWords.AsList());
     var layerCreator = new LetterBasedLayerCreator(letters, predictor);

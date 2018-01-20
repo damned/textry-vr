@@ -34,6 +34,10 @@ public class Knobs : MonoBehaviour
     {
       Fade(UnhandledKnobs());
     }
+    else 
+    {
+      Unfade(UnhandledKnobs());
+    }
   }
 
   private void Fade(List<Knob> unhandledKnobs)
@@ -41,6 +45,14 @@ public class Knobs : MonoBehaviour
     foreach (var knob in unhandledKnobs)
     {
       knob.Fade(fadeLevel);
+    }
+  }
+
+  private void Unfade(List<Knob> unhandledKnobs)
+  {
+    foreach (var knob in unhandledKnobs)
+    {
+      knob.Fade(1f);
     }
   }
 
@@ -98,6 +110,7 @@ public class Knobs : MonoBehaviour
       knob.Delete();
     };
     knobs.RemoveAll(knob => knobsNotInFirstLayer.Contains(knob));
+    OnKnobStateChange();
     ResetToInitialPosition();
   }
 

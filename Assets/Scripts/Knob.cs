@@ -93,6 +93,10 @@ public class Knob
 
     public void ChangeColour(Color color)
     {
+        if (Deleted)
+        {
+          return;
+        }
         Renderer renderer = gameObject.GetComponent<Renderer>();
         if (renderer == null)
         {
