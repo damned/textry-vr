@@ -52,7 +52,7 @@ public class Knob
     Debug.Log("hand pos: " + handPosition);
     Debug.Log("knob pos: " + Position());
 
-    float tolerance = 0.01f;
+    float tolerance = 0.001f;
     Vector3 offset = handPosition - Position();
     if (offset.magnitude > tolerance)
     {
