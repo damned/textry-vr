@@ -14,8 +14,6 @@ public class KnobArranger
     this.knobs = knobs;
   }
 
-  // this class managing physical layout, so should probs handle zoffset, just
-  // know it's a new logical layer?
   public string Arrange(float zOffset, string lastLetter = "")
   {
     layers += 1;
@@ -23,16 +21,17 @@ public class KnobArranger
     var xSpacing = 0.08f;
     var yOffset = -0.2f;
     var xOffset = 0f;
-    var slots = 6;
     var index = 0;
-    var xStart = -(xSpacing * slots) / 2;
-    var yStart = -(ySpacing * slots) / 2;
-    var x = xStart + xOffset;
-    var y = yStart + yOffset;
     var xIndex = 0;
     var z = -1f + zOffset;
 
     var layerLetters = layerCreator.LayerLetters(lastLetter);
+
+    var slots = (int) Math.Sqrt(layerLetters.Count) + 1;
+    var xStart = -(xSpacing * slots) / 2;
+    var yStart = -(ySpacing * slots) / 2;
+    var x = xStart + xOffset;
+    var y = yStart + yOffset;
 
     string placement = "placed: ";
     layerLetters.ForEach((letter) =>

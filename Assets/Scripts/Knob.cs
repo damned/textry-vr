@@ -46,9 +46,6 @@ public class Knob
 
     public void GrabbingHandMove(Vector3 handPosition)
     {
-        Debug.Log("hand pos: " + handPosition);
-        Debug.Log("knob pos: " + Position());
-
         float tolerance = 0.001f;
         Vector3 offset = handPosition - Position();
         if (offset.magnitude > tolerance)

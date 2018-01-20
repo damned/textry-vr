@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public enum LetterType { Vowel, Consonant };
 
@@ -32,7 +33,13 @@ public class LetterBasedLayerCreator : ILayerCreator
     var layerLetterObjects = new List<Letter>();
     letters.ForEach(letter =>
     {
-      layerLetterObjects.Add(lookup[letter]);
+      if (lookup.ContainsKey(letter))
+      {
+        layerLetterObjects.Add(lookup[letter]);
+      }
+      else {
+        Debug.Log($"missing required Letter '{letter}'");
+      }
     });
     return layerLetterObjects;
   }
