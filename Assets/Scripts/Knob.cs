@@ -8,6 +8,8 @@ public class Knob
 {
     private static KnobColorArbiter colorArbiter = new KnobColorArbiter();
 
+    private static Vector3 visualOffset = new Vector3(-0.02f, -0.02f, 0.02f);
+
     public int id;
     private GameObject gameObject;
 
@@ -27,7 +29,7 @@ public class Knob
         this.knobs = knobs;
         this.id = (++knobId);
         this.gameObject = gameObject;
-        this.gameObject.transform.localPosition = where;
+        this.gameObject.transform.localPosition = where + visualOffset;
         this.letter = gameObject.GetComponent<Letter>();
     }
 
@@ -89,7 +91,7 @@ public class Knob
 
     public Vector3 Position()
     {
-        return letter.Position();
+        return letter.Position() - visualOffset;
     }
 
     public void ChangeColour(Color color)
