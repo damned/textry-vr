@@ -49,20 +49,15 @@ public class Knob
 
   public void GrabbingHandMove(Vector3 handPosition)
   {
-    // Debug.Log("hand z: " + handPosition.z);
-    // Debug.Log("knob z: " + Z());
+    Debug.Log("hand pos: " + handPosition);
+    Debug.Log("knob pos: " + Position());
 
     float tolerance = 0.01f;
-    float separationInZ = handPosition.z - Z();
-    if (Math.Abs(separationInZ) > tolerance)
+    Vector3 offset = handPosition - Position();
+    if (offset.magnitude > tolerance)
     {
-      knobs.MoveInZ(separationInZ);
+      knobs.Move(offset);
     }
-  }
-
-  private float Z()
-  {
-    return Position().z;
   }
 
   public void Grab()

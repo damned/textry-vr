@@ -21,10 +21,10 @@ public class Knobs : MonoBehaviour
     return knob;
   }
 
-  public void MoveInZ(float z)
+  public void Move(Vector3 translation)
   {
     CaptureInitialPosition();
-    transform.Translate(new Vector3(0f, 0f, z));
+    transform.Translate(translation);
   }
 
 
