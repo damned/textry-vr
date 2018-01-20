@@ -25,7 +25,7 @@ public class KnobArranger
     var xIndex = 0;
     var z = -1f + zOffset;
 
-    var layerLetters = layerCreator.LayerLetters(lastLetter);
+    var layerLetters = layerCreator.NextLayer(lastLetter).letters;
 
     var slots = (int) Math.Sqrt(layerLetters.Count) + 1;
     var xStart = -(xSpacing * slots) / 2;

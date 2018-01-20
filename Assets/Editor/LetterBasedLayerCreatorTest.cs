@@ -13,7 +13,7 @@ public class LetterBasedLayerCreatorTest
   public void AfterAVowelIsProbablyAConsonant()
   {
     var creator = new LetterBasedLayerCreator(A.Letters(AToZ()), new ProbableAlphabeticPredictor());
-    var next = creator.LayerLetters("i");
+    var next = creator.NextLayer("i").letters;
 
     Assert.AreEqual("bcdfghjklmnpqrstvwxyz", LettersToString(next));
   }

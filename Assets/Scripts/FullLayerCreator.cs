@@ -10,10 +10,10 @@ public class FullLayerCreator : ILayerCreator
     this.letters = letters;
   }
 
-  public List<Letter> LayerLetters(string lastLetter)
+  public LayerContents NextLayer(string lastLetter)
   {
     var layerLetters = new List<Letter>();
     letters.ForEach(letter => layerLetters.Add(letter));
-    return layerLetters;
+    return new LayerContents(layerLetters);
   }
 }

@@ -2,5 +2,5 @@ using System.Collections.Generic;
 
 public interface ILayerCreator
 {
-  List<Letter> LayerLetters(string lastLetter);
+  LayerContents NextLayer(string lastLetter);
 }
