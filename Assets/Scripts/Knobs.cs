@@ -52,7 +52,7 @@ public class Knobs : MonoBehaviour
   {
     foreach (var knob in unhandledKnobs)
     {
-      knob.Fade(1f);
+      knob.Unfade();
     }
   }
 

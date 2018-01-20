@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,13 +11,30 @@ public class KnobColorArbiter
         { KnobHandlingState.Grabbed, Color.red }
     };
 
-    public KnobColorArbiter()
+    private static Dictionary<KnobHandlingState, bool> handlingStateFades = new Dictionary<KnobHandlingState, bool>()
     {
+        { KnobHandlingState.Unhandled, true },
+        { KnobHandlingState.Touched, false },
+        { KnobHandlingState.Grabbed, false }
+    };
+
+    public Color ColorForState(KnobHandlingState handlingState, bool faded, float fadeLevel)
+    {
+        var baseColor = handlingStateColors[handlingState];
+        if (ShouldFade(handlingState, faded))
+        {
+            return FadedColorOf(fadeLevel, baseColor);
+        }
+        return baseColor;
     }
 
-    public Color ColorForState(KnobHandlingState handlingState)
+    private static bool ShouldFade(KnobHandlingState handlingState, bool faded)
     {
-        return handlingStateColors[handlingState];
+        return faded && handlingStateFades[handlingState];
     }
 
+    private static Color FadedColorOf(float fadeLevel, Color baseColor)
+    {
+        return new Color(baseColor.r, baseColor.g, baseColor.b, fadeLevel);
+    }
 }

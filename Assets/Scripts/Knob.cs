@@ -17,6 +17,7 @@ public class Knob
 
     public KnobHandlingState HandlingState { get; private set; }
     private readonly Knobs knobs;
+    private float fadeLevel;
 
     public int Layer { get; }
 
@@ -123,9 +124,17 @@ public class Knob
 
     public void Fade(float fadeLevel)
     {
-        ChangeColour(new Color(1f, 1f, 1f, fadeLevel));
+        this.fadeLevel = fadeLevel;
         Faded = true;
+        UpdateColor();
     }
+
+    public void Unfade()
+    {
+        Faded = false;
+        UpdateColor();
+    }
+
 
     public string Text()
     {
@@ -139,7 +148,7 @@ public class Knob
 
     public void UpdateColor()
     {
-        ChangeColour(colorArbiter.ColorForState(HandlingState));
+        ChangeColour(colorArbiter.ColorForState(HandlingState, Faded, fadeLevel));
     }
 
 }
