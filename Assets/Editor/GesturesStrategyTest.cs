@@ -103,33 +103,6 @@ public class GesturesStrategyTest
   }
 
   [Test]
-  public void need_to_stay_grabbed_as_move_away_then_release_once_hand_opened()
-  {
-    CreateKnobs("a", "b", "c");
-    var firstAPosition = Knob("a").Position();
-    var firstCPosition = Knob("c").Position();
-
-    strategy = NewGesturesStrategy();
-
-    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
-
-    strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
-
-    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
-
-    strategy.OnHandUpdate(rightHand.At(firstCPosition));
-
-    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
-    Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a").HandlingState);
-
-    strategy.OnHandUpdate(rightHand.Open());
-
-    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
-    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
-  }
-
-  [Test]
   public void need_to_release_grabbed_knob_when_hand_moved_away_from_knobs()
   {
     CreateKnobs("a");
