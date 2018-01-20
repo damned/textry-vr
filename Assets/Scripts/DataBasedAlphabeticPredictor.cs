@@ -18,8 +18,15 @@ public class DataBasedAlphabeticPredictor : IAlphabeticPredictor
         }
         var probableWords = ProbableWords(previousLetters);
         Prediction prediction = new Prediction(LettersAt(previousLetters.Length, probableWords).Distinct().ToList());
-        prediction.suggestions.Add("elephant");
-        prediction.suggestions.Add("therefore");
+        return AddPredictions(prediction, probableWords);
+    }
+
+    private static Prediction AddPredictions(Prediction prediction, List<string> probableWords)
+    {
+        if (probableWords.Count < 5)
+        {
+            prediction.suggestions.AddRange(probableWords);
+        }
         return prediction;
     }
 
@@ -28,9 +35,9 @@ public class DataBasedAlphabeticPredictor : IAlphabeticPredictor
         return probableWords.Select(word => word[index].ToString());
     }
 
-    private IEnumerable<string> ProbableWords(string previousLetters)
+    private List<string> ProbableWords(string previousLetters)
     {
-        return words.Where(w => w.StartsWith(previousLetters));
+        return words.Where(w => w.StartsWith(previousLetters)).ToList();
     }
 
     private static List<string> AToZ()
