@@ -29,7 +29,7 @@ public class KnobArranger
 
     var slots = (int) Math.Sqrt(layerLetters.Count) + 1;
     var xStart = -(xSpacing * slots) / 2;
-    var yStart = -(ySpacing * slots) / 2;
+    var yStart = 0f;
     var x = xStart + xOffset;
     var y = yStart + yOffset;
 
