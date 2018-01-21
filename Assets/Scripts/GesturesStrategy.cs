@@ -90,20 +90,16 @@ public class GesturesStrategy
             {
                 AddLayer(knob);
             }
-            else if (AtTouchSelectedLayer(knob))
+            else if (BeforeTouchSelectedLayer(knob))
             {
-                if (knob != layerCreatingKnob)
-                {
-                    RemoveLayer();
-                    AddLayer(knob);
-                }
+                RemoveLayer();
             }
         }
     }
 
-    private bool AtTouchSelectedLayer(Knob knob)
+    private bool BeforeTouchSelectedLayer(Knob knob)
     {
-        return knob.Layer > grabbedLayer && !AtLastLayer(knob);
+        return knob.Layer < layer - 1;
     }
 
     private bool AtLastLayer(Knob knob)
