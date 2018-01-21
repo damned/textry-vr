@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class KnobArranger
 {
@@ -6,10 +8,12 @@ public class KnobArranger
     private Knobs knobs;
     public int layers = 0;
     private readonly ILayerCreator layerCreator;
+    private readonly ILogicalLayoutPlacer layoutPlacer;
 
-    public KnobArranger(Letters letters, Knobs knobs, ILayerCreator layerCreator)
+    public KnobArranger(Letters letters, Knobs knobs, ILayerCreator layerCreator, ILogicalLayoutPlacer layoutPlacer)
     {
         this.layerCreator = layerCreator;
+        this.layoutPlacer = layoutPlacer;
         this.letters = letters;
         this.knobs = knobs;
     }
@@ -21,41 +25,47 @@ public class KnobArranger
         var xSpacing = 0.08f;
         var yOffset = -0.2f;
         var xOffset = 0f;
-        var index = 0;
-        var xIndex = 0;
         var z = -1f + zOffset;
         LayerContents layerContents = layerCreator.NextLayer(lastLetter);
-        var layerLetters = layerContents.letters;
+        List<Letter> layerLetters = layerContents.letters;
         var suggestions = layerContents.suggestions;
 
-        var slots = (int)Math.Sqrt(layerLetters.Count) + 1;
-        var xStart = -(xSpacing * slots) / 2;
+        var logicalLettersLayout = layoutPlacer.PlaceInRows(layerLetters);
+
+        var xStart = -(xSpacing * logicalLettersLayout.slots) / 2;
         var yStart = 0f;
         var x = xStart + xOffset;
         var y = yStart + yOffset;
 
         string placement = "placed: ";
         int layer = layers - 1;
-        layerLetters.ForEach((letter) =>
+
+        var index = 0;
+        var xIndex = 0;
+        logicalLettersLayout.rows.ForEach((row) =>
         {
-            xIndex = index % slots;
-            if (xIndex == 0)
+            row.ForEach((letter) =>
             {
-                y -= ySpacing;
-                x = xStart + xOffset;
-            }
-            else
-            {
-                x += xSpacing;
-            }
-            index += 1;
-            var knob = knobs.Create(letter, x, y, z, layer);
-            placement += knob.Name + ", ";
+                xIndex = index % logicalLettersLayout.slots;
+                if (xIndex == 0)
+                {
+                    y -= ySpacing;
+                    x = xStart + xOffset;
+                }
+                else
+                {
+                    x += xSpacing;
+                }
+                index += 1;
+                var knob = knobs.Create(letter, x, y, z, layer);
+                placement += knob.Name + ", ";
+            });
         });
         y = yOffset;
-        suggestions.ForEach(suggestion => {
-          y += ySpacing;
-          knobs.CreateSuggestion(suggestion, xStart, y, z, layer);
+        suggestions.ForEach(suggestion =>
+        {
+            y += ySpacing;
+            knobs.CreateSuggestion(suggestion, xStart, y, z, layer);
         });
         return placement;
     }
