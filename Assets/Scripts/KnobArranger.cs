@@ -46,20 +46,16 @@ public class KnobArranger
         {
             row.ForEach((letter) =>
             {
-                xIndex = index % logicalLettersLayout.slots;
-                if (xIndex == 0)
+                if (letter != Letter.SPACE)
                 {
-                    y -= ySpacing;
-                    x = xStart + xOffset;
+                    var knob = knobs.Create(letter, x, y, z, layer);
+                    placement += knob.Name + ", ";
                 }
-                else
-                {
-                    x += xSpacing;
-                }
-                index += 1;
-                var knob = knobs.Create(letter, x, y, z, layer);
-                placement += knob.Name + ", ";
+                x += xSpacing;
             });
+            xIndex ++;
+            x = xStart + xOffset;
+            y -= ySpacing;
         });
         y = yOffset;
         suggestions.ForEach(suggestion =>
