@@ -20,6 +20,8 @@ public class Knob
     public KnobHandlingState HandlingState { get; private set; }
     private readonly Knobs knobs;
     private float fadeLevel;
+    private Material opaqueMaterial;
+    private Material fadeableMaterial;
 
     public int Layer { get; }
 
@@ -102,8 +104,20 @@ public class Knob
         {
             return; // test mode
         }
-        Material material = new Material(Shader.Find("Standard"));
-        TryToSetTransparentRenderMode(material);
+
+        Material material;
+        opaqueMaterial = new Material(Shader.Find("Standard"));
+        fadeableMaterial = new Material(Shader.Find("Standard"));
+        TryToSetTransparentRenderMode(fadeableMaterial);
+        if (color.a < 1)
+        {
+            material = fadeableMaterial;
+        }
+        else 
+        {
+            material = opaqueMaterial;
+        }
+
         material.color = color;
         renderer.sharedMaterial = material;
     }
