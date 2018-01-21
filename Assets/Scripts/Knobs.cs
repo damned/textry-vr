@@ -11,6 +11,7 @@ public class Knobs : MonoBehaviour
 
     private List<Knob> knobs = new List<Knob>();
     private Nullable<Vector3> initialPosition = new Nullable<Vector3>();
+    public float wordOffset = 0.05f;
 
     // extract Layer
     public Knob Create(Letter letter, float x, float y, float z, int layer)
@@ -27,11 +28,11 @@ public class Knobs : MonoBehaviour
         var suggestionParent = new GameObject();
         suggestionParent.transform.parent = transform;
         suggestionParent.transform.position = new Vector3(x, y, z);
-        var letterIndex = 0;
+        var letterIndex = -suggestionLetters.Count / 2;
         suggestionLetters.ForEach(letter =>
         {
             var letterObject = Instantiate(letter.gameObject, suggestionParent.transform);
-            letterObject.transform.Translate(new Vector3(-0.03f * letterIndex, 0, 0));
+            letterObject.transform.Translate(new Vector3(wordOffset - (0.03f * letterIndex), 0, 0));
             letterIndex++;
         });
         Debug.Log("suggestion parent: " + suggestionParent);
