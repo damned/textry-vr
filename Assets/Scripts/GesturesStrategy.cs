@@ -25,6 +25,8 @@ public class GesturesStrategy
     gestures.GestureFor(HandSide.Left).OnGrab += OnGrab;
     gestures.GestureFor(HandSide.Right).OnRelease += OnRelease;
     gestures.GestureFor(HandSide.Left).OnRelease += OnRelease;
+    gestures.GestureFor(HandSide.Right).OnTouch += OnTouch;
+    gestures.GestureFor(HandSide.Left).OnTouch += OnTouch;
   }
 
   public string OnHandUpdate(IHand hand)
@@ -34,15 +36,14 @@ public class GesturesStrategy
     var gesture = gestures.GestureFor(side);
     
 
-    debug.Log("hand side: " + hand.Side());
+    // debug.Log("hand side: " + hand.Side());
 
     // yes this is a bit odd, around construction-time access to vrtk
     // instances - have a look sometime when on vive setup 
     gesture.hand = hand;
 
     gesture.OnHandUpdate(hand);
-    debug.Log("words: " + String.Join(", ", words.ToArray()));
-    debug.Log("text: " + text);
+    debug.Log("text: " + text + ", words: " + String.Join(", ", words.ToArray()));
     return text;
   }
 
@@ -57,6 +58,11 @@ public class GesturesStrategy
     text += knob.Text();
     string arrangement = knobArranger.Arrange(layer * 0.08f, text);
     debug.Log(arrangement);
+  }
+
+  public void OnTouch(Gesture gesture, Knob knob)
+  {
+    debug.Log($"touch: knob layer {knob.Layer}, layer {layer}");
   }
 
   public void OnRelease(Knob knob)
