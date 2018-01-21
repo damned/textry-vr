@@ -30,8 +30,8 @@ public class KnobArranger
 
         var logicalLettersLayout = layoutPlacer.PlaceInRows(layerLetters);
 
-        var xSpacing = 0.08f * logicalLettersLayout.xFactor;
         var ySpacing = 0.05f * logicalLettersLayout.yFactor;
+        var xSpacing = 0.08f * logicalLettersLayout.xFactor;
 
         var xStart = -(xSpacing * logicalLettersLayout.slots) / 2;
         var yStart = 0f;
