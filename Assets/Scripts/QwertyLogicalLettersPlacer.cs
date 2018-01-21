@@ -12,7 +12,7 @@ public class QwertyLogicalLettersPlacer : ILogicalLayoutPlacer
         rows.Add(RowOf("zxcvbnm", layerLetters));
 
         var slots = 8;
-        return new LogicalLettersLayout(rows, slots);
+        return new LogicalLettersLayout(rows, slots, 0.5f, 1.6f);
     }
 
     private List<Letter> RowOf(string orderedLetters, List<Letter> layerLetters)

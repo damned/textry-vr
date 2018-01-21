@@ -21,8 +21,6 @@ public class KnobArranger
     public string Arrange(float zOffset, string lastLetter = "")
     {
         layers += 1;
-        var ySpacing = 0.05f;
-        var xSpacing = 0.08f;
         var yOffset = -0.2f;
         var xOffset = 0f;
         var z = -1f + zOffset;
@@ -31,6 +29,9 @@ public class KnobArranger
         var suggestions = layerContents.suggestions;
 
         var logicalLettersLayout = layoutPlacer.PlaceInRows(layerLetters);
+
+        var xSpacing = 0.08f * logicalLettersLayout.xFactor;
+        var ySpacing = 0.05f * logicalLettersLayout.yFactor;
 
         var xStart = -(xSpacing * logicalLettersLayout.slots) / 2;
         var yStart = 0f;

@@ -20,7 +20,7 @@ public class AlphabeticLogicalLettersPlacer : ILogicalLayoutPlacer
             rows.Last().Add(letter);
             index += 1;
         });
-        return new LogicalLettersLayout(rows, slots);
+        return new LogicalLettersLayout(rows, slots, 1f, 1f);
     }
 
 }
