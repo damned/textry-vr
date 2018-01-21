@@ -1113,6 +1113,7 @@ foundation
 founder
 four
 fourth
+fox
 frame
 framework
 free
@@ -1458,6 +1459,7 @@ judge
 judgment
 juice
 jump
+jumps
 junior
 jury
 just
@@ -1505,6 +1507,7 @@ lawsuit
 lawyer
 lay
 layer
+lazy
 lead
 leader
 leadership
