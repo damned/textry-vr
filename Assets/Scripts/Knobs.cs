@@ -36,7 +36,7 @@ public class Knobs : MonoBehaviour
             letterIndex++;
         });
         Debug.Log("suggestion parent: " + suggestionParent);
-        Knob suggestionKnob = new Knob(this, suggestionParent, new Vector3(x, y, z));
+        Knob suggestionKnob = new Knob(this, suggestionParent, new Vector3(x, y, z), layer);
         knobs.Add(suggestionKnob);
         return suggestionKnob;
     }
