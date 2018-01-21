@@ -57,12 +57,19 @@ public class GesturesStrategy
     public void OnGrab(Gesture gesture, Knob knob)
     {
         grabbedLayer = layer;
-        AddLayer(knob);
+        if (layerCreatingKnob != knob)
+        {
+            AddLayer(knob, "grab");
+        }
+        else 
+        {
+            Debug.Log($"grabbed existing touched layer creator: {knob.Text()}, text now: {text}");
+        }
     }
 
-    private void AddLayer(Knob knob)
+    private void AddLayer(Knob knob, string context)
     {
-        Debug.Log($"adding layer, pre-text: {text}");
+        Debug.Log($"adding layer, pre-text: {text}, context: {context}");
         layer += 1;
         layerCreatingKnob = knob;
         text += knob.Text();
@@ -88,13 +95,18 @@ public class GesturesStrategy
         {
             if (AtLastLayer(knob))
             {
-                AddLayer(knob);
+                AddLayer(knob, "touch");
             }
-            else if (BeforeTouchSelectedLayer(knob))
+            else if (BeforeTouchSelectedLayer(knob) && AfterGrabLayer(knob))
             {
                 RemoveLayer();
             }
         }
+    }
+
+    private bool AfterGrabLayer(Knob knob)
+    {
+        return knob.Layer > grabbedLayer;
     }
 
     private bool BeforeTouchSelectedLayer(Knob knob)
@@ -111,6 +123,7 @@ public class GesturesStrategy
     {
         if (!gestures.AnyGrabs())
         {
+            Debug.Log($"no grabs! L: {gestures.GestureFor(HandSide.Left).IsGrabbing},  R: {gestures.GestureFor(HandSide.Right).IsGrabbing}");
             CompleteWord();
         }
     }
