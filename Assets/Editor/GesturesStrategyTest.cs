@@ -5,351 +5,360 @@ using UnityEngine;
 [TestFixture]
 public class GesturesStrategyTest
 {
-  private Knobs knobs;
-  private Letters letters;
-  private KnobArranger arranger;
-  private GesturesStrategy strategy;
-  private StubHand leftHand;
-  private StubHand rightHand;
-
-  // todo: thoughts from typing tests:
-  // already thinking gesture strategy should do knobs.add_layer([knobs]); then
-  // gesture strategy should hand off "knob grabbed" to whatever's going to manage
-  //     what the next layer of knobs should actually be:  a text predicter?
-
-  [SetUp]
-  public void SetUp()
-  {
-    var knobsObject = new GameObject("knobs");
-    var lettersObject = new GameObject("letters");
-    knobs = knobsObject.AddComponent<Knobs>();
-    letters = lettersObject.AddComponent<Letters>();
-    arranger = new KnobArranger(letters, knobs, new PredictiveLayerCreator(letters));
-    leftHand = new StubHand(HandSide.Left);
-    rightHand = new StubHand(HandSide.Right);
-  }
+    private Knobs knobs;
+    private Letters letters;
+    private KnobArranger arranger;
+    private GesturesStrategy strategy;
+    private StubHand leftHand;
+    private StubHand rightHand;
 
-  [Test]
-  public void creates_new_knobs_layer_when_knob_grabbed()
-  {
-    CreateKnobs("a");
-    var firstAPosition = Knob("a").Position();
-    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
+    // todo: thoughts from typing tests:
+    // already thinking gesture strategy should do knobs.add_layer([knobs]); then
+    // gesture strategy should hand off "knob grabbed" to whatever's going to manage
+    //     what the next layer of knobs should actually be:  a text predicter?
 
-    strategy = NewGesturesStrategy();
+    [SetUp]
+    public void SetUp()
+    {
+        var knobsObject = new GameObject("knobs");
+        var lettersObject = new GameObject("letters");
+        knobs = knobsObject.AddComponent<Knobs>();
+        letters = lettersObject.AddComponent<Letters>();
+        arranger = new KnobArranger(letters, knobs, new PredictiveLayerCreator(letters));
+        leftHand = new StubHand(HandSide.Left);
+        rightHand = new StubHand(HandSide.Right);
+    }
 
-    strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
-   
-    Assert.AreEqual(1, arranger.layers);
-    Assert.AreEqual(KnobHandlingState.Touched, Knob("a").HandlingState);
+    [Test]
+    public void creates_new_knobs_layer_when_knob_grabbed()
+    {
+        CreateKnobs("a");
+        var firstAPosition = Knob("a").Position();
+        Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
 
-    strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
+        strategy = NewGesturesStrategy();
 
-    Assert.AreEqual(2, arranger.layers); // layers should be exposed as truth of knobs
-                                       // or mock out arranger?
-    Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a").HandlingState);
-  }
+        strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
 
-  [Test]
-  public void knobs_become_unhandled_once_nearer_to_another()
-  {
-    CreateKnobs("a", "b");
-    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
-    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("b").HandlingState);
+        Assert.AreEqual(1, arranger.layers);
+        Assert.AreEqual(KnobHandlingState.Touched, Knob("a").HandlingState);
 
-    strategy = NewGesturesStrategy();
-
-    rightHand.Open();
-    strategy.OnHandUpdate(rightHand.At(Knob("a").Position()));
-   
-    Assert.AreEqual(KnobHandlingState.Touched, Knob("a").HandlingState);
-    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("b").HandlingState);
+        strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
 
-    strategy.OnHandUpdate(rightHand.At(Knob("b").Position()));
-
-    Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
-    Assert.AreEqual(KnobHandlingState.Touched, Knob("b").HandlingState);
-  } 
+        Assert.AreEqual(2, arranger.layers); // layers should be exposed as truth of knobs
+                                             // or mock out arranger?
+        Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a").HandlingState);
+    }
 
-  [Test]
-  public void only_creates_one_new_layer_when_knob_grabbed()
-  {
-    CreateKnobs("a");
-    var firstAPosition = Knob("a").Position();
-
-    strategy = NewGesturesStrategy();
-
-    strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
-    strategy.OnHandUpdate(rightHand);
-    strategy.OnHandUpdate(rightHand);
-
-    Assert.AreEqual(2, arranger.layers);
-  }
-
-  [Test]
-  public void dont_act_as_if_grab_if_hand_already_closed_as_arrives_at_knob()
-  {
-    CreateKnobs("a");
-    var firstAPosition = Knob("a").Position();
-
-    strategy = NewGesturesStrategy();
-
-    Assert.AreEqual(1, arranger.layers);
-
-    strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
-
-    Assert.AreEqual(1, arranger.layers);
-  }
-
-  [Test]
-  public void need_to_release_grabbed_knob_when_hand_moved_away_from_knobs()
-  {
-    CreateKnobs("a");
+    [Test]
+    public void knobs_become_unhandled_once_nearer_to_another()
+    {
+        CreateKnobs("a", "b");
+        Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
+        Assert.AreEqual(KnobHandlingState.Unhandled, Knob("b").HandlingState);
 
-    Vector3 somewhereElse = new Vector3(9999, 6543, 7399);
+        strategy = NewGesturesStrategy();
 
-    strategy = NewGesturesStrategy();
+        rightHand.Open();
+        strategy.OnHandUpdate(rightHand.At(Knob("a").Position()));
 
-    strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
+        Assert.AreEqual(KnobHandlingState.Touched, Knob("a").HandlingState);
+        Assert.AreEqual(KnobHandlingState.Unhandled, Knob("b").HandlingState);
 
-    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
+        strategy.OnHandUpdate(rightHand.At(Knob("b").Position()));
 
-    strategy.OnHandUpdate(rightHand.At(somewhereElse));
+        Assert.AreEqual(KnobHandlingState.Unhandled, Knob("a").HandlingState);
+        Assert.AreEqual(KnobHandlingState.Touched, Knob("b").HandlingState);
+    }
 
-    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
-  }
+    [Test]
+    public void only_creates_one_new_layer_when_knob_grabbed()
+    {
+        CreateKnobs("a");
+        var firstAPosition = Knob("a").Position();
 
-  [Test]
-  public void need_to_release_grabbed_knob_when_hand_no_longer_present()
-  {
-    CreateKnobs("a");
+        strategy = NewGesturesStrategy();
 
-    strategy = NewGesturesStrategy();
+        strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(rightHand);
+        strategy.OnHandUpdate(rightHand);
 
-    strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
+        Assert.AreEqual(2, arranger.layers);
+    }
 
-    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
+    [Test]
+    public void dont_act_as_if_grab_if_hand_already_closed_as_arrives_at_knob()
+    {
+        CreateKnobs("a");
+        var firstAPosition = Knob("a").Position();
 
-    strategy.OnHandUpdate(rightHand.ThatIsNotPresent());
+        strategy = NewGesturesStrategy();
 
-    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
-  }
+        Assert.AreEqual(1, arranger.layers);
 
-  [Test]
-  public void dont_go_around_approaching_loads_of_different_knobs_then_grabbing_all_and_sundry_when_arrive_again_this_time_closed()
-  {
-    CreateKnobs("a", "b", "c");
-    
-    var firstAPosition = Knob("a").Position();
-    var firstBPosition = Knob("b").Position();
-    var firstCPosition = Knob("c").Position();
+        strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
 
-    strategy = NewGesturesStrategy();
+        Assert.AreEqual(1, arranger.layers);
+    }
 
-    rightHand.Open();
-    strategy.OnHandUpdate(rightHand.At(firstAPosition));
-    strategy.OnHandUpdate(rightHand.At(firstBPosition));
-    strategy.OnHandUpdate(rightHand.At(firstCPosition));
+    [Test]
+    public void need_to_release_grabbed_knob_when_hand_moved_away_from_knobs()
+    {
+        CreateKnobs("a");
 
-    rightHand.Closed();
-    strategy.OnHandUpdate(rightHand.At(firstAPosition));
-    strategy.OnHandUpdate(rightHand.At(firstBPosition));
-    strategy.OnHandUpdate(rightHand.At(firstCPosition));
+        Vector3 somewhereElse = new Vector3(9999, 6543, 7399);
 
-    Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
-  }
+        strategy = NewGesturesStrategy();
 
-  [Test]
-  public void second_grab_with_other_hand_adds_to_text()
-  {
-    CreateKnobs("a", "b");
+        strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
 
-    strategy = NewGesturesStrategy();
+        Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
 
-    strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
-    strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()).Open());
-    strategy.OnHandUpdate(leftHand.Closed());
-   
-    Assert.AreEqual("ab", strategy.Text());
-  }
+        strategy.OnHandUpdate(rightHand.At(somewhereElse));
 
-  [Test]
-  public void second_hand_presence_does_not_release_first_grab()
-  {
-    CreateKnobs("a", "b");
+        Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
+    }
 
-    strategy = NewGesturesStrategy();
+    [Test]
+    public void need_to_release_grabbed_knob_when_hand_no_longer_present()
+    {
+        CreateKnobs("a");
 
-    strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
-    strategy.OnHandUpdate(leftHand.At(Knob("b", 0).Position()).Open());
-   
-    Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
-    Assert.IsFalse(strategy.IsGrabbing(HandSide.Left));
-  }
+        strategy = NewGesturesStrategy();
 
-  [Test]
-  public void grabbing_and_releasing_single_letter_generates_one_char_word_and_resets_layers()
-  {
-    CreateKnobs("a");
+        strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
 
-    strategy = NewGesturesStrategy();
+        Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
 
-    strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
-    strategy.OnHandUpdate(rightHand.Open());
-    
-    Assert.AreEqual(1, strategy.Words().Count);
-    Assert.AreEqual("a", strategy.Words()[0]);
-    Assert.AreEqual("", strategy.Text());
-    Assert.AreEqual(1, arranger.layers);
-  }
+        strategy.OnHandUpdate(rightHand.ThatIsNotPresent());
 
-  [Test]
-  public void word_creation_continues_while_one_of_the_hands_retains_a_grab()
-  {
-    CreateKnobs("a", "b", "c");
+        Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
+    }
 
-    strategy = NewGesturesStrategy();
-    
-    strategy.OnHandUpdate(rightHand.At(Knob("c", 0).Position()).Open());
-    strategy.OnHandUpdate(leftHand.Open());
+    [Test]
+    public void dont_go_around_approaching_loads_of_different_knobs_then_grabbing_all_and_sundry_when_arrive_again_this_time_closed()
+    {
+        CreateKnobs("a", "b", "c");
 
-    strategy.OnHandUpdate(rightHand.Closed());
-    strategy.OnHandUpdate(leftHand.At(Knob("a", 1).Position()).Open());
+        var firstAPosition = Knob("a").Position();
+        var firstBPosition = Knob("b").Position();
+        var firstCPosition = Knob("c").Position();
 
-    strategy.OnHandUpdate(rightHand.Closed());
-    strategy.OnHandUpdate(leftHand.Closed());
+        strategy = NewGesturesStrategy();
 
-    strategy.OnHandUpdate(rightHand.Open().At(Knob("b", 2).Position()));
-    strategy.OnHandUpdate(leftHand.Closed());
+        rightHand.Open();
+        strategy.OnHandUpdate(rightHand.At(firstAPosition));
+        strategy.OnHandUpdate(rightHand.At(firstBPosition));
+        strategy.OnHandUpdate(rightHand.At(firstCPosition));
 
-    strategy.OnHandUpdate(rightHand.Closed());
-    strategy.OnHandUpdate(leftHand.Open());
+        rightHand.Closed();
+        strategy.OnHandUpdate(rightHand.At(firstAPosition));
+        strategy.OnHandUpdate(rightHand.At(firstBPosition));
+        strategy.OnHandUpdate(rightHand.At(firstCPosition));
 
-    Assert.AreEqual(0, strategy.Words().Count);
-    Assert.AreEqual("cab", strategy.Text());
+        Assert.IsFalse(strategy.IsGrabbing(HandSide.Right));
+    }
 
-    strategy.OnHandUpdate(rightHand.Open());
-    
-    Assert.AreEqual("cab", strategy.Words()[0]);
-    Assert.AreEqual("", strategy.Text());
-  }
+    [Test]
+    public void second_grab_with_other_hand_adds_to_text()
+    {
+        CreateKnobs("a", "b");
 
-  [Test]
-  public void knob_remains_grabbed_while_second_grab_made_by_other_hand()
-  {
-    CreateKnobs("a", "b");
+        strategy = NewGesturesStrategy();
 
-    strategy = NewGesturesStrategy();
-    
-    strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
-    strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()).Open());
+        strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()).Open());
+        strategy.OnHandUpdate(leftHand.Closed());
 
-    Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a", 0).HandlingState);
+        Assert.AreEqual("ab", strategy.Text());
+    }
 
-    strategy.OnHandUpdate(leftHand.Closed());
-    
-    Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a", 0).HandlingState);    
-  }
+    [Test]
+    public void second_hand_presence_does_not_release_first_grab()
+    {
+        CreateKnobs("a", "b");
 
-  [Test]
-  public void moving_grabbing_hand_drags_knobs_in_z_to_match_location()
-  {
-    CreateKnobs("a");
+        strategy = NewGesturesStrategy();
 
-    strategy = NewGesturesStrategy();
+        strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(leftHand.At(Knob("b", 0).Position()).Open());
 
-    var initialAPosition = Knob("a", 0).Position();
+        Assert.IsTrue(strategy.IsGrabbing(HandSide.Right));
+        Assert.IsFalse(strategy.IsGrabbing(HandSide.Left));
+    }
 
-    strategy.OnHandUpdate(rightHand.At(initialAPosition).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
+    [Test]
+    public void grabbing_and_releasing_single_letter_generates_one_char_word_and_resets_layers()
+    {
+        CreateKnobs("a");
 
-    Assert.AreEqual(initialAPosition, Knob("a", 0).Position());
+        strategy = NewGesturesStrategy();
 
-    var movedHandPosition = new Vector3(initialAPosition.x, initialAPosition.y, initialAPosition.z + 1);
+        strategy.OnHandUpdate(rightHand.At(Knob("a").Position()).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(rightHand.Open());
 
-    strategy.OnHandUpdate(rightHand.At(movedHandPosition));
-    
-    Assert.AreEqual(movedHandPosition, Knob("a", 0).Position());    
-  }
+        Assert.AreEqual(1, strategy.Words().Count);
+        Assert.AreEqual("a", strategy.Words()[0]);
+        Assert.AreEqual("", strategy.Text());
+        Assert.AreEqual(1, arranger.layers);
+    }
 
-  [Test]
-  public void knobs_move_to_latest_grab_only()
-  {
-    CreateKnobs("a", "b");
+    [Test]
+    public void word_creation_continues_while_one_of_the_hands_retains_a_grab()
+    {
+        CreateKnobs("a", "b", "c");
 
-    strategy = NewGesturesStrategy();
+        strategy = NewGesturesStrategy();
 
-    var initialAPosition = Knob("a", 0).Position();
+        strategy.OnHandUpdate(rightHand.At(Knob("c", 0).Position()).Open());
+        strategy.OnHandUpdate(leftHand.Open());
 
-    strategy.OnHandUpdate(rightHand.At(initialAPosition).Open());
-    strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(leftHand.At(Knob("a", 1).Position()).Open());
 
-    var initialBPosition = Knob("b", 1).Position();
+        strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(leftHand.Closed());
 
-    strategy.OnHandUpdate(leftHand.At(initialBPosition).Open());
-    strategy.OnHandUpdate(leftHand.Closed());
+        strategy.OnHandUpdate(rightHand.Open().At(Knob("b", 2).Position()));
+        strategy.OnHandUpdate(leftHand.Closed());
 
-    Vector3 movedRightPosition = MovedInZ(initialAPosition, 0.5f);
-    Vector3 movedLeftPosition = MovedInZ(initialBPosition, 0.7f);
+        strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(leftHand.Open());
 
-    strategy.OnHandUpdate(leftHand.At(movedLeftPosition));
-    strategy.OnHandUpdate(rightHand.At(movedRightPosition));
+        Assert.AreEqual(0, strategy.Words().Count);
+        Assert.AreEqual("cab", strategy.Text());
 
-    Assert.AreEqual(movedLeftPosition, Knob("b", 1).Position());
-  }
+        strategy.OnHandUpdate(rightHand.Open());
 
-  private static Vector3 MovedInZ(Vector3 position, float offset)
-  { 
-    return new Vector3(position.x, position.y, position.z + offset);
-  }
+        Assert.AreEqual("cab", strategy.Words()[0]);
+        Assert.AreEqual("", strategy.Text());
+    }
 
-  private Knob Knob(string letter, int index = 0)
-  {
-    Knob found = null;
-    int count = 0;
-    knobs.ForEach(knob => {
-      if (knob.Text() == letter)
-      {
-        if (count == index) {
-          found = knob;
+    [Test]
+    public void knob_remains_grabbed_while_second_grab_made_by_other_hand()
+    {
+        CreateKnobs("a", "b");
+
+        strategy = NewGesturesStrategy();
+
+        strategy.OnHandUpdate(rightHand.At(Knob("a", 0).Position()).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
+        strategy.OnHandUpdate(leftHand.At(Knob("b", 1).Position()).Open());
+
+        Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a", 0).HandlingState);
+
+        strategy.OnHandUpdate(leftHand.Closed());
+
+        Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a", 0).HandlingState);
+    }
+
+    [Test]
+    public void moving_grabbing_hand_drags_knobs_in_z_to_match_location()
+    {
+        CreateKnobs("a");
+
+        strategy = NewGesturesStrategy();
+
+        var initialAPosition = Knob("a", 0).Position();
+
+        strategy.OnHandUpdate(rightHand.At(initialAPosition).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
+
+        Assert.AreEqual(initialAPosition, Knob("a", 0).Position());
+
+        var movedHandPosition = new Vector3(initialAPosition.x, initialAPosition.y, initialAPosition.z + 1);
+
+        strategy.OnHandUpdate(rightHand.At(movedHandPosition));
+
+        AssertPositionsEqual(movedHandPosition, Knob("a", 0).Position());
+    }
+
+    private static void AssertPositionsEqual(Vector3 expected, Vector3 actual)
+    {
+        Assert.AreEqual(expected.x, actual.x, 0.0001f, "in x");
+        Assert.AreEqual(expected.y, actual.y, 0.0001f, "in y");
+        Assert.AreEqual(expected.z, actual.z, 0.0001f, "in z");
+    }
+
+    [Test]
+    public void knobs_move_to_latest_grab_only()
+    {
+        CreateKnobs("a", "b");
+
+        strategy = NewGesturesStrategy();
+
+        var initialAPosition = Knob("a", 0).Position();
+
+        strategy.OnHandUpdate(rightHand.At(initialAPosition).Open());
+        strategy.OnHandUpdate(rightHand.Closed());
+
+        var initialBPosition = Knob("b", 1).Position();
+
+        strategy.OnHandUpdate(leftHand.At(initialBPosition).Open());
+        strategy.OnHandUpdate(leftHand.Closed());
+
+        Vector3 movedRightPosition = MovedInZ(initialAPosition, 0.5f);
+        Vector3 movedLeftPosition = MovedInZ(initialBPosition, 0.7f);
+
+        strategy.OnHandUpdate(leftHand.At(movedLeftPosition));
+        strategy.OnHandUpdate(rightHand.At(movedRightPosition));
+
+        AssertPositionsEqual(movedLeftPosition, Knob("b", 1).Position());
+    }
+
+    private static Vector3 MovedInZ(Vector3 position, float offset)
+    {
+        return new Vector3(position.x, position.y, position.z + offset);
+    }
+
+    private Knob Knob(string letter, int index = 0)
+    {
+        Knob found = null;
+        int count = 0;
+        knobs.ForEach(knob =>
+        {
+            if (knob.Text() == letter)
+            {
+                if (count == index)
+                {
+                    found = knob;
+                }
+                count++;
+            }
+        });
+        if (found == null)
+        {
+            throw new InvalidOperationException("not a named knob: " + letter);
         }
-        count++;
-      }
-    });
-    if (found == null)
-    {
-      throw new InvalidOperationException("not a named knob: " + letter);
+        return found;
     }
-    return found;
-  }
 
-  private GesturesStrategy NewGesturesStrategy()
-  {
-    var gestures = new Gestures(knobs);
-    return new GesturesStrategy(gestures, arranger, new StubDebug());
-  }
-
-  private void CreateKnobs(params string[] allLetters)
-  {
-    foreach (var letter in allLetters)
+    private GesturesStrategy NewGesturesStrategy()
     {
-      CreateLetter(letter).transform.parent = letters.transform;
+        var gestures = new Gestures(knobs);
+        return new GesturesStrategy(gestures, arranger, new StubDebug());
     }
-    arranger.Arrange(0f);
-  }
 
-  private static GameObject CreateLetter(string name)
-  {
-    var letter = new GameObject(name);
-    letter.AddComponent<Letter>().letter = name;
-    letter.AddComponent<MeshRenderer>();
-    return letter;
-  }
+    private void CreateKnobs(params string[] allLetters)
+    {
+        foreach (var letter in allLetters)
+        {
+            CreateLetter(letter).transform.parent = letters.transform;
+        }
+        arranger.Arrange(0f);
+    }
+
+    private static GameObject CreateLetter(string name)
+    {
+        var letter = new GameObject(name);
+        letter.AddComponent<Letter>().letter = name;
+        letter.AddComponent<MeshRenderer>();
+        return letter;
+    }
 }
