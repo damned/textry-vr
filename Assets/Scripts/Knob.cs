@@ -33,6 +33,8 @@ public class Knob
         this.gameObject = gameObject;
         this.gameObject.transform.localPosition = where + visualOffset;
         this.letter = gameObject.GetComponent<Letter>();
+
+        SetupMaterials();
     }
 
     public string Name
@@ -97,7 +99,7 @@ public class Knob
     {
         if (Deleted)
         {
-          return;
+            return;
         }
         Renderer renderer = gameObject.GetComponent<Renderer>();
         if (renderer == null)
@@ -106,20 +108,24 @@ public class Knob
         }
 
         Material material;
-        opaqueMaterial = new Material(Shader.Find("Standard"));
-        fadeableMaterial = new Material(Shader.Find("Standard"));
-        TryToSetTransparentRenderMode(fadeableMaterial);
         if (color.a < 1)
         {
             material = fadeableMaterial;
         }
-        else 
+        else
         {
             material = opaqueMaterial;
         }
 
         material.color = color;
         renderer.sharedMaterial = material;
+    }
+
+    private void SetupMaterials()
+    {
+        opaqueMaterial = new Material(Shader.Find("Standard"));
+        fadeableMaterial = new Material(Shader.Find("Standard"));
+        TryToSetTransparentRenderMode(fadeableMaterial);
     }
 
     private static void TryToSetTransparentRenderMode(Material material)
