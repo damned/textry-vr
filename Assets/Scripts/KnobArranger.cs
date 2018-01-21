@@ -35,6 +35,7 @@ public class KnobArranger
         var y = yStart + yOffset;
 
         string placement = "placed: ";
+        int layer = layers - 1;
         layerLetters.ForEach((letter) =>
         {
             xIndex = index % slots;
@@ -48,13 +49,13 @@ public class KnobArranger
                 x += xSpacing;
             }
             index += 1;
-            var knob = knobs.Create(letter, x, y, z, layers - 1);
+            var knob = knobs.Create(letter, x, y, z, layer);
             placement += knob.Name + ", ";
         });
         y = yOffset;
         suggestions.ForEach(suggestion => {
           y += ySpacing;
-          knobs.CreateSuggestion(suggestion, xStart, y, z);
+          knobs.CreateSuggestion(suggestion, xStart, y, z, layer);
         });
         return placement;
     }
@@ -63,5 +64,11 @@ public class KnobArranger
     {
         knobs.Reset();
         layers = 1;
+    }
+
+    public void RemoveLayer()
+    {
+        layers -= 1;
+        knobs.RemoveLayer(layers);
     }
 }

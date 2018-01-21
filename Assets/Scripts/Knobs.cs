@@ -23,7 +23,7 @@ public class Knobs : MonoBehaviour
     }
 
     // split letter and suggestion knob?
-    public Knob CreateSuggestion(List<Letter> suggestionLetters, float x, float y, float z)
+    public Knob CreateSuggestion(List<Letter> suggestionLetters, float x, float y, float z, int layer)
     {
         var suggestionParent = new GameObject();
         suggestionParent.transform.parent = transform;
@@ -58,6 +58,21 @@ public class Knobs : MonoBehaviour
         {
             Unfade(UnhandledKnobs());
         }
+    }
+
+    public void RemoveLayer(int layer)
+    {
+        Debug.Log($"layer to remove: {layer}, layers: " + String.Join(", ", knobs.Select(k => k.Layer.ToString()).Distinct().ToArray()));
+        var knobsInLastLayer = knobs.Where(knob =>
+        {
+            return knob.Layer == layer;
+        });
+        foreach (var knob in knobsInLastLayer)
+        {
+            knob.Delete();
+        };
+        knobs.RemoveAll(knob => knobsInLastLayer.Contains(knob));
+        OnKnobStateChange();
     }
 
     private void Fade(List<Knob> unhandledKnobs)

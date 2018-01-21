@@ -13,6 +13,8 @@ public class GesturesStrategy
 
     private readonly Gestures gestures;
     private readonly List<string> words = new List<string>();
+    private int grabbedLayer;
+    private Knob layerCreatingKnob;
 
     public GesturesStrategy(Gestures gestures, KnobArranger knobArranger, IDebug debug)
     {
@@ -54,24 +56,59 @@ public class GesturesStrategy
 
     public void OnGrab(Gesture gesture, Knob knob)
     {
+        grabbedLayer = layer;
         AddLayer(knob);
     }
 
     private void AddLayer(Knob knob)
     {
+        Debug.Log($"adding layer, pre-text: {text}");
         layer += 1;
+        layerCreatingKnob = knob;
         text += knob.Text();
         string arrangement = knobArranger.Arrange(layer * 0.08f, text);
         debug.Log(arrangement);
+        Debug.Log($"adding layer, post-text: {text}");
+    }
+
+
+    private void RemoveLayer()
+    {
+        layer -= 1;
+        Debug.Log($"removing layer, pre-text: {text}");
+        text = text.Substring(0, text.Length - 1);
+        Debug.Log($"removing layer, post-text: {text}");
+        knobArranger.RemoveLayer();
     }
 
     public void OnTouch(Gesture gesture, Knob knob)
     {
         debug.Log($"touch: knob layer {knob.Layer}, layer {layer}");
-        if (knob.Layer == layer && gestures.AnyGrabs())
+        if (gestures.AnyGrabs())
         {
-            AddLayer(knob);
+            if (AtLastLayer(knob))
+            {
+                AddLayer(knob);
+            }
+            else if (AtTouchSelectedLayer(knob))
+            {
+                if (knob != layerCreatingKnob)
+                {
+                    RemoveLayer();
+                    AddLayer(knob);
+                }
+            }
         }
+    }
+
+    private bool AtTouchSelectedLayer(Knob knob)
+    {
+        return knob.Layer > grabbedLayer && !AtLastLayer(knob);
+    }
+
+    private bool AtLastLayer(Knob knob)
+    {
+        return knob.Layer == layer;
     }
 
     public void OnRelease(Knob knob)
