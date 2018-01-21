@@ -12,6 +12,7 @@ public class Knobs : MonoBehaviour
     private List<Knob> knobs = new List<Knob>();
     private Nullable<Vector3> initialPosition = new Nullable<Vector3>();
     public float wordOffset = 0.05f;
+    public float knobTouchRadius = 0.05f;
 
     // extract Layer
     public Knob Create(Letter letter, float x, float y, float z, int layer)
@@ -135,6 +136,10 @@ public class Knobs : MonoBehaviour
                 distance = new_distance;
             }
         });
+        if (distance.magnitude > knobTouchRadius)
+        {
+            return null;
+        }
         return closest;
     }
 
