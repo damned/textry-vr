@@ -23,7 +23,7 @@ public class Gesture
     private readonly Knobs knobs;
     private List<GameObject> trail = new List<GameObject>();
     private Vector3 lastTrailPosition = Vector3.up;
-    private bool useTrail = true;
+    private bool useTrail = false;
 
     public Gesture(HandSide side, Knobs knobs)
     {
