@@ -15,6 +15,7 @@ public class GesturesStrategy
     private readonly List<string> words = new List<string>();
     private int grabbedLayer;
     private Knob layerCreatingKnob;
+    public event Action<string> OnWord;
 
     public GesturesStrategy(Gestures gestures, KnobArranger knobArranger, IDebug debug)
     {
@@ -131,6 +132,7 @@ public class GesturesStrategy
     private void CompleteWord()
     {
         words.Add(text);
+        OnWord(text);
         text = "";
         layer = 0;
         knobArranger.ResetLayers();

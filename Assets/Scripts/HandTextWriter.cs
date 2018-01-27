@@ -11,6 +11,7 @@ public class HandTextWriter : MonoBehaviour
   private LiveDebug debug;
   public Knobs knobs;
   public Letters letters;
+  public WordSuggester wordSuggester;
   private IHands hands;
   private KnobArranger knobArranger;
 
@@ -31,6 +32,7 @@ public class HandTextWriter : MonoBehaviour
     gesturesStrategy = new GesturesStrategy(gestures, knobArranger, debug);
 
     hands.OnHandUpdate += OnHandUpdate;
+    gesturesStrategy.OnWord += wordSuggester.Suggest;
   }
 
   private void OnHandUpdate(IHand hand)
