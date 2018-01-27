@@ -25,7 +25,7 @@ public class KnobArranger
         layers += 1;
         var yOffset = -0.2f;
         var xOffset = 0f;
-        var zOffset = layers * (0.05f + (0.12f / (layers + 1)));
+        var zOffset = layers * (0.06f + (0.12f / (layers + 1)));
         var z = -1f + zOffset;
         LayerContents layerContents = layerCreator.NextLayer(lastLetter);
         List<Letter> layerLetters = layerContents.letters;
@@ -33,7 +33,7 @@ public class KnobArranger
 
         var logicalLettersLayout = layoutPlacer.PlaceInRows(layerLetters);
 
-        var ySpacing = 0.04f * logicalLettersLayout.yFactor;
+        var ySpacing = 0.05f * logicalLettersLayout.yFactor;
         var xSpacing = 0.07f * logicalLettersLayout.xFactor;
         float sideOffset = CalculateSideOffset(grabbedSide);
 
