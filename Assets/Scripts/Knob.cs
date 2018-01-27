@@ -61,8 +61,8 @@ public class Knob
     public void Grab()
     {
         HandlingState = KnobHandlingState.Grabbed;
-        UpdateColor();
         knobs.OnKnobStateChange();
+        UpdateColor();
     }
 
     public void Delete()
@@ -81,6 +81,7 @@ public class Knob
     public void Touch()
     {
         HandlingState = KnobHandlingState.Touched;
+        knobs.OnKnobStateChange();
         UpdateColor();
     }
 

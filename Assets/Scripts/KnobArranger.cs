@@ -10,6 +10,7 @@ public class KnobArranger
     public float sideOffset = 0.1f;
     private readonly ILayerCreator layerCreator;
     private readonly ILogicalLayoutPlacer layoutPlacer;
+    public bool useSideOffsets = false;
 
     public KnobArranger(Letters letters, Knobs knobs, ILayerCreator layerCreator, ILogicalLayoutPlacer layoutPlacer)
     {
@@ -31,8 +32,8 @@ public class KnobArranger
 
         var logicalLettersLayout = layoutPlacer.PlaceInRows(layerLetters);
 
-        var ySpacing = 0.05f * logicalLettersLayout.yFactor;
-        var xSpacing = 0.07f * logicalLettersLayout.xFactor;
+        var ySpacing = 0.035f * logicalLettersLayout.yFactor;
+        var xSpacing = 0.05f * logicalLettersLayout.xFactor;
         float sideOffset = CalculateSideOffset(grabbedSide);
 
         var xStart = sideOffset - (xSpacing * logicalLettersLayout.slots) / 2;
@@ -73,7 +74,7 @@ public class KnobArranger
 
     private float CalculateSideOffset(HandSide? grabbedSide)
     {
-        if (grabbedSide.HasValue)
+        if (useSideOffsets && grabbedSide.HasValue)
         {
             if (grabbedSide == HandSide.Left)
             {

@@ -13,6 +13,7 @@ public class Knobs : MonoBehaviour
     private Nullable<Vector3> initialPosition = new Nullable<Vector3>();
     public float wordOffset = 0.05f;
     public float knobTouchRadius = 0.05f;
+    public int lastLayer = 1;
 
     // extract Layer
     public Knob Create(Letter letter, float x, float y, float z, int layer)
@@ -20,6 +21,8 @@ public class Knobs : MonoBehaviour
         Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z), layer);
         knobs.Add(knob);
         knob.UpdateColor();
+
+        lastLayer = Math.Max(lastLayer, layer);
         return knob;
     }
 
@@ -39,6 +42,7 @@ public class Knobs : MonoBehaviour
         Debug.Log("suggestion parent: " + suggestionParent);
         Knob suggestionKnob = new Knob(this, suggestionParent, new Vector3(x, y, z), layer);
         knobs.Add(suggestionKnob);
+        lastLayer = Math.Max(lastLayer, layer);
         return suggestionKnob;
     }
 
@@ -53,11 +57,11 @@ public class Knobs : MonoBehaviour
     {
         if (AnyGrabbed())
         {
-            Fade(UnhandledKnobs());
+            Fade(UnhandledKnobsNotInLastLayer());
         }
         else
         {
-            Unfade(UnhandledKnobs());
+            Unfade(UnhandledKnobsNotInLastLayer());
         }
     }
 
@@ -73,6 +77,7 @@ public class Knobs : MonoBehaviour
             knob.Delete();
         };
         knobs.RemoveAll(knob => knobsInLastLayer.Contains(knob));
+        lastLayer = layer - 1;
         OnKnobStateChange();
     }
 
@@ -92,13 +97,13 @@ public class Knobs : MonoBehaviour
         }
     }
 
-    private List<Knob> UnhandledKnobs()
+    private List<Knob> UnhandledKnobsNotInLastLayer()
     {
         var unhandledKnobs = new List<Knob>();
         foreach (var knob in knobs)
         {
             // maybe better to distribute context event info and let knob fade itself
-            if (knob.HandlingState == KnobHandlingState.Unhandled)
+            if (knob.HandlingState == KnobHandlingState.Unhandled && knob.Layer != lastLayer)
             {
                 unhandledKnobs.Add(knob);
             }
@@ -154,6 +159,7 @@ public class Knobs : MonoBehaviour
             knob.Delete();
         };
         knobs.RemoveAll(knob => knobsNotInFirstLayer.Contains(knob));
+        lastLayer = 1;
         OnKnobStateChange();
         ResetToInitialPosition();
     }

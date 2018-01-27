@@ -7,13 +7,13 @@ public class ConsistentAlphabeticLogicalLettersPlacer : ILogicalLayoutPlacer
     public LogicalLettersLayout PlaceInRows(List<Letter> layerLetters)
     {
         var rows = new List<List<Letter>>();
-        rows.Add(RowOf("abcde", layerLetters));
-        rows.Add(RowOf("fghij", layerLetters));
-        rows.Add(RowOf("klmno", layerLetters));
-        rows.Add(RowOf("pqrst", layerLetters));
-        rows.Add(RowOf("uvwxyz", layerLetters));
+        rows.Add(RowOf("abcdef", layerLetters));
+        rows.Add(RowOf("ghijkl", layerLetters));
+        rows.Add(RowOf("mnopqr", layerLetters));
+        rows.Add(RowOf("stuvwx", layerLetters));
+        rows.Add(RowOf("yz", layerLetters));
 
-        var slots = 8;
+        var slots = 6;
         return new LogicalLettersLayout(rows, slots, 0.8f, 1f);
     }
 
@@ -26,6 +26,9 @@ public class ConsistentAlphabeticLogicalLettersPlacer : ILogicalLayoutPlacer
             if (letterInRow != null)
             {
                 orderedRow.Add(letterInRow);            
+            }
+            else {
+                orderedRow.Add(Letter.SPACE);
             }
         }
         return orderedRow;        
