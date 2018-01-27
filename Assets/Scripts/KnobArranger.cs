@@ -7,6 +7,7 @@ public class KnobArranger
     private Letters letters;
     private Knobs knobs;
     public int layers = 0;
+    public float sideOffset = 0.1f;
     private readonly ILayerCreator layerCreator;
     private readonly ILogicalLayoutPlacer layoutPlacer;
 
@@ -18,7 +19,7 @@ public class KnobArranger
         this.knobs = knobs;
     }
 
-    public string Arrange(float zOffset, string lastLetter = "")
+    public string Arrange(float zOffset, string lastLetter = "", Nullable<HandSide> grabbedSide = null)
     {
         layers += 1;
         var yOffset = -0.2f;
@@ -32,11 +33,14 @@ public class KnobArranger
 
         var ySpacing = 0.05f * logicalLettersLayout.yFactor;
         var xSpacing = 0.08f * logicalLettersLayout.xFactor;
+        float sideOffset = CalculateSideOffset(grabbedSide);
 
-        var xStart = -(xSpacing * logicalLettersLayout.slots) / 2;
+        var xStart = sideOffset - (xSpacing * logicalLettersLayout.slots) / 2;
         var yStart = 0f;
+        var yLayerOffset = 0.025f;
+        var yLayersOffset = yLayerOffset * layers;
         var x = xStart + xOffset;
-        var y = yStart + yOffset;
+        var y = yStart + yOffset + yLayersOffset;
 
         string placement = "placed: ";
         int layer = layers - 1;
@@ -54,17 +58,33 @@ public class KnobArranger
                 }
                 x += xSpacing;
             });
-            xIndex ++;
+            xIndex++;
             x = xStart + xOffset;
             y -= ySpacing;
         });
-        y = yOffset;
+        y = yOffset + yLayersOffset;
         suggestions.ForEach(suggestion =>
         {
             y += ySpacing;
             knobs.CreateSuggestion(suggestion, xStart, y, z, layer);
         });
         return placement;
+    }
+
+    private float CalculateSideOffset(HandSide? grabbedSide)
+    {
+        if (grabbedSide.HasValue)
+        {
+            if (grabbedSide == HandSide.Left)
+            {
+                return sideOffset;
+            }
+            else
+            {
+                return -sideOffset;
+            }
+        }
+        return 0f;
     }
 
     public void ResetLayers()

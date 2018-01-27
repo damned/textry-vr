@@ -14,6 +14,7 @@ public class GesturesStrategy
     private readonly Gestures gestures;
     private readonly List<string> words = new List<string>();
     private int grabbedLayer;
+    private Nullable<HandSide> grabbedSide;
     private Knob layerCreatingKnob;
     public event Action<string> OnWord;
 
@@ -58,6 +59,7 @@ public class GesturesStrategy
     public void OnGrab(Gesture gesture, Knob knob)
     {
         grabbedLayer = layer;
+        grabbedSide = gesture.Side();
         if (layerCreatingKnob != knob)
         {
             AddLayer(knob, "grab");
@@ -74,7 +76,7 @@ public class GesturesStrategy
         layer += 1;
         layerCreatingKnob = knob;
         text += knob.Text();
-        string arrangement = knobArranger.Arrange(layer * 0.08f, text);
+        string arrangement = knobArranger.Arrange(layer * 0.08f, text, grabbedSide);
         debug.Log(arrangement);
         Debug.Log($"adding layer, post-text: {text}");
     }
@@ -136,6 +138,7 @@ public class GesturesStrategy
         text = "";
         layer = 0;
         knobArranger.ResetLayers();
+        grabbedSide = null;
     }
 
     public string Text()
