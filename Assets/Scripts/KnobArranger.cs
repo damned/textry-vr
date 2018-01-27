@@ -20,11 +20,12 @@ public class KnobArranger
         this.knobs = knobs;
     }
 
-    public string Arrange(float zOffset, string lastLetter = "", Nullable<HandSide> grabbedSide = null)
+    public string Arrange(float passedZOffset, string lastLetter = "", Nullable<HandSide> grabbedSide = null)
     {
         layers += 1;
         var yOffset = -0.2f;
         var xOffset = 0f;
+        var zOffset = layers * (0.05f + (0.12f / (layers + 1)));
         var z = -1f + zOffset;
         LayerContents layerContents = layerCreator.NextLayer(lastLetter);
         List<Letter> layerLetters = layerContents.letters;
@@ -32,8 +33,8 @@ public class KnobArranger
 
         var logicalLettersLayout = layoutPlacer.PlaceInRows(layerLetters);
 
-        var ySpacing = 0.035f * logicalLettersLayout.yFactor;
-        var xSpacing = 0.05f * logicalLettersLayout.xFactor;
+        var ySpacing = 0.04f * logicalLettersLayout.yFactor;
+        var xSpacing = 0.07f * logicalLettersLayout.xFactor;
         float sideOffset = CalculateSideOffset(grabbedSide);
 
         var xStart = sideOffset - (xSpacing * logicalLettersLayout.slots) / 2;

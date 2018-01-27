@@ -138,6 +138,7 @@ public class GesturesStrategy
         text = "";
         layer = 0;
         knobArranger.ResetLayers();
+        gestures.ClearTrails();
         grabbedSide = null;
     }
 
