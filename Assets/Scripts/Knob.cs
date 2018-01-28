@@ -27,9 +27,9 @@ public class Knob
     private Material opaqueMaterial;
     private Material fadeableMaterial;
 
-    public int Layer { get; private set; }
+    public KnobLayer Layer { get; private set; }
 
-    public Knob(Knobs knobs, GameObject gameObject, Vector3 where, int layer = -1)
+    public Knob(Knobs knobs, GameObject gameObject, Vector3 where, KnobLayer layer)
     {
         this.Layer = layer;
         this.knobs = knobs;
@@ -80,6 +80,7 @@ public class Knob
             UnityEngine.Object.Destroy(gameObject);
         }
         Deleted = true;
+        Layer = null;
     }
 
     public void Touch()

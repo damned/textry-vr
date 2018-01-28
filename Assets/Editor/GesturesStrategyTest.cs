@@ -40,13 +40,12 @@ public class GesturesStrategyTest
 
         strategy.OnHandUpdate(rightHand.At(firstAPosition).Open());
 
-        Assert.AreEqual(1, arranger.layers);
+        Assert.AreEqual(1, knobs.LayerCount);
         Assert.AreEqual(KnobHandlingState.Touched, Knob("a").HandlingState);
 
         strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
 
-        Assert.AreEqual(2, arranger.layers); // layers should be exposed as truth of knobs
-                                             // or mock out arranger?
+        Assert.AreEqual(2, knobs.LayerCount);
         Assert.AreEqual(KnobHandlingState.Grabbed, Knob("a").HandlingState);
     }
 
@@ -84,7 +83,7 @@ public class GesturesStrategyTest
         strategy.OnHandUpdate(rightHand);
         strategy.OnHandUpdate(rightHand);
 
-        Assert.AreEqual(2, arranger.layers);
+        Assert.AreEqual(2, knobs.LayerCount);
     }
 
     [Test]
@@ -95,11 +94,11 @@ public class GesturesStrategyTest
 
         strategy = NewGesturesStrategy();
 
-        Assert.AreEqual(1, arranger.layers);
+        Assert.AreEqual(1, knobs.LayerCount);
 
         strategy.OnHandUpdate(rightHand.At(firstAPosition).Closed());
 
-        Assert.AreEqual(1, arranger.layers);
+        Assert.AreEqual(1, knobs.LayerCount);
     }
 
     [Test]
@@ -206,7 +205,7 @@ public class GesturesStrategyTest
         Assert.AreEqual(1, strategy.Words().Count);
         Assert.AreEqual("a", strategy.Words()[0]);
         Assert.AreEqual("", strategy.Text());
-        Assert.AreEqual(1, arranger.layers);
+        Assert.AreEqual(1, knobs.LayerCount);
     }
 
     [Test]

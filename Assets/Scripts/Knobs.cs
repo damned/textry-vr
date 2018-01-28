@@ -20,28 +20,13 @@ public class Knobs : MonoBehaviour
 
     public KnobLayer LastLayer { get { return layers.Last(); } }
 
-    public void ForEach(KnobHandler handler)
-    {
-        foreach (var layer in layers)
-        {
-            layer.ForEach(handler);
-        }
-    }
+    public KnobLayer FirstLayer { get { return layers.First(); } }
 
-    private void AddKnob(Knob knob)
-    {
-        LastLayer.Add(knob);
-    }
+    public int LayerCount { get { return layers.Count; } }
 
-    private bool Any(KnobFilter filter)
-    {
-        return layers.Any(layer => layer.Any(filter));
-    }
-
-    // extract Layer
     public Knob Create(Letter letter, float x, float y, float z)
     {
-        Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z), LastLayer.index);
+        Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z), LastLayer);
         AddKnob(knob);
         knob.UpdateColor();
         return knob;
@@ -61,9 +46,27 @@ public class Knobs : MonoBehaviour
             letterIndex++;
         });
         Debug.Log("suggestion parent: " + suggestionParent);
-        Knob suggestionKnob = new Knob(this, suggestionParent, new Vector3(x, y, z), LastLayer.index);
+        Knob suggestionKnob = new Knob(this, suggestionParent, new Vector3(x, y, z), LastLayer);
         AddKnob(suggestionKnob);
         return suggestionKnob;
+    }
+
+    public void ForEach(KnobHandler handler)
+    {
+        foreach (var layer in layers)
+        {
+            layer.ForEach(handler);
+        }
+    }
+
+    private void AddKnob(Knob knob)
+    {
+        LastLayer.Add(knob);
+    }
+
+    private bool Any(KnobFilter filter)
+    {
+        return layers.Any(layer => layer.Any(filter));
     }
 
     public void Move(Vector3 translation)
@@ -141,15 +144,12 @@ public class Knobs : MonoBehaviour
 
     public void Reset()
     {
-        var nonFirstLayers = layers.Where(layer =>
-        {
-            return layer.index != 0;
-        });
+        var nonFirstLayers = layers.Where(layer => layer != FirstLayer);
         foreach (var layer in nonFirstLayers)
         {
             layer.Delete();
         };
-        layers.RemoveAll(layer => nonFirstLayers.Contains(layer));
+        layers.RemoveAll(layer => layer != FirstLayer);
         OnKnobStateChange();
         ResetToInitialPosition();
     }

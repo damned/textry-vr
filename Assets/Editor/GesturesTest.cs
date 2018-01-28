@@ -18,7 +18,7 @@ public class GesturesTest
   public void AnyGrabsIsTrueIfAnyGesturesIsGrabbing()
   {
     var grabbingGesture = new Gesture(HandSide.Left, null);
-    grabbingGesture.grabbed = new Knob(null, new GameObject(), Vector3.up, 0);
+    grabbingGesture.grabbed = new Knob(null, new GameObject(), Vector3.up, new KnobLayer(0));
     var nonGrabbingGesture = new Gesture(HandSide.Right, null);
     var gestures =  new Gestures(grabbingGesture, nonGrabbingGesture);
 

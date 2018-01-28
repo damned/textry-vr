@@ -4,7 +4,6 @@ public class KnobArranger
 {
     private Letters letters;
     private Knobs knobs;
-    public int layers = 0;
     private readonly ILayerCreator layerCreator;
 
     public KnobArranger(Letters letters, Knobs knobs, ILayerCreator layerCreator)
@@ -14,9 +13,8 @@ public class KnobArranger
         this.knobs = knobs;
     }
 
-    public string Arrange(float zOffset, string lastLetter = "")
+    public void Arrange(float zOffset, string lastLetter = "")
     {
-        layers += 1;
         var ySpacing = 0.05f;
         var xSpacing = 0.08f;
         var yOffset = -0.2f;
@@ -58,12 +56,10 @@ public class KnobArranger
           y += ySpacing;
           knobs.CreateSuggestion(suggestion, xStart, y, z);
         });
-        return placement;
     }
 
     public void ResetLayers()
     {
         knobs.Reset();
-        layers = 1;
     }
 }
