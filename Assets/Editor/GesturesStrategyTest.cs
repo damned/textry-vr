@@ -12,11 +12,6 @@ public class GesturesStrategyTest
     private StubHand leftHand;
     private StubHand rightHand;
 
-    // todo: thoughts from typing tests:
-    // already thinking gesture strategy should do knobs.add_layer([knobs]); then
-    // gesture strategy should hand off "knob grabbed" to whatever's going to manage
-    //     what the next layer of knobs should actually be:  a text predicter?
-
     [SetUp]
     public void SetUp()
     {
