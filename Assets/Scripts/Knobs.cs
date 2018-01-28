@@ -5,12 +5,8 @@ using UnityEngine;
 
 public class Knobs : MonoBehaviour
 {
-    public delegate void KnobHandler(Knob knob);
-    public delegate bool KnobFilter(Knob knob);
-
     public float fadeLevel = 0.1f;
 
-    private List<Knob> knobs = new List<Knob>();
     private Nullable<Vector3> initialPosition = new Nullable<Vector3>();
     public float wordOffset = 0.05f;
     
@@ -19,32 +15,33 @@ public class Knobs : MonoBehaviour
     public KnobLayer CreateLayer()
     {
         layers.Add(new KnobLayer(layers.Count));
-        return layers.Last();
+        return LastLayer;
+    }
+
+    public KnobLayer LastLayer { get { return layers.Last(); } }
+
+    public void ForEach(KnobHandler handler)
+    {
+        foreach (var layer in layers)
+        {
+            layer.ForEach(handler);
+        }
     }
 
     private void AddKnob(Knob knob)
     {
-        knobs.Add(knob);
-    }
-
-    public void ForEach(KnobHandler handler)
-    {
-        foreach (var knob in knobs)
-        {
-            handler(knob);
-        }
+        LastLayer.Add(knob);
     }
 
     private bool Any(KnobFilter filter)
     {
-        return knobs.Any(knob => filter(knob));
+        return layers.Any(layer => layer.Any(filter));
     }
 
     // extract Layer
-    public Knob Create(Letter letter, float x, float y, float z, KnobLayer layer)
+    public Knob Create(Letter letter, float x, float y, float z)
     {
-        var layerIndex = layer.layerIndex;
-        Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z), layerIndex);
+        Knob knob = new Knob(this, Instantiate(letter.gameObject, transform), new Vector3(x, y, z), LastLayer.index);
         AddKnob(knob);
         knob.UpdateColor();
         return knob;
@@ -64,7 +61,7 @@ public class Knobs : MonoBehaviour
             letterIndex++;
         });
         Debug.Log("suggestion parent: " + suggestionParent);
-        Knob suggestionKnob = new Knob(this, suggestionParent, new Vector3(x, y, z));
+        Knob suggestionKnob = new Knob(this, suggestionParent, new Vector3(x, y, z), LastLayer.index);
         AddKnob(suggestionKnob);
         return suggestionKnob;
     }
@@ -144,15 +141,15 @@ public class Knobs : MonoBehaviour
 
     public void Reset()
     {
-        var knobsNotInFirstLayer = knobs.Where(knob =>
+        var nonFirstLayers = layers.Where(layer =>
         {
-            return knob.Layer != 0;
+            return layer.index != 0;
         });
-        foreach (var knob in knobsNotInFirstLayer)
+        foreach (var layer in nonFirstLayers)
         {
-            knob.Delete();
+            layer.Delete();
         };
-        knobs.RemoveAll(knob => knobsNotInFirstLayer.Contains(knob));
+        layers.RemoveAll(layer => nonFirstLayers.Contains(layer));
         OnKnobStateChange();
         ResetToInitialPosition();
     }

@@ -50,7 +50,7 @@ public class KnobArranger
                 x += xSpacing;
             }
             index += 1;
-            var knob = knobs.Create(letter, x, y, z, layer);
+            var knob = knobs.Create(letter, x, y, z);
             placement += knob.Name + ", ";
         });
         y = yOffset;

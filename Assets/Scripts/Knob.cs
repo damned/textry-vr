@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public delegate void KnobHandler(Knob knob);
+public delegate bool KnobFilter(Knob knob);
+
 public enum KnobHandlingState { Unhandled, Touched, Grabbed }
 
 public class Knob
@@ -23,7 +27,7 @@ public class Knob
     private Material opaqueMaterial;
     private Material fadeableMaterial;
 
-    public int Layer { get; }
+    public int Layer { get; private set; }
 
     public Knob(Knobs knobs, GameObject gameObject, Vector3 where, int layer = -1)
     {

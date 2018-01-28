@@ -18,9 +18,9 @@ public class KnobsTest
     knobs = knobsGo.AddComponent<Knobs>();
 
     var layer = knobs.CreateLayer();
-    knobA = knobs.Create(A.Letter("a"), 0, 0, 0, layer);
-    knobB = knobs.Create(A.Letter("b"), 1, 0, 0, layer);
-    knobC = knobs.Create(A.Letter("c"), 2, 0, 0, layer);
+    knobA = knobs.Create(A.Letter("a"), 0, 0, 0);
+    knobB = knobs.Create(A.Letter("b"), 1, 0, 0);
+    knobC = knobs.Create(A.Letter("c"), 2, 0, 0);
   }
 
   [Test]

@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 
-public delegate void KnobHandler(Knob knob);
 public delegate void GestureHandler(Gesture gesture, Knob knob);
 
 public class Gesture
