@@ -68,7 +68,7 @@ public class LetterBasedLayerCreator : ILayerCreator
         }
         else
         {
-            Debug.Log($"missing required Letter '{letter}'");
+            Debug.Log(String.Format("missing required Letter '{letter}'", letter));
         }
 
         return item;
