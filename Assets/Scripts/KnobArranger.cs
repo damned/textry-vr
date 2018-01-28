@@ -2,18 +2,16 @@ using System;
 
 public class KnobArranger
 {
-    private Letters letters;
     private Knobs knobs;
     private readonly ILayerCreator layerCreator;
 
-    public KnobArranger(Letters letters, Knobs knobs, ILayerCreator layerCreator)
+    public KnobArranger(Knobs knobs, ILayerCreator layerCreator)
     {
         this.layerCreator = layerCreator;
-        this.letters = letters;
         this.knobs = knobs;
     }
 
-    public void Arrange(float zOffset, string lastLetter = "")
+    public void Arrange(string lastLetter = "")
     {
         var ySpacing = 0.05f;
         var xSpacing = 0.08f;
@@ -21,6 +19,10 @@ public class KnobArranger
         var xOffset = 0f;
         var index = 0;
         var xIndex = 0;
+
+        var layer = knobs.CreateLayer();
+        var zOffset = 0.08f * knobs.LayerCount;
+        
         var z = -1f + zOffset;
         LayerContents layerContents = layerCreator.NextLayer(lastLetter);
         var layerLetters = layerContents.letters;
@@ -32,7 +34,6 @@ public class KnobArranger
         var x = xStart + xOffset;
         var y = yStart + yOffset;
 
-        var layer = knobs.CreateLayer();
 
         string placement = "placed: ";
         layerLetters.ForEach((letter) =>

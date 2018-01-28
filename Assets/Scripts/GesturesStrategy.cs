@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GesturesStrategy
@@ -8,8 +9,7 @@ public class GesturesStrategy
     private readonly IDebug debug;
     private readonly KnobArranger knobArranger;
 
-    private int layer = 0;
-    private string text = "";
+    private List<Knob> wordKnobs = new List<Knob>();
 
     private readonly Gestures gestures;
     private readonly List<string> words = new List<string>();
@@ -42,8 +42,8 @@ public class GesturesStrategy
 
         gesture.OnHandUpdate(hand);
         debug.Log("words: " + String.Join(", ", words.ToArray()));
-        debug.Log("text: " + text);
-        return text;
+        debug.Log("text: " + Text());
+        return Text();
     }
 
     public bool IsGrabbing(HandSide side)
@@ -53,9 +53,8 @@ public class GesturesStrategy
 
     public void OnGrab(Gesture gesture, Knob knob)
     {
-        layer += 1;
-        text += knob.Text();
-        knobArranger.Arrange(layer * 0.08f, text);
+        wordKnobs.Add(knob);
+        knobArranger.Arrange(Text());
     }
 
     public void OnRelease(Knob knob)
@@ -68,15 +67,14 @@ public class GesturesStrategy
 
     private void CompleteWord()
     {
-        words.Add(text);
-        text = "";
-        layer = 0;
+        words.Add(Text());
+        wordKnobs.Clear();
         knobArranger.ResetLayers();
     }
 
     public string Text()
     {
-        return text;
+        return String.Join("", wordKnobs.Select(knob => knob.Text()).ToArray());
     }
 
     public List<string> Words()

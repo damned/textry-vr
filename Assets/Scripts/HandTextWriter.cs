@@ -23,8 +23,8 @@ public class HandTextWriter : MonoBehaviour
 
     var predictor = new DataBasedAlphabeticPredictor(EnglishWords.AsList());
     var layerCreator = new LetterBasedLayerCreator(letters, predictor);
-    knobArranger = new KnobArranger(letters, knobs, layerCreator);
-    knobArranger.Arrange(0f);
+    knobArranger = new KnobArranger(knobs, layerCreator);
+    knobArranger.Arrange();
 
     var gestures = new Gestures(knobs);
     
