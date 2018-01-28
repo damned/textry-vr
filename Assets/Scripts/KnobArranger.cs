@@ -34,6 +34,8 @@ public class KnobArranger
         var x = xStart + xOffset;
         var y = yStart + yOffset;
 
+        var layer = knobs.CreateLayer();
+
         string placement = "placed: ";
         layerLetters.ForEach((letter) =>
         {
@@ -48,7 +50,7 @@ public class KnobArranger
                 x += xSpacing;
             }
             index += 1;
-            var knob = knobs.Create(letter, x, y, z, layers - 1);
+            var knob = knobs.Create(letter, x, y, z, layer);
             placement += knob.Name + ", ";
         });
         y = yOffset;
