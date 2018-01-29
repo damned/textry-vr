@@ -8,7 +8,7 @@ public delegate bool KnobFilter(Knob knob);
 
 public enum KnobHandlingState { Unhandled, Touched, Grabbed }
 
-public class Knob
+public class Knob : ITextProvider
 {
     private static KnobColorArbiter colorArbiter = new KnobColorArbiter();
 

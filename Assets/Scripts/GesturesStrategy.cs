@@ -9,7 +9,7 @@ public class GesturesStrategy
     private readonly IDebug debug;
     private readonly KnobArranger knobArranger;
 
-    private List<Knob> wordKnobs = new List<Knob>();
+    private List<ITextProvider> selections = new List<ITextProvider>();
 
     private readonly Gestures gestures;
     private readonly List<string> words = new List<string>();
@@ -53,7 +53,7 @@ public class GesturesStrategy
 
     public void OnGrab(Gesture gesture, Knob knob)
     {
-        wordKnobs.Add(knob);
+        selections.Add(knob);
         knobArranger.Arrange(Text());
     }
 
@@ -68,13 +68,13 @@ public class GesturesStrategy
     private void CompleteWord()
     {
         words.Add(Text());
-        wordKnobs.Clear();
+        selections.Clear();
         knobArranger.ResetLayers();
     }
 
     public string Text()
     {
-        return String.Join("", wordKnobs.Select(knob => knob.Text()).ToArray());
+        return String.Join("", selections.Select(knob => knob.Text()).ToArray());
     }
 
     public List<string> Words()
